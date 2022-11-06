@@ -1,0 +1,22 @@
+/node_modules
+/backend/public/storage
+/backend/storage/*.key
+/.idea
+/.vscode
+/backend/.env
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+npm-debug.log
+yarn-error.log
+
+composer.lock
+.DS_Store
+Thumbs.db
+
+# Project
+/frontend/.angular/
+/frontend/.vscode/
+/frontend/.vscode/
+/frontend/src/environments/*
+/frontend/src/environments/environment.ts
