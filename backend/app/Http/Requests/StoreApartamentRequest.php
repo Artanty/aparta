@@ -13,7 +13,7 @@ class StoreApartamentRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return auth()->guard('api')->user();
     }
 
     /**
@@ -24,7 +24,8 @@ class StoreApartamentRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'address' => 'required|string',
+            'name' => 'required|string'
         ];
     }
 }

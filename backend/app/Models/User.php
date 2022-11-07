@@ -44,4 +44,12 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Get the apartaments of the user
+     */
+    public function apartaments()
+    {
+        return $this->hasMany('App\Models\Apartament', 'creator_id');
+    }
 }

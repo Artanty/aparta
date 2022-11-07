@@ -1,0 +1,24 @@
+<h2>Создание</h2>
+<input type="text" placeholder="Название" [(ngModel)]="name">
+<input type="text" placeholder="Адрес" [(ngModel)]="address">
+
+<button (click)="create()">Создать</button>
+<br>
+
+<h2>Получение</h2>
+<button (click)="read()">Получить</button>
+<br>
+<ul>
+  <li *ngFor="let item of items">
+    {{ item.id + ' | ' + item.name + ' | ' + item.address }}
+    <button (click)="placeToUpdate(item)">Обновить</button>
+    <button (click)="delete(item.id)">Удалить</button>
+  </li>
+
+</ul>
+<br>
+<h2>Обновление</h2>
+<input type="text" placeholder="Название" [(ngModel)]="update_id">
+<input type="text" placeholder="Название" [(ngModel)]="update_name">
+<input type="text" placeholder="Адрес" [(ngModel)]="update_address">
+<button (click)="update()">Обновить</button>

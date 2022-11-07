@@ -1,10 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Models\models\Apartament;
+use App\Models\User;
+use App\Models\Apartament;
 use App\Http\Requests\StoreApartamentRequest;
 use App\Http\Requests\UpdateApartamentRequest;
+use App\Http\Requests\GetApartamentRequest;
+use App\Http\Requests\DeleteApartamentRequest;
+
 
 class ApartamentController extends Controller
 {
@@ -13,9 +16,13 @@ class ApartamentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(GetApartamentRequest $request)
     {
-        //
+        $apartaments = Apartament::select('*')
+            ->where('creator_id', auth()->guard('api')->user()->id)
+            ->get();
+
+        return $apartaments;
     }
 
     /**
@@ -36,7 +43,13 @@ class ApartamentController extends Controller
      */
     public function store(StoreApartamentRequest $request)
     {
-        //
+        $apartament = new Apartament;
+        $apartament->name = $request->name;
+        $apartament->address = $request->address;
+        $apartament->creator_id = auth()->guard('api')->user()->id;
+        $apartament->save();
+
+        return $apartament;
     }
 
     /**
@@ -53,7 +66,7 @@ class ApartamentController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\models\Apartament  $apartament
+     * @param  \App\Models\Apartament  $apartament
      * @return \Illuminate\Http\Response
      */
     public function edit(Apartament $apartament)
@@ -65,22 +78,29 @@ class ApartamentController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\UpdateApartamentRequest  $request
-     * @param  \App\Models\models\Apartament  $apartament
+     * @param  \App\Models\Apartament  $apartament
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateApartamentRequest $request, Apartament $apartament)
     {
-        //
+        $apartament = Apartament::find($request->id)->first();
+
+        $apartament->name = $request->name;
+        $apartament->address = $request->address;
+        $apartament->creator_id = auth()->guard('api')->user()->id;
+        $apartament->save();
+
+        return $apartament;
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\models\Apartament  $apartament
+     * @param  \App\Models\Apartament  $apartament
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Apartament $apartament)
+    public function destroy(DeleteApartamentRequest $request, Apartament $apartament)
     {
-        //
+        return Apartament::destroy($apartament->id);
     }
 }

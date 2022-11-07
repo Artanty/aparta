@@ -23,6 +23,4 @@ Route::post('/register', 'App\Http\Controllers\Auth\UserAuthController@register'
 Route::post('/login', 'App\Http\Controllers\Auth\UserAuthController@login');
 
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
+Route::resource('/apartament', 'App\Http\Controllers\ApartamentController');

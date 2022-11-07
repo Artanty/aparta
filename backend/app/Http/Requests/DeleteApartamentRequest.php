@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateApartamentRequest extends FormRequest
+class DeleteApartamentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +24,7 @@ class UpdateApartamentRequest extends FormRequest
     public function rules()
     {
         return [
-            'address' => 'required|string',
-            'name' => 'required|string'
+
         ];
     }
 }

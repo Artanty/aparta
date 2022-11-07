@@ -1,12 +1,27 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { Router } from '@angular/router';
 
+export type User = {
+  created_at: string
+  email: string
+  email_verified_at: string
+  id: number
+  name: string
+  updated_at: string
+}
+export type AuthDataApiResponse = {
+  token: string
+  user: User
+
+}
 @Component({
   selector: 'app-auth',
   templateUrl: './auth.component.html',
   styleUrls: ['./auth.component.scss']
 })
+
 export class AuthComponent implements OnInit {
   name = 'Артем Антошкин'
   email = 'antoshkinartyom@gmail.com'
@@ -15,7 +30,11 @@ export class AuthComponent implements OnInit {
   private baseUrl = environment.baseUrl;
 
 
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+
+    ) {
 
    }
 
@@ -29,7 +48,14 @@ export class AuthComponent implements OnInit {
       password: this.password
     }
     console.log(data)
-    this.http.post(`${this.baseUrl}/login`, data).subscribe()
+    this.http.post<AuthDataApiResponse>(`${this.baseUrl}/login`, data).subscribe({
+      next: (res: AuthDataApiResponse) => {
+        this.saveToken(res.token)
+      },
+      error: (err: any) => {
+
+      }
+    })
   }
   register() {
     const data = {
@@ -39,7 +65,20 @@ export class AuthComponent implements OnInit {
       password_confirmation: this.password_confirmation
     }
     console.log(data)
-    this.http.post(`${this.baseUrl}/register`, data).subscribe()
+    this.http.post<AuthDataApiResponse>(`${this.baseUrl}/register`, data).subscribe({
+      next: (res: AuthDataApiResponse) => {
+        this.saveToken(res.token)
+      },
+      error: (err: any) => {
+        //
+      }
+    })
+  }
+  saveToken (token: string) {
+    if (token) {
+      localStorage.setItem('token', token)
+      this.router.navigate(['/layout1']);
+    }
   }
 
 }
