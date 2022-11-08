@@ -4,8 +4,8 @@ import { AuthGuard } from '../shared/guards/auth.guard';
 import { ApartamentComponent } from './apartament.component';
 
 const routes: Routes = [
-  { path: '', component: ApartamentComponent, canActivate: [AuthGuard]
-}
+  { path: '', component: ApartamentComponent, canActivate: [AuthGuard] },
+  { path: 'apartamentFee/:apartament_id', loadChildren: () => import('./../../modules/apartament-fee/apartament-fee.module').then(m => m.ApartamentFeeModule) },
 ];
 
 @NgModule({

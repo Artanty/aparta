@@ -52,7 +52,7 @@ export class AuthComponent implements OnInit {
     this.http.post<AuthDataApiResponse>(`${this.baseUrl}/login`, data).subscribe({
       next: (res: AuthDataApiResponse) => {
         this.AuthServ.setToken(res.token)
-        this.router.navigate(['/apartament'])
+        this.router.navigate(['apartament'])
       },
       error: (err: any) => {
 
@@ -69,11 +69,20 @@ export class AuthComponent implements OnInit {
     this.http.post<AuthDataApiResponse>(`${this.baseUrl}/register`, data).subscribe({
       next: (res: AuthDataApiResponse) => {
         this.AuthServ.setToken(res.token)
-        this.router.navigate(['/apartament'])
+        this.router.navigate(['apartament'])
       },
       error: (err: any) => {
         //
       }
     })
+  }
+  logout(){
+    this.AuthServ.clearToken()
+    this.router.navigate(['auth'])
+  }
+  go() {
+    this.router.navigate(['apartament/2'])
+
+
   }
 }

@@ -16,7 +16,8 @@ import { AuthInterceptor } from '../shared/interceptors/auth.interceptor';
   ],
   imports: [
     ApartamentRoutingModule,
-    SharedModule
+    SharedModule,
+    // CommonModule
   ],
 
 })

@@ -103,4 +103,10 @@ class ApartamentController extends Controller
     {
         return Apartament::destroy($apartament->id);
     }
+
+    public function getApartamentFees($request)
+    {
+        $apartamentFees = Apartament::findOrFail($request)->fees()->get();
+        return response()->json($apartamentFees);
+    }
 }

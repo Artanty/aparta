@@ -15,6 +15,7 @@ import { SharedModule } from '../shared/shared.module';
     AuthComponent
   ],
   imports: [
+    // CommonModule,
     SharedModule,
     AuthRoutingModule
   ]

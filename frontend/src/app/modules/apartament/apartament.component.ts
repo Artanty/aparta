@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
+
 
 @Component({
   selector: 'app-apartament',
@@ -19,8 +21,11 @@ export class ApartamentComponent implements OnInit {
   update_name = ''
   update_address = ''
   constructor(
-    private http: HttpClient
-  ) { }
+    private http: HttpClient,
+    private ActivatedRoute: ActivatedRoute
+  ) {
+    this.ActivatedRoute.paramMap.subscribe(res => console.log(res))
+  }
 
   ngOnInit(): void {
     this.read()

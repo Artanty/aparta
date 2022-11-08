@@ -1,0 +1,38 @@
+<h1>Счета за коммунальные услуги</h1>
+<h2>Создание</h2>
+
+<input type="text" placeholder="apartament_id" [(ngModel)]="apartament_id">
+<input type="text" placeholder="Название" [(ngModel)]="name">
+<input type="text" placeholder="Описание" [(ngModel)]="description">
+<input type="text" placeholder="Сумма" [(ngModel)]="sum">
+<input type="text" placeholder="Валюта" [(ngModel)]="currancy">
+<input type="text" placeholder="Месяц" [(ngModel)]="month">
+<input type="text" placeholder="Год" [(ngModel)]="year">
+<input type="text" placeholder="Уплочено" [(ngModel)]="paid">
+
+<button (click)="create()">Создать</button>
+<br>
+
+<h2>Получение</h2>
+<button (click)="read()">Получить</button>
+<br>
+<ul>
+  <li *ngFor="let item of items">
+    {{ item.id + ' | ' + item.name + ' | ' + item.sum }}
+    <button (click)="placeToUpdate(item)">Обновить</button>
+    <button (click)="delete(item.id)">Удалить</button>
+  </li>
+
+</ul>
+<br>
+<h2>Обновление</h2>
+<input type="text" placeholder="apartament_id" [(ngModel)]="update_apartament_id">
+<input type="text" placeholder="Название" [(ngModel)]="update_id">
+<input type="text" placeholder="Название" [(ngModel)]="update_name">
+<input type="text" placeholder="Описание" [(ngModel)]="update_description">
+<input type="text" placeholder="Сумма" [(ngModel)]="update_sum">
+<input type="text" placeholder="Валюта" [(ngModel)]="update_currancy">
+<input type="text" placeholder="Месяц" [(ngModel)]="update_month">
+<input type="text" placeholder="Год" [(ngModel)]="update_year">
+<input type="text" placeholder="Уплочено" [(ngModel)]="update_paid">
+<button (click)="update()">Обновить</button>
