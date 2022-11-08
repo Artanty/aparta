@@ -4,8 +4,10 @@ import { CommonModule } from '@angular/common';
 import { ApartamentRoutingModule } from './apartament-routing.module';
 import { ApartamentComponent } from './apartament.component';
 
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { SharedModule } from '../shared/shared.module';
+import { AuthInterceptor } from '../shared/interceptors/auth.interceptor';
 
 
 @NgModule({
@@ -13,10 +15,9 @@ import { FormsModule } from '@angular/forms';
     ApartamentComponent
   ],
   imports: [
-    CommonModule,
     ApartamentRoutingModule,
-    HttpClientModule,
-    FormsModule
-  ]
+    SharedModule
+  ],
+
 })
 export class ApartamentModule { }

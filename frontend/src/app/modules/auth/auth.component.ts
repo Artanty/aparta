@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
+import { AuthService } from '../shared/services/auth.service';
 
 export type User = {
   created_at: string
@@ -33,7 +34,7 @@ export class AuthComponent implements OnInit {
   constructor(
     private http: HttpClient,
     private router: Router,
-
+    private AuthServ: AuthService
     ) {
 
    }
@@ -50,7 +51,8 @@ export class AuthComponent implements OnInit {
     console.log(data)
     this.http.post<AuthDataApiResponse>(`${this.baseUrl}/login`, data).subscribe({
       next: (res: AuthDataApiResponse) => {
-        this.saveToken(res.token)
+        this.AuthServ.setToken(res.token)
+        this.router.navigate(['/apartament'])
       },
       error: (err: any) => {
 
@@ -64,21 +66,14 @@ export class AuthComponent implements OnInit {
       password: this.password,
       password_confirmation: this.password_confirmation
     }
-    console.log(data)
     this.http.post<AuthDataApiResponse>(`${this.baseUrl}/register`, data).subscribe({
       next: (res: AuthDataApiResponse) => {
-        this.saveToken(res.token)
+        this.AuthServ.setToken(res.token)
+        this.router.navigate(['/apartament'])
       },
       error: (err: any) => {
         //
       }
     })
   }
-  saveToken (token: string) {
-    if (token) {
-      localStorage.setItem('token', token)
-      this.router.navigate(['/layout1']);
-    }
-  }
-
 }

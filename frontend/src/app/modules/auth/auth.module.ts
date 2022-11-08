@@ -6,6 +6,7 @@ import { AuthComponent } from './auth.component';
 
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { SharedModule } from '../shared/shared.module';
 
 
 
@@ -14,10 +15,8 @@ import { FormsModule } from '@angular/forms';
     AuthComponent
   ],
   imports: [
-    CommonModule,
-    AuthRoutingModule,
-    HttpClientModule,
-    FormsModule
+    SharedModule,
+    AuthRoutingModule
   ]
 })
 export class AuthModule { }

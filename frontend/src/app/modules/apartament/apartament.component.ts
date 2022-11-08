@@ -44,7 +44,7 @@ export class ApartamentComponent implements OnInit {
       name: this.name,
       address: this.address,
     }
-    this.http.post(`${this.baseUrl}/apartament`, data, this.setRequestOptions()).subscribe(
+    this.http.post(`${this.baseUrl}/apartament`, data).subscribe(
       (res: any) => {
         this.items.push(res)
       }
@@ -52,7 +52,7 @@ export class ApartamentComponent implements OnInit {
   }
 
   read() {
-    this.http.get(`${this.baseUrl}/apartament`, this.setRequestOptions()).subscribe({
+    this.http.get(`${this.baseUrl}/apartament`).subscribe({
       next: (res: any) => {
         this.items = res
       },
@@ -72,7 +72,7 @@ export class ApartamentComponent implements OnInit {
       name: this.update_name,
       address: this.update_address
     }
-    this.http.put(`${this.baseUrl}/apartament/${data.id}`, data, this.setRequestOptions()).subscribe({
+    this.http.put(`${this.baseUrl}/apartament/${data.id}`, data).subscribe({
       next: (res: any) => {
         this.items = this.items.map((el: any) => {
           if (el.id === res.id) {
@@ -85,7 +85,7 @@ export class ApartamentComponent implements OnInit {
     )
   }
   delete(id: number) {
-    this.http.delete(`${this.baseUrl}/apartament/${id}`, this.setRequestOptions()).subscribe(res=> this.items = this.items.filter((el: any) => el.id !== id))
+    this.http.delete(`${this.baseUrl}/apartament/${id}`).subscribe(res=> this.items = this.items.filter((el: any) => el.id !== id))
   }
 
 }
