@@ -25,5 +25,9 @@ Route::post('/login', 'App\Http\Controllers\Auth\UserAuthController@login');
 
 Route::resource('/apartament', 'App\Http\Controllers\ApartamentController');
 Route::get('/apartament/getApartamentFees/{id}', 'App\Http\Controllers\ApartamentController@getApartamentFees');
+Route::get('/apartament/getApartamentUsers/{id}', 'App\Http\Controllers\ApartamentController@getApartamentUsers');
 
 Route::resource('/apartamentFee', 'App\Http\Controllers\ApartamentFeeController');
+
+Route::resource('/apartamentUser', 'App\Http\Controllers\ApartamentUserController');
+Route::get('/apartamentUser/findUserByEmail/{email}', 'App\Http\Controllers\ApartamentUserController@findUserByEmail');

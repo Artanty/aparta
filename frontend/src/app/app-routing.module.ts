@@ -7,6 +7,7 @@ const routes: Routes = [
   { path: 'apartament', loadChildren: () => import('./modules/apartament/apartament.module').then(m => m.ApartamentModule) },
   // { path: 'apartament', loadChildren: () => import('./modules/apartament/apartament.module').then(m => m.ApartamentModule) },
   { path: 'apartamentFee', loadChildren: () => import('./modules/apartament-fee/apartament-fee.module').then(m => m.ApartamentFeeModule) },
+  { path: 'apartamentUser', loadChildren: () => import('./modules/apartament-user/apartament-user.module').then(m => m.ApartamentUserModule) },
   { path: '**', redirectTo: 'auth' }
 ]
 

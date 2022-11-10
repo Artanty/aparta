@@ -1,11 +1,13 @@
-<a [routerLink]="['apartamentFee', items[0]?.id]" class="link" [routerLinkActive]="['routerLinkIsActive']">apartaments apartamentFee</a>
+<h2>Поиск пользователя</h2>
+<input type="text" placeholder="email" [(ngModel)]="user_email">
 <br>
-<a [routerLink]="['apartamentUser', items[0]?.id]" class="link" [routerLinkActive]="['routerLinkIsActive']">apartaments apartamentUsers</a>
-<br>
+<button (click)="findUserByEmail()">Найти пользователя по email</button>
 
 <h2>Создание</h2>
-<input type="text" placeholder="Название" [(ngModel)]="name">
-<input type="text" placeholder="Адрес" [(ngModel)]="address">
+<input type="text" placeholder="apartament_id" [(ngModel)]="apartament_id">
+{{ apartament_name }}
+<input type="text" placeholder="user_id" [(ngModel)]="user_id">
+{{ user_name }}
 
 <button (click)="create()">Создать</button>
 <br>
@@ -15,7 +17,7 @@
 <br>
 <ul>
   <li *ngFor="let item of items">
-    {{ item.id + ' | ' + item.name + ' | ' + item.address }}
+    {{ item.id + ' | ' + item?.user_details?.name }}
     <button (click)="placeToUpdate(item)">Обновить</button>
     <button (click)="delete(item.id)">Удалить</button>
   </li>

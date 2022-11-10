@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Apartament;
+use App\Models\ApartamentUser;
 use App\Http\Requests\StoreApartamentRequest;
 use App\Http\Requests\UpdateApartamentRequest;
 use App\Http\Requests\GetApartamentRequest;
@@ -108,5 +109,12 @@ class ApartamentController extends Controller
     {
         $apartamentFees = Apartament::findOrFail($request)->fees()->get();
         return response()->json($apartamentFees);
+    }
+
+    public function getApartamentUsers($request)
+    {
+        // $apartamentUsers = ApartamentUser::with('userDetails')->where('apartament_id', '=', $request)->get();
+        $apartamentUsers = Apartament::findOrFail($request)->users()->get();
+        return response()->json($apartamentUsers);
     }
 }

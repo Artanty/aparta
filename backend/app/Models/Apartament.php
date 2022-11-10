@@ -13,10 +13,18 @@ class Apartament extends Model
     ];
 
     /**
-     * Get the apartamentFees of the apartament
+     * Get the fees of the apartament
      */
     public function fees()
     {
         return $this->hasMany('App\Models\ApartamentFee', 'apartament_id', 'id');
+    }
+
+    /**
+     * Get the users with user details of the apartament
+     */
+    public function users()
+    {
+        return $this->hasMany('App\Models\ApartamentUser', 'apartament_id', 'id')->with('userDetails');
     }
 }
