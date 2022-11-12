@@ -47,6 +47,14 @@ class ApartamentController extends Controller
         $apartament = new Apartament;
         $apartament->name = $request->name;
         $apartament->address = $request->address;
+        $apartament->country = $request->country;
+        $apartament->place = $request->place;
+        $apartament->location = $request->location;
+        $apartament->description = $request->description;
+        $apartament->rentType = $request->rentType;
+        $apartament->area = $request->area;
+        $apartament->rooms = $request->rooms;
+        $apartament->garage = $request->garage;
         $apartament->creator_id = auth()->guard('api')->user()->id;
         $apartament->save();
 
@@ -88,6 +96,14 @@ class ApartamentController extends Controller
 
         $apartament->name = $request->name;
         $apartament->address = $request->address;
+        $apartament->country = $request->country;
+        $apartament->place = $request->place;
+        $apartament->location = $request->location;
+        $apartament->description = $request->description;
+        $apartament->rentType = $request->rentType;
+        $apartament->area = $request->area;
+        $apartament->rooms = $request->rooms;
+        $apartament->garage = $request->garage;
         $apartament->creator_id = auth()->guard('api')->user()->id;
         $apartament->save();
 

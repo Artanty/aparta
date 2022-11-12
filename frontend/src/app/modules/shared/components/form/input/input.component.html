@@ -1,0 +1,24 @@
+<mdb-form-control>
+  <input
+    mdbInput
+    class="form-control"
+    [formControl]="control"
+    [id]="id"
+    [type]="type"
+    [placeholder]="placeholder"
+    [readonly]="readonly"
+  />
+  <label mdbLabel class="form-label" for="id">{{label}}</label>
+  <mdb-error
+      *ngIf="
+      control?.invalid && (control?.dirty || control?.touched)
+      "
+      >First name is required</mdb-error
+    >
+    <mdb-success
+      *ngIf="
+      control?.valid && (control?.dirty || control?.touched)
+      "
+      >Looks good!</mdb-success
+    >
+</mdb-form-control>

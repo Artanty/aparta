@@ -1,0 +1,72 @@
+<table class="table align-middle mb-0 bg-white">
+  <thead class="bg-light">
+    <tr>
+      <th>Название</th>
+      <th>Место</th>
+      <!-- <th>Город</th> -->
+      <th>Статус</th>
+      <th>Комнат</th>
+      <th>
+        <!-- Действия -->
+      </th>
+    </tr>
+  </thead>
+  <tbody *ngIf="tableLoading" class="tbodyLoading">
+    <tr>
+      <td colspan="6">
+        <div class="spinner-border tableSpinner" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+  <tbody *ngIf="!tableLoading">
+    <tr *ngFor="let item of items">
+      <td>
+        <div class="d-flex align-items-center">
+          <img
+              src="{{ item.avatar }}"
+              alt=""
+              class="avatar rounded-circle"
+              />
+          <div class="ms-3">
+            <p class="fw-bold mb-1">{{ item.name }}</p>
+            <p class="text-muted mb-0">{{ item.address }}</p>
+          </div>
+        </div>
+      </td>
+      <td>
+        <p class="fw-normal mb-1">{{ item.country }}</p>
+        <p class="text-muted mb-0">{{ item.place }}</p>
+      </td>
+
+
+      <td>
+        <container-element [ngSwitch]="item.rentType">
+          <span *ngSwitchCase="0"
+            class="badge badge-success rounded-pill d-inline">Собственность</span>
+          <span *ngSwitchCase="1"
+            class="badge badge-warning rounded-pill d-inline">Аренда</span>
+          <span *ngSwitchCase="2"
+            class="badge badge-primary rounded-pill d-inline">Сдача</span
+          >
+        </container-element>
+      </td>
+      <td>
+        {{ item.rooms }}
+      </td>
+      <td>
+
+        <a [routerLink]="['apartamentFee', items.id]" class="link" [routerLinkActive]="['routerLinkIsActive']">
+          <i class="fas fa-business-time fa-lg me-2" style="color:#3668ef"></i>
+        </a>
+        <a [routerLink]="['apartamentUser', item.id]" class="link" [routerLinkActive]="['routerLinkIsActive']">
+          <i class="fas fa-user-friends fa-lg" style="color:#527a89"></i>
+        </a>
+
+
+      </td>
+    </tr>
+  </tbody>
+</table>
+

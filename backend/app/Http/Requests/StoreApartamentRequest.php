@@ -25,7 +25,15 @@ class StoreApartamentRequest extends FormRequest
     {
         return [
             'address' => 'required|string',
-            'name' => 'required|string'
+            'name' => 'required|string',
+            'country' => 'string|nullable',
+            'place' => 'string|nullable',
+            'location' => 'string|nullable',
+            'description' => 'string|nullable',
+            'rentType' => 'numeric|nullable',
+            'area' => 'float|nullable',
+            'rooms' => 'numeric|nullable',
+            'garage' => 'numeric|nullable'
         ];
     }
 }

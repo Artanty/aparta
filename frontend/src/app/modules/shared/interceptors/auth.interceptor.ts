@@ -17,7 +17,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
   addAuthToken(request: HttpRequest<any>) {
     const token = this.AuthServ.getToken()
-
+    console.log('AuthInterceptor')
     return request.clone({
         setHeaders: {
           'Content-Type': 'application/json',
