@@ -8,6 +8,7 @@ import { MessageService } from '../../shared/services/message/message.service';
 import { Location } from '@angular/common'
 import { GetApartamentsApiResponse } from '../apartament-list/apartament-list.component';
 import { ThisReceiver } from '@angular/compiler';
+import { ApartamentService } from '../apartament.service';
 
 @Component({
   selector: 'app-apartament-update',
@@ -16,6 +17,7 @@ import { ThisReceiver } from '@angular/compiler';
 })
 export class ApartamentUpdateComponent implements OnInit {
 
+  loading: boolean = true
   apartament_id?: number
 
   name: FormControl = new FormControl(null, [Validators.required])
@@ -38,7 +40,8 @@ export class ApartamentUpdateComponent implements OnInit {
     private http: HttpClient,
     private Location: Location,
     private MessageServ: MessageService,
-    private ActivatedRoute: ActivatedRoute
+    private ActivatedRoute: ActivatedRoute,
+    private ApartamentServ: ApartamentService
   ) {
     try {
       this.apartament_id = Number(this.ActivatedRoute.snapshot.paramMap.get('apartament_id'))
@@ -53,7 +56,7 @@ export class ApartamentUpdateComponent implements OnInit {
   }
 
   getApartament(id: number) {
-
+    this.loading = true
     this.http.get<GetApartamentsApiResponse>(`apartament/${id}`).subscribe({
       next: (apartament: any) => {
         this.formGroup.patchValue({
@@ -71,15 +74,14 @@ export class ApartamentUpdateComponent implements OnInit {
         }
         this.getPlaceAvatar(apartament.placeEng).then((ava) => {
           apartament.avatar = ava
-          console.log(apartament)
         })
 
       },
       error: (err: any) => {
-        alert(err.message)
+        this.MessageServ.sendMessage('error', 'Ошибка!', err.error.message)
       },
       complete: () =>{
-
+        this.loading = false
       }
     })
   }
@@ -103,14 +105,17 @@ export class ApartamentUpdateComponent implements OnInit {
       rentType: formGroupValue.rentType,
       rooms: formGroupValue.rooms
     }
-
+    this.loading = true
     this.http.put(`apartament/${this.apartament_id}`, data).subscribe({
       next: (res: any) => {
         this.MessageServ.sendMessage('success', 'Успешно сохранено!', 'Квартира изменена')
-        this.Location.back()
+        this.ApartamentServ.clearApartaments()
       },
       error: (err: any) => {
         this.MessageServ.sendMessage('error', 'Ошибка!', err.error.message)
+      },
+      complete: () => {
+        this.loading = false
       }
     })
   }

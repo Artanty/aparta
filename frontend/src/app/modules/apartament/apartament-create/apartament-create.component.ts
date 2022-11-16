@@ -1,3 +1,4 @@
+import { ApartamentService } from './../apartament.service';
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
@@ -16,6 +17,7 @@ import { Location } from '@angular/common'
 })
 export class ApartamentCreateComponent implements OnInit {
 
+  loading: boolean = false
   name: FormControl = new FormControl(null, [Validators.required])
   address: FormControl = new FormControl(null, [Validators.required])
   country: FormControl = new FormControl(null)
@@ -35,7 +37,8 @@ export class ApartamentCreateComponent implements OnInit {
   constructor(
     private http: HttpClient,
     private Location: Location,
-    private MessageServ: MessageService
+    private MessageServ: MessageService,
+    private ApartamentServ: ApartamentService
   ) {
   }
 
@@ -52,6 +55,7 @@ export class ApartamentCreateComponent implements OnInit {
       })
       return
     }
+    this.loading = true
     const formGroupValue = this.formGroup.value
     let data = {
       name: formGroupValue.name,
@@ -65,10 +69,15 @@ export class ApartamentCreateComponent implements OnInit {
     this.http.post(`apartament`, data).subscribe({
       next: (res: any) => {
         this.MessageServ.sendMessage('success', 'Успешно сохранено!', 'Квартира добавлена')
-        this.Location.back()
+        this.ApartamentServ.clearApartaments().then(()=> {
+          this.Location.back()
+        })
       },
       error: (err: any) => {
         this.MessageServ.sendMessage('error', 'Ошибка!', err.error.message)
+      },
+      complete: () => {
+        this.loading = false
       }
     })
   }

@@ -11,16 +11,16 @@
       </th>
     </tr>
   </thead>
-  <tbody *ngIf="tableLoading" class="tbodyLoading">
+  <tbody *ngIf="tableLoading$ | async" class="tbodyLoading">
     <tr>
       <td colspan="6">
-        <div class="spinner-border tableSpinner" role="status">
+        <div class="spinner-border spinner" role="status">
           <span class="visually-hidden">Loading...</span>
         </div>
       </td>
     </tr>
   </tbody>
-  <tbody *ngIf="!tableLoading">
+  <tbody *ngIf="!(tableLoading$ | async)">
     <tr *ngFor="let item of items">
       <td>
         <div class="d-flex align-items-center">
@@ -65,7 +65,7 @@
         <a [routerLink]="['apartamentUser', item.id]" class="link me-2" [routerLinkActive]="['routerLinkIsActive']">
           <i class="fas fa-user-friends fa-lg" style="color:#797979"></i>
         </a>
-        <a class="link ms-1" (click)="delete(item.id)">
+        <a class="alink ms-1" (click)="delete(item.id)">
           <i class="fas fa-trash-alt fa-lg" style="color:#797979"></i>
         </a>
       </td>

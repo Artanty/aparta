@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { map, of, shareReplay, tap } from 'rxjs';
+import { map, Observable, of, shareReplay, tap } from 'rxjs';
 import { MessageService } from '../../shared/services/message/message.service';
 import { ApartamentService } from '../apartament.service';
 
@@ -34,7 +34,7 @@ export type GetApartamentsApiResponse = {
 })
 export class ApartamentListComponent implements OnInit {
 
-  tableLoading: boolean = true
+  tableLoading$: Observable<boolean>
   items: any = []
 
   constructor(
@@ -43,6 +43,7 @@ export class ApartamentListComponent implements OnInit {
     private ApartamentServ: ApartamentService
     // private ActivatedRoute: ActivatedRoute
   ) {
+    this.tableLoading$ = this.ApartamentServ.apartamentsLoading$
   }
 
   ngOnInit(): void {
@@ -52,7 +53,7 @@ export class ApartamentListComponent implements OnInit {
 
 
   getApartaments() {
-    this.tableLoading = true
+    this.ApartamentServ.setApartamentsLoading(true)
     this.ApartamentServ.getApartaments().subscribe({
       next: (res: any) => {
         this.items = res
@@ -70,7 +71,7 @@ export class ApartamentListComponent implements OnInit {
         alert(err.message)
       },
       complete: () =>{
-        this.tableLoading = false
+        this.ApartamentServ.setApartamentsLoading(false)
       }
     })
   }
@@ -99,13 +100,18 @@ export class ApartamentListComponent implements OnInit {
   }
 
   delete(id: number) {
+    this.ApartamentServ.setApartamentsLoading(true)
     this.http.delete(`apartament/${id}`).subscribe({
       next: (res: any) => {
         this.items = this.items.filter((el: any) => el.id !== id)
+        this.ApartamentServ.removeItemFromStore(id)
         this.MessageServ.sendMessage('success', 'Успешно!', 'Квартира удалена')
       },
       error: (err: any) => {
         this.MessageServ.sendMessage('error', 'Ошибка!', err.error.message)
+      },
+      complete: () => {
+        this.ApartamentServ.setApartamentsLoading(false)
       }
     })
   }

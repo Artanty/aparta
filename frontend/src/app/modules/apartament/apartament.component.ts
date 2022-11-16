@@ -23,13 +23,16 @@ export class ApartamentComponent implements OnInit {
   }
 
   refreshList() {
+    this.ApartamentServ.setApartamentsLoading(true)
     this.ApartamentServ.getApartaments(true).subscribe({
       next: (res: any) => {
         // this.items = res
-
       },
       error: (err: any) => {
         alert(err.message)
+      },
+      complete: () => {
+        this.ApartamentServ.setApartamentsLoading(false)
       }
     })
   }

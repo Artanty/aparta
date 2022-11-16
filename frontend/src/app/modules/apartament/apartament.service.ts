@@ -12,13 +12,19 @@ export class ApartamentService {
   private apartamentsSubj: BehaviorSubject<any> = new BehaviorSubject<any>([])
   apartaments$: Observable<any[]> = this.apartamentsSubj.asObservable()
 
+  private apartamentsLoadingSubj: BehaviorSubject<boolean> = new BehaviorSubject<any>(false)
+  apartamentsLoading$: Observable<boolean> = this.apartamentsLoadingSubj.asObservable()
+
   constructor(
     private http: HttpClient,
   ) { }
 
   setApartaments (val: any) {
-    console.log('set store Apartaments')
     this.apartamentsSubj.next(val)
+  }
+
+  setApartamentsLoading (val: boolean) {
+    this.apartamentsLoadingSubj.next(val)
   }
 
   getApartaments(force?: boolean): Observable<any>{
@@ -26,6 +32,7 @@ export class ApartamentService {
     const storeItems = this.apartamentsSubj.getValue()
     const storageItems = localStorage.getItem('apartaments')
     if (storeItems?.length && !force) {
+      console.log(10000000000000)
       obs$ = of(storeItems)
     } else if (storageItems && !force) {
       obs$ = of(JSON.parse(storageItems))
@@ -38,6 +45,23 @@ export class ApartamentService {
         this.setApartaments(res)
       })
     )
+  }
+
+  async clearApartaments () {
+    return new Promise<void>(resolve => {
+      localStorage.removeItem('apartaments')
+      this.setApartaments([])
+      return resolve()
+    })
+  }
+
+  removeItemFromStore(id: number){
+    localStorage.removeItem('apartaments')
+    let storeItems = this.apartamentsSubj.getValue()
+    if (storeItems?.length){
+      storeItems = storeItems.filter((el: any) => el.id !== id)
+      this.setApartaments(storeItems)
+    }
   }
 
   delete(id: number) {

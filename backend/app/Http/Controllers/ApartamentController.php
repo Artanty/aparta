@@ -69,8 +69,7 @@ class ApartamentController extends Controller
      */
     public function show(Apartament $apartament)
     {
-        $apartaments = Apartament::find($apartament->id)->first();
-        return $apartaments;
+        return $apartament;
     }
 
     /**
@@ -93,8 +92,6 @@ class ApartamentController extends Controller
      */
     public function update(UpdateApartamentRequest $request, Apartament $apartament)
     {
-        $apartament = Apartament::find($apartament->id)->first();
-
         $apartament->name = $request->name;
         $apartament->address = $request->address;
         $apartament->country = $request->country;
