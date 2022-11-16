@@ -10,13 +10,15 @@ import { SharedModule } from '../shared/shared.module';
 import { AuthInterceptor } from '../shared/interceptors/auth.interceptor';
 import { ApartamentListComponent } from './apartament-list/apartament-list.component';
 import { ApartamentCreateComponent } from './apartament-create/apartament-create.component';
+import { ApartamentUpdateComponent } from './apartament-update/apartament-update.component';
 
 
 @NgModule({
   declarations: [
     ApartamentComponent,
     ApartamentListComponent,
-    ApartamentCreateComponent
+    ApartamentCreateComponent,
+    ApartamentUpdateComponent
   ],
   imports: [
     ApartamentRoutingModule,

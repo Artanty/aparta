@@ -1,0 +1,11 @@
+
+::ng-deep .error-message {
+  top: 35px;
+}
+::ng-deep .success-message {
+  top: 0;
+  right: 0;
+  left: initial;
+  padding: 7px;
+  padding-right: 11px;
+}

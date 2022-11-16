@@ -1,7 +1,11 @@
 <div class="container">
   <div class="d-flex justify-content-between align-items-center py-3" style="margin-top: 58px;">
     <h1 class="mb-3">Квартиры</h1>
-    <button [routerLink]="'apartament/new'" type="button" class="btn btn-outline-primary">Добавить</button>
+    <div>
+      <button (click)="refreshList()" type="button" class="btn btn-outline-secondary me-3 mb-2 mt-2"><i class="fas fa-sync"></i></button>
+      <button [routerLink]="'apartament/new'" type="button" class="btn btn-outline-primary mb-2 mt-2">Добавить</button>
+    </div>
+
   </div>
 </div>
 <div class="container">
@@ -15,50 +19,10 @@
     </div>
   </div>
 </div>
-<div class="container">
-  <div class="row">
-    <div class="col">
-      <app-apartament-create></app-apartament-create>
-    </div>
-  </div>
-</div>
-<a [routerLink]="['apartamentFee', items[0]?.id]" class="link" [routerLinkActive]="['routerLinkIsActive']">apartaments apartamentFee</a>
-<br>
-<a [routerLink]="['apartamentUser', items[0]?.id]" class="link" [routerLinkActive]="['routerLinkIsActive']">apartaments apartamentUsers</a>
-<br>
-
-<h2>Создание</h2>
-<input type="text" placeholder="Название" [(ngModel)]="name">
-<input type="text" placeholder="Адрес" [(ngModel)]="address">
-<input type="text" placeholder="Страна" [(ngModel)]="country">
-<input type="text" placeholder="Населенный пункт" [(ngModel)]="place">
-<input type="text" placeholder="Статус недвижимости" [(ngModel)]="rentType">
-<input type="text" placeholder="Комнат" [(ngModel)]="rooms">
-
-<button (click)="create()">Создать</button>
-<br>
-
-<h2>Получение</h2>
-<button (click)="read()">Получить</button>
-<br>
-<ul>
-  <li *ngFor="let item of items">
-    {{ item.id + ' | ' + item.name + ' | ' + item.address }}
-    <button (click)="placeToUpdate(item)">Обновить</button>
-    <button (click)="delete(item.id)">Удалить</button>
-  </li>
-
-</ul>
-<br>
-<h2>Обновление</h2>
-<input type="text" placeholder="Название" [(ngModel)]="update_id">
-<input type="text" placeholder="Название" [(ngModel)]="update_name">
-<input type="text" placeholder="Адрес" [(ngModel)]="update_address">
-<button (click)="update()">Обновить</button>
 
 
-<i class="fas fa-calculator"></i>
+<!-- <i class="fas fa-calculator"></i>
 <i class="fas fa-user-friends"></i>
 <i class="far fa-calendar-alt"></i>
 <i class="fas fa-envelope-open-text"></i>
-<i class="fas fa-business-time"></i>
+<i class="fas fa-business-time"></i> -->

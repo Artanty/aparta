@@ -28,9 +28,12 @@ import { MdbTabsModule } from 'mdb-angular-ui-kit/tabs';
 import { MdbTooltipModule } from 'mdb-angular-ui-kit/tooltip';
 import { MdbValidationModule } from 'mdb-angular-ui-kit/validation';
 
+import { MessageListComponent } from './features/message-list/message-list.component';
+
 @NgModule({
   declarations: [
-    InputComponent
+    InputComponent,
+    MessageListComponent
   ],
   imports: [
     CommonModule,
@@ -79,7 +82,8 @@ import { MdbValidationModule } from 'mdb-angular-ui-kit/validation';
     MdbValidationModule,
 
     ReactiveFormsModule,
-    InputComponent
+    InputComponent,
+    MessageListComponent
     ]
 })
 export class SharedModule {}

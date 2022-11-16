@@ -1,5 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { map, of, shareReplay, tap } from 'rxjs';
+import { MessageService } from '../../shared/services/message/message.service';
 
 /**
  * Из списка квартир должно быть понятно
@@ -36,6 +38,7 @@ export class ApartamentListComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
+    private MessageServ: MessageService,
     // private ActivatedRoute: ActivatedRoute
   ) {
   }
@@ -44,10 +47,22 @@ export class ApartamentListComponent implements OnInit {
     this.getApartaments()
     // this.getPlacePhoto()
   }
+  get(){
+    const item = localStorage.getItem('item')
+    if (item) {
+      return of(JSON.parse(item))
+    } else {
+      return this.http.get<GetApartamentsApiResponse[]>(`apartament`).pipe(
+        tap((res: any) => {
+          localStorage.setItem('item', JSON.stringify(res))
+        })
+      )
+    }
 
+  }
   getApartaments() {
     this.tableLoading = true
-    this.http.get<GetApartamentsApiResponse[]>(`apartament`).subscribe({
+    this.get().subscribe({
       next: (res: any) => {
         this.items = res
         this.items = this.items.map((el: any) => {
@@ -92,4 +107,15 @@ export class ApartamentListComponent implements OnInit {
     })
   }
 
+  delete(id: number) {
+    this.http.delete(`apartament/${id}`).subscribe({
+      next: (res: any) => {
+        this.items = this.items.filter((el: any) => el.id !== id)
+        this.MessageServ.sendMessage('success', 'Успешно!', 'Квартира удалена')
+      },
+      error: (err: any) => {
+        this.MessageServ.sendMessage('error', 'Ошибка!', err.error.message)
+      }
+    })
+  }
 }

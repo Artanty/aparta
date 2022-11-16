@@ -1,0 +1,30 @@
+:host{
+  position: fixed;
+    right: 0;
+    bottom: 0;
+    padding: 1.5rem;
+}
+.toast-danger{
+  background-color: #fdd8de;
+  color: #790619;
+  border-color: #fccad2;
+  & .toast-header{
+    color: #790619;
+    background-color: #fdd8de;
+  }
+}
+.toast-success {
+  background-color: #c7f5d9;
+  color: #0b4121;
+  border-color: #adf0c8;
+  & .toast-header{
+    color: #0b4121;
+    background-color: #c7f5d9;
+  }
+}
+.toast{
+  position: relative;
+}
+.toast,.toast-body{
+  overflow-y:hidden;
+}

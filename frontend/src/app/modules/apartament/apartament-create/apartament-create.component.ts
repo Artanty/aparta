@@ -3,25 +3,27 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { map } from 'rxjs';
-import { ControlContainer, FormControl, FormGroup } from '@angular/forms';
+import { ControlContainer, FormControl, FormGroup, Validators } from '@angular/forms';
+import { MessageService } from '../../shared/services/message/message.service';
+import { Location } from '@angular/common'
 
 
 @Component({
   selector: 'app-apartament-create',
   templateUrl: './apartament-create.component.html',
-  styleUrls: ['./apartament-create.component.scss']
+  styleUrls: ['./apartament-create.component.scss'],
+
 })
 export class ApartamentCreateComponent implements OnInit {
-  val = ''
-  result = ''
-  name: FormControl = new FormControl(null)
-  address: FormControl = new FormControl(null)
+
+  name: FormControl = new FormControl(null, [Validators.required])
+  address: FormControl = new FormControl(null, [Validators.required])
   country: FormControl = new FormControl(null)
   place: FormControl = new FormControl(null)
   rentType: FormControl = new FormControl(null)
   rooms: FormControl = new FormControl(null)
 
-  apartamentCreateFormGroup: FormGroup = new FormGroup({
+  formGroup: FormGroup = new FormGroup({
     name: this.name,
     address: this.address,
     country: this.country,
@@ -32,32 +34,46 @@ export class ApartamentCreateComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private ActivatedRoute: ActivatedRoute
+    private Location: Location,
+    private MessageServ: MessageService
   ) {
   }
 
   ngOnInit(): void {
-    // this.read()
   }
-  showWarning: boolean = false
+
   create() {
-    const apartamentCreateFormGroupValues = this.apartamentCreateFormGroup.value
+    if (!this.formGroup.valid) {
+      Object.keys(this.formGroup.controls).forEach((field: string) => {
+        const control = this.formGroup.get(field)
+        if (control?.invalid) {
+          control?.markAsTouched({ onlySelf: true })
+        }
+      })
+      return
+    }
+    const formGroupValue = this.formGroup.value
     let data = {
-      name: apartamentCreateFormGroupValues.name,
-      address: apartamentCreateFormGroupValues.address,
-      country: apartamentCreateFormGroupValues.country,
-      place: apartamentCreateFormGroupValues.place,
-      rentType: apartamentCreateFormGroupValues.rentType,
-      rooms: apartamentCreateFormGroupValues.rooms
+      name: formGroupValue.name,
+      address: formGroupValue.address,
+      country: formGroupValue.country,
+      place: formGroupValue.place,
+      rentType: formGroupValue.rentType,
+      rooms: formGroupValue.rooms
     }
 
-    this.http.post(`apartament`, data).subscribe(
-      (res: any) => {
-
+    this.http.post(`apartament`, data).subscribe({
+      next: (res: any) => {
+        this.MessageServ.sendMessage('success', 'Успешно сохранено!', 'Квартира добавлена')
+        this.Location.back()
+      },
+      error: (err: any) => {
+        this.MessageServ.sendMessage('error', 'Ошибка!', err.error.message)
       }
-    )
-
+    })
   }
 
-
+  back() {
+    this.Location.back()
+  }
 }

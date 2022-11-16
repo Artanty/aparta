@@ -13,12 +13,13 @@
       *ngIf="
       control?.invalid && (control?.dirty || control?.touched)
       "
-      >First name is required</mdb-error
+      >Обязательное поле</mdb-error
     >
     <mdb-success
       *ngIf="
       control?.valid && (control?.dirty || control?.touched)
       "
-      >Looks good!</mdb-success
+      >
+      <i class="fas fa-check-circle"></i></mdb-success
     >
 </mdb-form-control>

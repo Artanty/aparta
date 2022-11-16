@@ -97,38 +97,10 @@ export class ApartamentComponent implements OnInit {
     })
   }
 
+  refreshList() {
+    this.read()
+  }
 
-  placeToUpdate(item: any) {
-    this.update_id = item.id
-    this.update_name = item.name
-    this.update_address = item.address
-    this.country = item.country
-    this.place = item.place
-    this.rentType = item.rentType
-    this.rooms = item.rooms
-  }
-  update(){
-    const data = {
-      id: this.update_id,
-      name: this.update_name,
-      address: this.update_address,
-      country: this.country,
-      place: this.place,
-      rentType: this.rentType,
-      rooms: this.rooms
-    }
-    this.http.put(`${this.baseUrl}/apartament/${data.id}`, data).subscribe({
-      next: (res: any) => {
-        this.items = this.items.map((el: any) => {
-          if (el.id === res.id) {
-            el = { ...el, ...res }
-          }
-          return el
-        })
-      }
-    }
-    )
-  }
   delete(id: number) {
     this.http.delete(`${this.baseUrl}/apartament/${id}`).subscribe(res=> this.items = this.items.filter((el: any) => el.id !== id))
   }
