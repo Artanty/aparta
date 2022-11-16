@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { map, of, shareReplay, tap } from 'rxjs';
 import { MessageService } from '../../shared/services/message/message.service';
+import { ApartamentService } from '../apartament.service';
 
 /**
  * Из списка квартир должно быть понятно
@@ -39,6 +40,7 @@ export class ApartamentListComponent implements OnInit {
   constructor(
     private http: HttpClient,
     private MessageServ: MessageService,
+    private ApartamentServ: ApartamentService
     // private ActivatedRoute: ActivatedRoute
   ) {
   }
@@ -47,22 +49,11 @@ export class ApartamentListComponent implements OnInit {
     this.getApartaments()
     // this.getPlacePhoto()
   }
-  get(){
-    const item = localStorage.getItem('item')
-    if (item) {
-      return of(JSON.parse(item))
-    } else {
-      return this.http.get<GetApartamentsApiResponse[]>(`apartament`).pipe(
-        tap((res: any) => {
-          localStorage.setItem('item', JSON.stringify(res))
-        })
-      )
-    }
 
-  }
+
   getApartaments() {
     this.tableLoading = true
-    this.get().subscribe({
+    this.ApartamentServ.getApartaments().subscribe({
       next: (res: any) => {
         this.items = res
         this.items = this.items.map((el: any) => {

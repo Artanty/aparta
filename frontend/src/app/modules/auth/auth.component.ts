@@ -49,7 +49,7 @@ export class AuthComponent implements OnInit {
       password: this.password
     }
     console.log(data)
-    this.http.post<AuthDataApiResponse>(`${this.baseUrl}/login`, data).subscribe({
+    this.http.post<AuthDataApiResponse>(`login`, data).subscribe({
       next: (res: AuthDataApiResponse) => {
         this.AuthServ.setToken(res.token)
         this.router.navigate(['apartament'])
@@ -66,7 +66,7 @@ export class AuthComponent implements OnInit {
       password: this.password,
       password_confirmation: this.password_confirmation
     }
-    this.http.post<AuthDataApiResponse>(`${this.baseUrl}/register`, data).subscribe({
+    this.http.post<AuthDataApiResponse>(`register`, data).subscribe({
       next: (res: AuthDataApiResponse) => {
         this.AuthServ.setToken(res.token)
         this.router.navigate(['apartament'])

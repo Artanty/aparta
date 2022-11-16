@@ -12,6 +12,7 @@ import { ApartamentListComponent } from './apartament-list/apartament-list.compo
 import { ApartamentCreateComponent } from './apartament-create/apartament-create.component';
 import { ApartamentUpdateComponent } from './apartament-update/apartament-update.component';
 
+import { ApartamentService } from './apartament.service'
 
 @NgModule({
   declarations: [
@@ -25,6 +26,8 @@ import { ApartamentUpdateComponent } from './apartament-update/apartament-update
     SharedModule,
     // CommonModule
   ],
-
+  providers: [
+    ApartamentService
+  ]
 })
 export class ApartamentModule { }
