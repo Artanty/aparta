@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common'
 
 @Component({
   selector: 'app-apartament-fee',
@@ -10,18 +11,7 @@ import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 })
 export class ApartamentFeeComponent implements OnInit {
 
-  private baseUrl = environment.baseUrl;
-  // create
-  apartament_id = ''
-  name = 'газ'
-  description = ''
-  sum = 500
-  currancy = 1
-  month = 10
-  year = 2022
-  paid = false
-  //read
-  items: any = []
+  apartament_id: string
   //update
   update_id = ''
   update_name = ''
@@ -35,48 +25,16 @@ export class ApartamentFeeComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private ActivatedRoute: ActivatedRoute
+    private ActivatedRoute: ActivatedRoute,
+    private Location: Location
   ) {
     this.apartament_id = this.ActivatedRoute.snapshot.paramMap.get('apartament_id') || ''
   }
 
   ngOnInit(): void {
-    this.read()
+
   }
 
-  create() {
-    const data = {
-        name: this.name,
-        apartament_id: this.apartament_id,
-        description: this.description,
-        sum: this.sum,
-        currancy: this.currancy,
-        month: this.month,
-        year: this.year,
-        paid: this.paid
-    }
-    this.http.post(`${this.baseUrl}/apartamentFee`, data).subscribe(
-      (res: any) => {
-        this.items.push(res)
-      }
-    )
-  }
-
-  read() {
-    const url = this.apartament_id ?
-    `${this.baseUrl}/apartament/getApartamentFees/${this.apartament_id}` :
-    `${this.baseUrl}/apartamentFee`
-    this.http.get(url).subscribe({
-      next: (res: any) => {
-        if (Array.isArray(res)){
-          this.items = res
-        }
-      },
-      error: (err: any) => {
-        alert(err.message)
-      }
-    })
-  }
   placeToUpdate(item: any) {
     this.update_id = item.id
     this.update_name = item.name
@@ -100,20 +58,16 @@ export class ApartamentFeeComponent implements OnInit {
       year: this.update_year,
       paid: this.update_paid
   }
-    this.http.put(`${this.baseUrl}/apartamentFee/${data.id}`, data).subscribe({
+    this.http.put(`apartamentFee/${data.id}`, data).subscribe({
       next: (res: any) => {
-        this.items = this.items.map((el: any) => {
-          if (el.id === res.id) {
-            el = { ...el, ...res }
-          }
-          return el
-        })
+
       }
     }
     )
   }
-  delete(id: number) {
-    this.http.delete(`${this.baseUrl}/apartamentFee/${id}`).subscribe(res=> this.items = this.items.filter((el: any) => el.id !== id))
+
+  back() {
+    this.Location.back()
   }
 
 }

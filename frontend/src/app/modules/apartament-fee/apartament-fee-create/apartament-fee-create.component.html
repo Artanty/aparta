@@ -1,0 +1,80 @@
+<div class="container">
+  <div class="d-flex justify-content-between align-items-center py-3" style="margin-top: 58px;">
+    <h1 class="mb-3">Добавление счета</h1>
+    <div class="">
+      <button (click)="back()" type="button" class="btn btn-outline-secondary me-3">Назад</button>
+      <button (click)="create()" type="button" class="btn btn-outline-primary">Сохранить</button>
+    </div>
+  </div>
+</div>
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <div class="card">
+        <div class="card-body p-3">
+          <div *ngIf="loading" class="cardLoading">
+            <div class="spinner-border spinner" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+          <div *ngIf="!loading" class="row gx-3 gy-4">
+            <div class="col-12">
+              <app-input [control]="name" [label]="'Название'"></app-input>
+            </div>
+            <div class="col-12">
+              <app-input [control]="description" [label]="'Описание'"></app-input>
+            </div>
+            <div class="col-12">
+              <app-input [control]="sum" [label]="'Сумма'"></app-input>
+            </div>
+            <div class="col-12">
+              <!-- <app-input [control]="currancy" [label]="'Валюта'"></app-input> -->
+              <select [formControl]="currancy" class="form-select">
+                <option *ngFor="let year of currancyOptions" [value]="year.value">{{ year.name }}</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <!-- <app-input [control]="month" [label]="'Месяц'"></app-input> -->
+              <select [formControl]="month" class="form-select">
+                <option value="0">Январь</option>
+                <option value="1">Февраль</option>
+                <option value="2">Март</option>
+                <option value="3">Апрель</option>
+                <option value="4">Май</option>
+                <option value="5">Июнь</option>
+                <option value="6">Июль</option>
+                <option value="7">Август</option>
+                <option value="8">Сентябрь</option>
+                <option value="9">Октябрь</option>
+                <option value="10">Ноябрь</option>
+                <option value="11">Декабрь</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <!-- <app-input [control]="year" [label]="'Год'"></app-input> -->
+              <select [formControl]="year" class="form-select">
+                <option *ngFor="let year of yearOptions" [value]="year.value">{{ year.name }}</option>
+              </select>
+
+            </div>
+            <div class="col-12">
+              <!-- <app-input [control]="paid" [label]="'Оплачено'"></app-input> -->
+              <div class="form-check form-switch">
+                <input
+                  mdbCheckbox
+                  class="form-check-input"
+                  type="checkbox"
+                  id="flexSwitchCheckChecked"
+                  [formControl]="paid"
+                />
+                <label class="form-check-label" for="flexSwitchCheckChecked"
+                  >Оплачено</label
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

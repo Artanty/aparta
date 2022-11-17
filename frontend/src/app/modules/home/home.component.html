@@ -1,0 +1,32 @@
+<div class="container">
+  <div class="d-flex justify-content-between align-items-center py-3" style="margin-top: 58px;">
+    <h1 class="mb-3">Главная</h1>
+    <div>
+      <!-- <button (click)="refreshList()" type="button" class="btn btn-outline-secondary me-3 mb-2 mt-2"><i class="fas fa-sync"></i></button> -->
+      <!-- <button [routerLink]="'apartament'" type="button" class="btn btn-outline-primary mb-2 mt-2">Добавить</button> -->
+    </div>
+
+  </div>
+</div>
+<div class="container">
+  <div class="row alink" >
+    <div class="col-12 col-md-6">
+      <h2>Квартиры</h2>
+    </div>
+    <div class="col-12 col-md-6">
+      <div class="card" style="overflow-x: auto;">
+        <div class="card-body p-0">
+          <canvas baseChart
+          [data]="barChartData"
+          [options]="barChartOptions"
+          [plugins]="barChartPlugins"
+          [legend]="barChartLegend"
+          [type]="'bar'">
+        </canvas>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

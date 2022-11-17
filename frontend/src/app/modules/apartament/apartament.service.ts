@@ -32,7 +32,6 @@ export class ApartamentService {
     const storeItems = this.apartamentsSubj.getValue()
     const storageItems = localStorage.getItem('apartaments')
     if (storeItems?.length && !force) {
-      console.log(10000000000000)
       obs$ = of(storeItems)
     } else if (storageItems && !force) {
       obs$ = of(JSON.parse(storageItems))

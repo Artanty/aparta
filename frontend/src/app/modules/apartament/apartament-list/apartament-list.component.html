@@ -56,16 +56,16 @@
         {{ item.rooms }}
       </td>
       <td>
-        <a [routerLink]="['apartament/update', item.id]" class="link me-2" [routerLinkActive]="['routerLinkIsActive']">
-          <i class="fas fa-pen fa-lg me-2" style="color:#797979"></i>
+        <a [routerLink]="['apartamentFee', item.id]" class="link me-3" [routerLinkActive]="['routerLinkIsActive']">
+          <i class="fas fa-business-time fa-lg" style="color:#797979"></i>
         </a>
-        <a [routerLink]="['apartamentFee', item.id]" class="link me-2" [routerLinkActive]="['routerLinkIsActive']">
-          <i class="fas fa-business-time fa-lg me-2" style="color:#797979"></i>
-        </a>
-        <a [routerLink]="['apartamentUser', item.id]" class="link me-2" [routerLinkActive]="['routerLinkIsActive']">
+        <a [routerLink]="['apartamentUser', item.id]" class="link me-3" [routerLinkActive]="['routerLinkIsActive']">
           <i class="fas fa-user-friends fa-lg" style="color:#797979"></i>
         </a>
-        <a class="alink ms-1" (click)="delete(item.id)">
+        <a [routerLink]="['apartament/update', item.id]" class="link me-3" [routerLinkActive]="['routerLinkIsActive']">
+          <i class="fas fa-pen fa-lg" style="color:#797979"></i>
+        </a>
+        <a class="alink" (click)="delete(item.id)">
           <i class="fas fa-trash-alt fa-lg" style="color:#797979"></i>
         </a>
       </td>

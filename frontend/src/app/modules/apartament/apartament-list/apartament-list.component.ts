@@ -66,9 +66,10 @@ export class ApartamentListComponent implements OnInit {
           return el
         })
         this.assingPlacesAvatars(this.items)
+        this.MessageServ.sendMessage('success', '', 'Квартиры загружены')
       },
       error: (err: any) => {
-        alert(err.message)
+        this.MessageServ.sendMessage('error', 'Ошибка!', err.error.message)
       },
       complete: () =>{
         this.ApartamentServ.setApartamentsLoading(false)
@@ -101,7 +102,7 @@ export class ApartamentListComponent implements OnInit {
 
   delete(id: number) {
     this.ApartamentServ.setApartamentsLoading(true)
-    this.http.delete(`apartament/${id}`).subscribe({
+    this.ApartamentServ.delete(id).subscribe({
       next: (res: any) => {
         this.items = this.items.filter((el: any) => el.id !== id)
         this.ApartamentServ.removeItemFromStore(id)

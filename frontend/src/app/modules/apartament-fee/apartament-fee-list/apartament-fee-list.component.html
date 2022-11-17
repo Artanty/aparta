@@ -1,0 +1,57 @@
+<table class="table align-middle mb-0 bg-white">
+  <thead class="bg-light">
+    <tr>
+      <th>Название</th>
+      <th>Сумма</th>
+      <th>Месяц</th>
+      <th *ngIf="!apartament_id">
+        Квартира
+      </th>
+      <th>Оплачено</th>
+      <th>
+        <!-- Действия -->
+      </th>
+    </tr>
+  </thead>
+  <tbody *ngIf="tableLoading$ | async" class="tbodyLoading">
+    <tr>
+      <td colspan="6">
+        <div class="spinner-border spinner" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+  <tbody *ngIf="!(tableLoading$ | async)">
+    <tr *ngFor="let item of (items$ | async)">
+      <td>
+        {{ item.name }}
+      </td>
+      <td>
+        {{ item.sum }}
+      </td>
+      <td>
+        {{ item.month }}
+      </td>
+      <td *ngIf="!apartament_id">
+        {{ item.apartament_id }}
+      </td>
+      <td>
+        <container-element [ngSwitch]="item.paid">
+          <span *ngSwitchCase="1"
+            class="badge badge-success rounded-pill d-inline">Оплачено</span>
+          <span *ngSwitchCase="0"
+            class="badge badge-warning rounded-pill d-inline">Не оплачено</span>
+        </container-element>
+      </td>
+      <td>
+        <a [routerLink]="['apartamentFee/update', item.id]" class="link me-2" [routerLinkActive]="['routerLinkIsActive']">
+          <i class="fas fa-pen fa-lg me-2" style="color:#797979"></i>
+        </a>
+        <a class="alink ms-1" (click)="delete(item.id)">
+          <i class="fas fa-trash-alt fa-lg" style="color:#797979"></i>
+        </a>
+      </td>
+    </tr>
+  </tbody>
+</table>

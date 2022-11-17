@@ -19,11 +19,16 @@ class CreateApartamentFeesTable extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->integer('sum')->nullable();
-            $table->integer('currancy')->nullable();
+            $table->double('currancy', 8, 2)->nullable();
+            $table->double('commission', 6, 2)->nullable();
             $table->integer('month');
             $table->integer('year');
             $table->boolean('paid');
+            $table->string('paidDate')->nullable();
+            $table->bigInteger('organization_id')->nullable();
+            $table->smallInteger('payVariant')->nullable();
             $table->bigInteger('creator_id')->unsigned();
+            $table->bigInteger('template_id')->nullable();
             $table->timestamps();
         });
     }
