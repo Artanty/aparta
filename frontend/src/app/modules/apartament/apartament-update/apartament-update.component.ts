@@ -8,7 +8,7 @@ import { MessageService } from '../../shared/services/message/message.service';
 import { Location } from '@angular/common'
 import { GetApartamentsApiResponse } from '../apartament-list/apartament-list.component';
 import { ThisReceiver } from '@angular/compiler';
-import { ApartamentService } from '../apartament.service';
+import { ApartamentService } from '../../shared/services/apartament/apartament.service';
 
 @Component({
   selector: 'app-apartament-update',

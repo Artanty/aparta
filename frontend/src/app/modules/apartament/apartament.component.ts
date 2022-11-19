@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { map } from 'rxjs';
-import { ApartamentService } from './apartament.service';
+import { ApartamentService } from '../shared/services/apartament/apartament.service';
 
 
 @Component({

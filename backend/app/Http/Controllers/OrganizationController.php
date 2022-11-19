@@ -15,7 +15,11 @@ class OrganizationController extends Controller
      */
     public function index()
     {
-        //
+        $organization = Organization::select('*')
+            ->where('creator_id', auth()->guard('api')->user()->id)
+            ->get();
+
+        return $organization;
     }
 
     /**
@@ -36,7 +40,13 @@ class OrganizationController extends Controller
      */
     public function store(StoreOrganizationRequest $request)
     {
-        //
+        $organization = new Organization;
+        $organization->name = $request->name;
+        $organization->description = $request->description;
+        $organization->creator_id = auth()->guard('api')->user()->id;
+        $organization->save();
+
+        return $organization;
     }
 
     /**
@@ -47,7 +57,7 @@ class OrganizationController extends Controller
      */
     public function show(Organization $organization)
     {
-        //
+        return $organization;
     }
 
     /**
@@ -70,7 +80,12 @@ class OrganizationController extends Controller
      */
     public function update(UpdateOrganizationRequest $request, Organization $organization)
     {
-        //
+        $organization->name = $request->name;
+        $organization->description = $request->description;
+        $organization->creator_id = auth()->guard('api')->user()->id;
+        $organization->save();
+
+        return $organization;
     }
 
     /**
@@ -81,6 +96,7 @@ class OrganizationController extends Controller
      */
     public function destroy(Organization $organization)
     {
-        //
+        return Organization::destroy($organization->id);
+
     }
 }

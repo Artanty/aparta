@@ -29,17 +29,25 @@ import { MdbTooltipModule } from 'mdb-angular-ui-kit/tooltip';
 import { MdbValidationModule } from 'mdb-angular-ui-kit/validation';
 
 import { MessageListComponent } from './features/message-list/message-list.component';
+import { ModalComponent } from './features/modal/modal.component';
 
+
+import { NgxMaskModule, IConfig } from 'ngx-mask'
+const maskConfig: Partial<IConfig> = {
+  validation: false,
+};
 @NgModule({
   declarations: [
     InputComponent,
-    MessageListComponent
+    MessageListComponent,
+    ModalComponent,
+
+
   ],
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-
     MdbAccordionModule,
     MdbCarouselModule,
     MdbCheckboxModule,
@@ -55,6 +63,8 @@ import { MessageListComponent } from './features/message-list/message-list.compo
     MdbTabsModule,
     MdbTooltipModule,
     MdbValidationModule,
+    NgxMaskModule.forRoot(maskConfig),
+
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
@@ -64,7 +74,7 @@ import { MessageListComponent } from './features/message-list/message-list.compo
   ],
   exports: [
     CommonModule, FormsModule,
-
+    NgxMaskModule,
     MdbAccordionModule,
     MdbCarouselModule,
     MdbCheckboxModule,
@@ -83,7 +93,8 @@ import { MessageListComponent } from './features/message-list/message-list.compo
 
     ReactiveFormsModule,
     InputComponent,
-    MessageListComponent
+    MessageListComponent,
+
     ]
 })
 export class SharedModule {}

@@ -17,10 +17,7 @@ class CreateOrganizationsTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->text('description')->nullable();
-            $table->double('price', 8, 2)->nullable();
-            $table->string('measure')->nullable();
-            $table->integer('fee_frequency')->nullable();
-            $table->smallInteger('fee_deadline')->nullable();
+            $table->integer('currancy')->nullable();
             $table->bigInteger('creator_id')->unsigned();
             $table->timestamps();
         });

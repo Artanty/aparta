@@ -1,13 +1,16 @@
 <mdb-form-control>
   <input
-    mdbInput
+    mdbInput matInput
     class="form-control"
     [formControl]="control"
     [id]="id"
     [type]="type"
     [placeholder]="placeholder"
     [readonly]="readonly"
+    [pattern]="pattern"
+    [mask]="mask"
   />
+
   <label mdbLabel class="form-label" for="id">{{label}}</label>
   <mdb-error
       *ngIf="

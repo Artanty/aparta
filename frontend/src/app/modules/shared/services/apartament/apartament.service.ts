@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, map, Observable, of, Subject, tap } from 'rxjs';
-import { GetApartamentsApiResponse } from './apartament-list/apartament-list.component';
-import { ApartamentModule } from './apartament.module'
+import { GetApartamentsApiResponse } from '../../../apartament/apartament-list/apartament-list.component';
+import { ApartamentModule } from '../../../apartament/apartament.module'
 
 @Injectable({
   providedIn: 'root'

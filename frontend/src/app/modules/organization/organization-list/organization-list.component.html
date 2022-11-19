@@ -1,0 +1,39 @@
+<table class="table align-middle mb-0 bg-white">
+  <thead class="bg-light">
+    <tr>
+      <th>Название</th>
+      <th>Описание</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody *ngIf="tableLoading$ | async" class="tbodyLoading">
+    <tr>
+      <td colspan="6">
+        <div class="spinner-border spinner" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+  <tbody *ngIf="!(tableLoading$ | async)">
+    <tr *ngFor="let item of (items$ | async)">
+      <td>
+        {{ item.name }}
+      </td>
+      <td>
+        <pre>
+          {{ item.description }}
+        </pre>
+      </td>
+
+      <td>
+        <a [routerLink]="['feeTemplate/update', item.id]" class="link me-2" [routerLinkActive]="['routerLinkIsActive']">
+          <i class="fas fa-pen fa-lg me-2" style="color:#797979"></i>
+        </a>
+        <a class="alink ms-1" (click)="delete(item.id)">
+          <i class="fas fa-trash-alt fa-lg" style="color:#797979"></i>
+        </a>
+      </td>
+    </tr>
+  </tbody>
+</table>

@@ -43,14 +43,21 @@ class ApartamentFeeController extends Controller
     public function store(StoreApartamentFeeRequest $request)
     {
         $apartamentFee = new ApartamentFee;
-        $apartamentFee->apartament_id = $request->apartament_id;
+
         $apartamentFee->name = $request->name;
         $apartamentFee->description = $request->description;
         $apartamentFee->sum = $request->sum;
+        $apartamentFee->commission = $request->commission;
         $apartamentFee->currancy = $request->currancy;
         $apartamentFee->month = $request->month;
         $apartamentFee->year = $request->year;
         $apartamentFee->paid = $request->paid;
+        $apartamentFee->paidDate = $request->paidDate;
+        $apartamentFee->payVariant = $request->payVariant;
+        $apartamentFee->organization_id = $request->organization_id;
+        $apartamentFee->organizationTariff_id = $request->organizationTariff_id;
+        $apartamentFee->apartament_id = $request->apartament_id;
+        $apartamentFee->template_id = $request->template_id;
         $apartamentFee->creator_id = auth()->guard('api')->user()->id;
         $apartamentFee->save();
 
@@ -90,15 +97,21 @@ class ApartamentFeeController extends Controller
     {
         $apartamentFee = ApartamentFee::find($request->id)->first();
 
-        $apartamentFee->apartament_id = $request->apartament_id;
         $apartamentFee->name = $request->name;
         $apartamentFee->description = $request->description;
         $apartamentFee->sum = $request->sum;
+        $apartamentFee->commission = $request->commission;
         $apartamentFee->currancy = $request->currancy;
         $apartamentFee->month = $request->month;
         $apartamentFee->year = $request->year;
         $apartamentFee->paid = $request->paid;
-        // $apartamentFee->creator_id = auth()->guard('api')->user()->id;
+        $apartamentFee->paidDate = $request->paidDate;
+        $apartamentFee->payVariant = $request->payVariant;
+        $apartamentFee->organization_id = $request->organization_id;
+        $apartamentFee->organizationTariff_id = $request->organizationTariff_id;
+        $apartamentFee->apartament_id = $request->apartament_id;
+        $apartamentFee->template_id = $request->template_id;
+
         $apartamentFee->save();
 
         return $apartamentFee;

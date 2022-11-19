@@ -17,7 +17,6 @@ class CreateApartamentsTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('address');
-
             $table->string('country');
             $table->string('place');
             $table->string('location')->nullable();

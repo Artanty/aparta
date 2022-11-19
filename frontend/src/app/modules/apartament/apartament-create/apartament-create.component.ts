@@ -1,4 +1,4 @@
-import { ApartamentService } from './../apartament.service';
+import { ApartamentService } from '../../shared/services/apartament/apartament.service';
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';

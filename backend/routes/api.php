@@ -31,3 +31,7 @@ Route::resource('/apartamentFee', 'App\Http\Controllers\ApartamentFeeController'
 
 Route::resource('/apartamentUser', 'App\Http\Controllers\ApartamentUserController');
 Route::get('/apartamentUser/findUserByEmail/{email}', 'App\Http\Controllers\ApartamentUserController@findUserByEmail');
+
+Route::resource('/feeTemplate', 'App\Http\Controllers\FeeTemplateController');
+Route::resource('/organization', 'App\Http\Controllers\OrganizationController');
+Route::resource('/organizationTariff', 'App\Http\Controllers\OrganizationTariffController');

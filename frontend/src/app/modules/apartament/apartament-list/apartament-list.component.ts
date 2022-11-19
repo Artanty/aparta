@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { map, Observable, of, shareReplay, tap } from 'rxjs';
 import { MessageService } from '../../shared/services/message/message.service';
-import { ApartamentService } from '../apartament.service';
+import { ApartamentService } from '../../shared/services/apartament/apartament.service';
 
 /**
  * Из списка квартир должно быть понятно

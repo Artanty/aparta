@@ -7,6 +7,7 @@ import { SharedModule } from '../shared/shared.module';
 import { ApartamentFeeCreateComponent } from './apartament-fee-create/apartament-fee-create.component';
 import { ApartamentFeeUpdateComponent } from './apartament-fee-update/apartament-fee-update.component';
 import { ApartamentFeeListComponent } from './apartament-fee-list/apartament-fee-list.component';
+import { ModalCreateFeeTemplateComponent } from './apartament-fee-create/modal-create-fee-template/modal-create-fee-template.component';
 
 
 @NgModule({
@@ -14,12 +15,14 @@ import { ApartamentFeeListComponent } from './apartament-fee-list/apartament-fee
     ApartamentFeeComponent,
     ApartamentFeeCreateComponent,
     ApartamentFeeUpdateComponent,
-    ApartamentFeeListComponent
+    ApartamentFeeListComponent,
+    ModalCreateFeeTemplateComponent
   ],
   imports: [
     // CommonModule,
     SharedModule,
-    ApartamentFeeRoutingModule
+    ApartamentFeeRoutingModule,
+
   ]
 })
 export class ApartamentFeeModule { }

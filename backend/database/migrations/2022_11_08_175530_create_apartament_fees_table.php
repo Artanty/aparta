@@ -15,20 +15,23 @@ class CreateApartamentFeesTable extends Migration
     {
         Schema::create('apartament_fees', function (Blueprint $table) {
             $table->increments('id');
-            $table->bigInteger('apartament_id');
+
             $table->string('name');
             $table->text('description')->nullable();
-            $table->integer('sum')->nullable();
-            $table->double('currancy', 8, 2)->nullable();
+            $table->integer('currancy')->nullable();
+            $table->double('sum', 8, 2)->nullable();
             $table->double('commission', 6, 2)->nullable();
             $table->integer('month');
             $table->integer('year');
             $table->boolean('paid');
             $table->string('paidDate')->nullable();
             $table->bigInteger('organization_id')->nullable();
+            $table->bigInteger('organizationTariff_id')->nullable();
+            $table->bigInteger('template_id')->nullable();
+            $table->bigInteger('apartament_id');
             $table->smallInteger('payVariant')->nullable();
             $table->bigInteger('creator_id')->unsigned();
-            $table->bigInteger('template_id')->nullable();
+
             $table->timestamps();
         });
     }
