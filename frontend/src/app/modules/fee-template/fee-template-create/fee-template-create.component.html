@@ -25,33 +25,36 @@
               <app-input [control]="description" [label]="'Описание'"></app-input>
             </div>
             <div class="col-12">
-              <app-input [control]="sum" [label]="'Сумма'"></app-input>
+              <app-input [control]="sum" [mask]="'separator.2'" [label]="'Сумма'"></app-input>
             </div>
             <div class="col-12">
               <select [formControl]="currancy" class="form-select">
-                <option disabled value="_label">Валюта</option>
+                <option disabled value="null">Валюта</option>
                 <option *ngFor="let option of currancyOptions" [value]="option.value">{{ option.name }}</option>
               </select>
             </div>
             <div class="col-12">
               <select [formControl]="organization_id" class="form-select">
-                <option disabled value="_label">Организация</option>
-                <option *ngFor="let option of (organizationOptions$ | async)" [value]="option.value">{{ option.name }}</option>
+                <option disabled value="null">Организация</option>
+                <option *ngFor="let option of (organizationOptions$ | async)" [value]="option.id">{{ option.name }}</option>
               </select>
             </div>
             <div class="col-12">
               <select [formControl]="organizationTariff_id" class="form-select">
-                <option disabled value="_label">Сервис</option>
-                <option *ngFor="let option of (organizationTariffOptions$ | async)" [value]="option.value">{{ option.name }}</option>
+                <option disabled value="null">Сервис</option>
+                <option *ngFor="let option of organizationTariffOptions$ | async" [value]="option.id">{{ option.name }}</option>
               </select>
             </div>
             <div class="col-12">
-              <app-input [control]="payVariant" [label]="'Вариант оплаты'"></app-input>
+              <select [formControl]="payVariant" class="form-select">
+                <option value="null" disabled>Способ оплаты</option>
+                <option *ngFor="let option of payVariantOptions" [value]="option.id">{{ option.name }}</option>
+              </select>
             </div>
             <div class="col-12">
               <select [formControl]="apartament_id" class="form-select">
-                <option disabled value="_label">Квартира</option>
-                <option *ngFor="let option of (apartamentOptions$ | async)" [value]="option.value">{{ option.name }}</option>
+                <option disabled value="null">Квартира</option>
+                <option *ngFor="let option of apartamentOptions$ | async" [value]="option.id">{{ option.name }}</option>
               </select>
             </div>
           </div>

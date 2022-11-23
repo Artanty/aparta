@@ -12,7 +12,7 @@ export class InputComponent implements OnInit {
   @Input() placeholder: string = '';
   @Input() readonly: boolean = false
   @Input() type: 'text'|'password'|'number' = 'text';
-  @Input() pattern: RegExp | string = new RegExp(/\d+(\.\d{2})?/)
+  // @Input() pattern: RegExp | string = new RegExp(/\d+(\.\d{2})?/)
   @Input() currancyFormat: boolean = false
   @Input() mask: string = ''
 

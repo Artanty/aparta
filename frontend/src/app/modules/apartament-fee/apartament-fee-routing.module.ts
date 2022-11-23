@@ -8,6 +8,7 @@ import { ApartamentFeeComponent } from './apartament-fee.component';
 const routes: Routes = [
   { path: '', component: ApartamentFeeComponent },
   { path: 'new/:apartament_id', component: ApartamentFeeCreateComponent, canActivate: [AuthGuard] },
+  { path: 'new', component: ApartamentFeeCreateComponent, canActivate: [AuthGuard] },
   { path: 'update/:apartamentFee_id', component: ApartamentFeeUpdateComponent, canActivate: [AuthGuard] },
 ];
 

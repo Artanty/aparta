@@ -1,1 +1,66 @@
-<p>fee-template-update works!</p>
+<div class="container">
+  <div class="d-flex justify-content-between align-items-center py-3" style="margin-top: 58px;">
+    <h1 class="mb-3">Изменение шаблона</h1>
+    <div class="">
+      <button (click)="back()" type="button" class="btn btn-outline-secondary me-3 mb-2 mt-2">Назад</button>
+      <button (click)="delete()" type="button" class="btn btn-outline-secondary me-3 mb-2 mt-2">Удалить</button>
+      <button (click)="update()" type="button" class="btn btn-outline-primary mb-2 mt-2">Сохранить</button>
+    </div>
+  </div>
+</div>
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <div class="card">
+        <div class="card-body p-3">
+          <div *ngIf="loading" class="cardLoading">
+            <div class="spinner-border spinner" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+          <div *ngIf="!loading" class="row gx-3 gy-4">
+            <div class="col-12">
+              <app-input [control]="name" [label]="'Название'"></app-input>
+            </div>
+            <div class="col-12">
+              <app-input [control]="description" [label]="'Описание'"></app-input>
+            </div>
+            <div class="col-12">
+              <app-input [control]="sum" [mask]="'separator.2'" [label]="'Сумма'"></app-input>
+            </div>
+            <div class="col-12">
+              <select [formControl]="currancy" class="form-select">
+                <option value="null">Валюта</option>
+                <option *ngFor="let option of currancyOptions" [value]="option.value">{{ option.name }}</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <select [formControl]="organization_id" class="form-select">
+                <option value="null">Организация</option>
+                <option *ngFor="let option of organizationOptions$ | async" [value]="option.id">{{ option.name }}</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <select [formControl]="organizationTariff_id" class="form-select">
+                <option value="null">Сервис</option>
+                <option *ngFor="let option of organizationTariffOptions$ | async" [value]="option.id">{{ option.name }}</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <select [formControl]="payVariant" class="form-select">
+                <option value="null" disabled>Способ оплаты</option>
+                <option *ngFor="let option of payVariantOptions" [value]="option.id">{{ option.name }}</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <select [formControl]="apartament_id" class="form-select">
+                <option disabled value="null">Квартира</option>
+                <option *ngFor="let option of apartamentOptions$ | async" [value]="option.id">{{ option.name }}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

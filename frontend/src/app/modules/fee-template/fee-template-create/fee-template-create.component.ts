@@ -10,6 +10,7 @@ import { currancyCodes } from './../../shared/currancyCodes';
 import { OrganizationService } from '../../shared/services/organization/organization.service';
 import { Observable } from 'rxjs';
 import { OrganizationTariffService } from '../../shared/services/organizationTariff/organization-tariff.service';
+import { payVariants } from '../../shared/payVariants';
 
 
 
@@ -25,8 +26,8 @@ export class FeeTemplateCreateComponent implements OnInit {
   name: FormControl = new FormControl(null, [Validators.required])
   description: FormControl = new FormControl(null)
   sum: FormControl = new FormControl(null)
-  currancy: FormControl = new FormControl('_label')
-  organization_id: FormControl = new FormControl('_label')
+  currancy: FormControl = new FormControl(null)
+  organization_id: FormControl = new FormControl(null)
   payVariant: FormControl = new FormControl(null)
   organizationTariff_id: FormControl = new FormControl(null)
 
@@ -42,6 +43,7 @@ export class FeeTemplateCreateComponent implements OnInit {
   })
 
   currancyOptions: any[] = []
+  payVariantOptions: any[] = payVariants
   organizationOptions$: Observable<any[]>
   organizationTariffOptions$: Observable<any[]>
   apartamentOptions$: Observable<any[]>
@@ -72,16 +74,16 @@ export class FeeTemplateCreateComponent implements OnInit {
     this.loading = true
     const formGroupValue = this.formGroup.value
     let data = {
-        name: formGroupValue.name,
-        // apartament_id: formGroupValue.apartament_id,
-        description: formGroupValue.description,
-        sum: formGroupValue.sum,
-        currancy: formGroupValue.currancy,
-        organization_id: formGroupValue.organization_id,
-        organizationTariff_id: formGroupValue.organizationTariff_id,
-        payVariant: formGroupValue.payVariant
+      name: formGroupValue.name,
+      apartament_id: formGroupValue.apartament_id,
+      description: formGroupValue.description,
+      sum: formGroupValue.sum,
+      currancy: formGroupValue.currancy,
+      organization_id: formGroupValue.organization_id,
+      organizationTariff_id: formGroupValue.organizationTariff_id,
+      payVariant: formGroupValue.payVariant
     }
-    console.log(data)
+    // console.log(data)
     this.FeeTemplateServ.create(data).subscribe({
       next: (res: any) => {
         this.MessageServ.sendMessage('success', 'Успешно сохранено!', 'Шаблон добавлен')

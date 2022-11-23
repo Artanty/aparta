@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\Apartament;
 use App\Models\ApartamentFee;
 use App\Http\Requests\StoreApartamentFeeRequest;
 use App\Http\Requests\UpdateApartamentFeeRequest;
@@ -19,6 +19,7 @@ class ApartamentFeeController extends Controller
     {
         $apartamentFees = ApartamentFee::select('*')
             ->where('creator_id', auth()->guard('api')->user()->id)
+            ->with('apartament')
             ->get();
 
         return $apartamentFees;
@@ -61,6 +62,11 @@ class ApartamentFeeController extends Controller
         $apartamentFee->creator_id = auth()->guard('api')->user()->id;
         $apartamentFee->save();
 
+        if ($request->apartament_id) {
+            $apartament = Apartament::find($request->apartament_id);
+            $apartamentFee['apartament'] = $apartament;
+        }
+
         return $apartamentFee;
     }
 
@@ -72,7 +78,7 @@ class ApartamentFeeController extends Controller
      */
     public function show(ApartamentFee $apartamentFee)
     {
-        //
+        return $apartamentFee;
     }
 
     /**
@@ -95,8 +101,7 @@ class ApartamentFeeController extends Controller
      */
     public function update(UpdateApartamentFeeRequest $request, ApartamentFee $apartamentFee)
     {
-        $apartamentFee = ApartamentFee::find($request->id)->first();
-
+        // $apartamentFee = ApartamentFee::find($request->id)->first();
         $apartamentFee->name = $request->name;
         $apartamentFee->description = $request->description;
         $apartamentFee->sum = $request->sum;
@@ -114,6 +119,10 @@ class ApartamentFeeController extends Controller
 
         $apartamentFee->save();
 
+        if ($request->apartament_id) {
+            $apartament = Apartament::find($request->apartament_id);
+            $apartamentFee['apartament'] = $apartament;
+        }
         return $apartamentFee;
     }
 
@@ -125,6 +134,8 @@ class ApartamentFeeController extends Controller
      */
     public function destroy(DeleteApartamentFeeRequest $request, ApartamentFee $apartamentFee)
     {
-        return ApartamentFee::destroy($request);
+        $model = ApartamentFee::find($apartamentFee->id);
+        $model->delete();
+        return $model;
     }
 }

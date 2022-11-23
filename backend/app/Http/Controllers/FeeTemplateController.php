@@ -64,7 +64,7 @@ class FeeTemplateController extends Controller
      */
     public function show(FeeTemplate $feeTemplate)
     {
-        //
+        return $feeTemplate;
     }
 
     /**
@@ -110,6 +110,9 @@ class FeeTemplateController extends Controller
      */
     public function destroy(FeeTemplate $feeTemplate)
     {
-        return FeeTemplate::destroy($feeTemplate->id);
+        // return FeeTemplate::destroy($feeTemplate->id);
+        $model = FeeTemplate::find($feeTemplate->id);
+        $model->delete();
+        return $model;
     }
 }

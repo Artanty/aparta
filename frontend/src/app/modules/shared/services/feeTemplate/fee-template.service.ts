@@ -57,6 +57,24 @@ export class FeeTemplateService {
     )
   }
 
+  update(data: any) {
+    return this.http.put(`feeTemplate/${data.id}`, data).pipe(
+      tap({
+        next: (res: any) => {
+          localStorage.removeItem('feeTemplates')
+          let storeItems = this.feeTemplatesSubj.getValue()
+          storeItems = storeItems.map((el: any) => {
+            if (el.id === res.id) {
+              el = { ...el, ...res }
+            }
+            return el
+          })
+          this.setFeeTemplates(storeItems)
+        }
+      })
+    )
+  }
+
   delete(id: number) {
     return this.http.delete(`feeTemplate/${id}`).pipe(
       tap({
@@ -68,5 +86,9 @@ export class FeeTemplateService {
         }
       })
     )
+  }
+
+  getFeeTemplate(id: number): Observable<any>{
+    return this.http.get<any[]>(`feeTemplate/${id}`)
   }
 }

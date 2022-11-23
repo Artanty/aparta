@@ -9,7 +9,7 @@ import { ApartamentModule } from '../../../apartament/apartament.module'
 })
 export class ApartamentService {
 
-  private apartamentsSubj: BehaviorSubject<any> = new BehaviorSubject<any>([])
+  private apartamentsSubj: BehaviorSubject<any[]> = new BehaviorSubject<any>([])
   apartaments$: Observable<any[]> = this.apartamentsSubj.asObservable()
 
   private apartamentsLoadingSubj: BehaviorSubject<boolean> = new BehaviorSubject<any>(false)

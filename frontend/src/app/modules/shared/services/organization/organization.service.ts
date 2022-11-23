@@ -15,9 +15,7 @@ export class OrganizationService {
 
   constructor(
     private http: HttpClient
-  ) {
-    console.log(8989898)
-  }
+  ) {}
 
   setOrganizations (val: any) {
     this.organizationSubj.next(val)

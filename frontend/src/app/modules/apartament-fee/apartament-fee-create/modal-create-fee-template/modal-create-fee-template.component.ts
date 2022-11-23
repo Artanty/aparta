@@ -13,6 +13,7 @@ import { OrganizationService } from '../../../shared/services/organization/organ
 import { Observable } from 'rxjs';
 import { OrganizationTariffService } from '../../../shared/services/organizationTariff/organization-tariff.service';
 import { ApartamentFeeService } from '../../apartament-fee.service';
+import { payVariants } from 'src/app/modules/shared/payVariants';
 
 
 @Component({
@@ -44,6 +45,7 @@ export class ModalCreateFeeTemplateComponent implements OnInit {
   })
 
   currancyOptions: any[] = []
+  payVariantOptions: any[] = []
   organizationOptions$: Observable<any[]>
   organizationTariffOptions$: Observable<any[]>
   apartamentOptions$: Observable<any[]>
@@ -71,6 +73,7 @@ export class ModalCreateFeeTemplateComponent implements OnInit {
     this.OrganizationServ.getOrganizations().subscribe()
     this.OrganizationTariffServ.getOrganizationTariffs().subscribe()
     this.ApartamentServ.getApartaments().subscribe()
+    this.payVariantOptions = payVariants
     // console.log(this.modalInputdata)
     this.formGroup.patchValue({
       name: this.modalInputdata.name,
@@ -89,20 +92,20 @@ export class ModalCreateFeeTemplateComponent implements OnInit {
     this.loading = true
     const formGroupValue = this.formGroup.value
     let data = {
-        name: formGroupValue.name,
-        apartament_id: formGroupValue.apartament_id,
-        description: formGroupValue.description,
-        sum: formGroupValue.sum,
-        currancy: formGroupValue.currancy,
-        organization_id: formGroupValue.organization_id,
-        organizationTariff_id: formGroupValue.organizationTariff_id,
-        payVariant: formGroupValue.payVariant
+      name: formGroupValue.name,
+      apartament_id: formGroupValue.apartament_id,
+      description: formGroupValue.description,
+      sum: formGroupValue.sum,
+      currancy: formGroupValue.currancy,
+      organization_id: formGroupValue.organization_id,
+      organizationTariff_id: formGroupValue.organizationTariff_id,
+      payVariant: formGroupValue.payVariant
     }
-    // console.log(data)
     this.FeeTemplateServ.create(data).subscribe({
       next: (res: any) => {
         this.MessageServ.sendMessage('success', 'Успешно сохранено!', 'Шаблон добавлен')
         this.Location.back()
+        this.modalRef.close()
       },
       error: (err: any) => {
         this.loading = false
@@ -110,7 +113,6 @@ export class ModalCreateFeeTemplateComponent implements OnInit {
       }
     })
   }
-
 
   private getCurrancyOptions () {
     if (Array.isArray(currancyCodes)) {
@@ -120,4 +122,5 @@ export class ModalCreateFeeTemplateComponent implements OnInit {
     }
     return []
   }
+
 }

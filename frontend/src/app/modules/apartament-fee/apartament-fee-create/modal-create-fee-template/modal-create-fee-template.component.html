@@ -1,7 +1,7 @@
 <div class="modal-header">
-  <h5 class="modal-title" id="exampleModalLabel">Создать шаблон?</h5>
+  <h5 class="modal-title" id="exampleModalLabel">{{ loading ? '...' : 'Создать шаблон?' }}</h5>
   <button
-    type="button"
+    type="button" [disabled]="loading"
     class="btn-close"
     aria-label="Close"
     (click)="modalRef.close()"
@@ -16,7 +16,7 @@
       <app-input [control]="description" [label]="'Описание'"></app-input>
     </div>
     <div class="col-12">
-      <app-input [control]="sum" [label]="'Сумма'"></app-input>
+      <app-input [control]="sum" [mask]="'separator.2'" [label]="'Сумма'"></app-input>
     </div>
     <div class="col-12">
       <select [formControl]="currancy" class="form-select">
@@ -25,7 +25,10 @@
       </select>
     </div>
     <div class="col-12">
-      <app-input [control]="payVariant" [label]="'Вариант оплаты'"></app-input>
+      <select [formControl]="payVariant" class="form-select">
+        <option value="null" disabled>Способ оплаты</option>
+        <option *ngFor="let option of payVariantOptions" [value]="option.id">{{ option.name }}</option>
+      </select>
     </div>
     <div class="col-12">
       <select [formControl]="organization_id" class="form-select">
@@ -48,8 +51,8 @@
   </div>
 </div>
 <div class="modal-footer">
-  <button type="button" class="btn btn-secondary" (click)="modalRef.close()">
-    Закрыть
+  <button type="button" [disabled]="loading" class="btn btn-outline-secondary" (click)="modalRef.close()">
+    Отмена
   </button>
-  <button type="button" class="btn btn-primary" (click)="create()">Сохранить</button>
+  <button type="button" [disabled]="loading" class="btn btn-outline-primary" (click)="create()">Сохранить</button>
 </div>

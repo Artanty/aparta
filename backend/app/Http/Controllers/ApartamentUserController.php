@@ -91,7 +91,10 @@ class ApartamentUserController extends Controller
      */
     public function destroy($id)
     {
-        return ApartamentUser::destroy($id);
+        // return ApartamentUser::destroy($id);
+        $model = ApartamentUser::find($id);
+        $model->delete();
+        return $model;
         // return response()->json($user);
     }
 

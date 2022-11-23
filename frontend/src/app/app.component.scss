@@ -40,3 +40,41 @@
   justify-content: space-between;
   align-items: end;
 }
+::ng-deep .form-select{
+  height: 36px;
+}
+::ng-deep #apartamentFeeListTable{
+  // box-shadow: 0px 0px 16px 0px #00000042;
+  box-shadow: 0px 0px 16px 0px #0b37a938;
+
+  border-radius: 4px;
+  overflow: hidden;
+  & > thead > tr > th{
+    padding-left: 7px;
+    padding-right: 0;
+    border-bottom-width: none;
+    border:none;
+  }
+  & > tbody > tr > td{
+    padding: 0;
+    padding-left: 7px;
+    border-bottom-width: none;
+    border:none;
+  }
+  & > tbody > tr:hover{
+    background: #8781d12e;
+  }
+}
+::ng-deep body{
+  // background-color: #c0d9fe;
+}
+
+::ng-deep .popoverHiddenTrigger{
+  opacity: 0;
+  height: 0;
+  line-height: 0;
+  padding: 0;
+  font-size: 0;
+  margin-left:200px;
+  position: absolute;
+}

@@ -116,7 +116,10 @@ class ApartamentController extends Controller
      */
     public function destroy(DeleteApartamentRequest $request, Apartament $apartament)
     {
-        return Apartament::destroy($apartament->id);
+        // return Apartament::destroy($apartament->id);
+        $model = Apartament::find($apartament->id);
+        $model->delete();
+        return $model;
     }
 
     public function getApartamentFees($request)

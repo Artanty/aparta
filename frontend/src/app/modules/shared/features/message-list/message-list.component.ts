@@ -40,11 +40,8 @@ export class MessageListComponent {
     ) {
       this.messages$ = this.messageService.messages$.pipe(
         tap((res: any) => {
-          console.log(res)
           res.forEach((el: any) => {
-            console.log(el)
             setTimeout(() => {
-              console.log('res')
               this.messageService.closeMessage(el.date)
             }, el.length * 1000)
           })

@@ -32,15 +32,17 @@ import { MessageListComponent } from './features/message-list/message-list.compo
 import { ModalComponent } from './features/modal/modal.component';
 
 
-import { NgxMaskModule, IConfig } from 'ngx-mask'
-const maskConfig: Partial<IConfig> = {
-  validation: false,
-};
+import { NgxMaskModule, IConfig } from 'ngx-mask';
+import { HumanMonthPipe } from './pipes/human-month.pipe'
+// const maskConfig: Partial<IConfig> = {
+//   validation: true,
+// };
 @NgModule({
   declarations: [
     InputComponent,
     MessageListComponent,
     ModalComponent,
+    HumanMonthPipe,
 
 
   ],
@@ -63,7 +65,7 @@ const maskConfig: Partial<IConfig> = {
     MdbTabsModule,
     MdbTooltipModule,
     MdbValidationModule,
-    NgxMaskModule.forRoot(maskConfig),
+    NgxMaskModule.forRoot(),
 
   ],
   providers: [
@@ -90,7 +92,7 @@ const maskConfig: Partial<IConfig> = {
     MdbTabsModule,
     MdbTooltipModule,
     MdbValidationModule,
-
+    HumanMonthPipe,
     ReactiveFormsModule,
     InputComponent,
     MessageListComponent,

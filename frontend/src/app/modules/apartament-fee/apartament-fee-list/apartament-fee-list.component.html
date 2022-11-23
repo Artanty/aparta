@@ -1,15 +1,42 @@
-<table class="table align-middle mb-0 bg-white">
+<table id="apartamentFeeListTable" class="table align-middle mb-0 bg-white">
   <thead class="bg-light">
     <tr>
-      <th>Название</th>
-      <th>Сумма</th>
+      <th scope="col">
+        <a *ngIf="selectedItemsSet.size > 0" (click)="deleteSelected()">
+          <i class="fas fa-trash-alt fa-lg" style="color:#797979"></i>
+          <span class="badge rounded-pill badge-notification bg-danger">{{ selectedItemsSet.size }}</span>
+        </a>
+      </th>
+      <th>
+        <div class="wrp">
+          <select class="form-control form-select" [formControl]="name">
+            <option *ngFor="let item of names"
+            [value]="item.name">{{ item.name }}</option>
+          </select>
+          <label [class.form-floating-label]="name.value" class="form-label select-label " style="margin-left: 0px;">Название</label>
+        </div>
+      </th>
+      <th>
+        <span class="alink thSort" (click)="tableSort('sum')">Сумма</span>
+        <span class="sortWrap" (click)="tableSort('sum')">
+          <i class="sortUp fas fa-sort-up"
+          [class.active]="sortFormGroup.controls['sum'].value === 1"
+
+          ></i>
+          <i class="sortDonw fas fa-sort-down"
+          [class.active]="sortFormGroup.controls['sum'].value === -1"
+
+          ></i>
+        </span>
+
+      </th>
       <th>Месяц</th>
+      <th>Год</th>
       <th *ngIf="!apartament_id">
         Квартира
       </th>
       <th>Оплачено</th>
       <th>
-        <!-- Действия -->
       </th>
     </tr>
   </thead>
@@ -24,28 +51,36 @@
   </tbody>
   <tbody *ngIf="!(tableLoading$ | async)">
     <tr *ngFor="let item of (items$ | async)">
-      <td>
+      <td scope="col">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="false" (click)="selectItem(item.id)" id="flexCheckDefault" />
+        </div>
+      </td>
+      <td class="alink" [routerLink]="['update', item.id]">
         {{ item.name }}
       </td>
       <td>
         {{ item.sum }}
       </td>
       <td>
-        {{ item.month }}
+        {{ item.month | humanMonth }}
+      </td>
+      <td>
+        {{ item.year }}
       </td>
       <td *ngIf="!apartament_id">
-        {{ item.apartament_id }}
+        {{ item.apartament?.name }}
       </td>
       <td>
         <container-element [ngSwitch]="item.paid">
           <span *ngSwitchCase="1"
-            class="badge badge-success rounded-pill d-inline">Оплачено</span>
+            class="badge badge-success rounded-pill d-inline">{{ (item.paidDate | date:'dd.MM.YYYY') ?? 'Оплачено' }}</span>
           <span *ngSwitchCase="0"
             class="badge badge-warning rounded-pill d-inline">Не оплачено</span>
         </container-element>
       </td>
       <td>
-        <a [routerLink]="['update', item.id]" class="link me-2" [routerLinkActive]="['routerLinkIsActive']">
+        <a [routerLink]="['update', item.id]" class="link me-2">
           <i class="fas fa-pen fa-lg me-2" style="color:#797979"></i>
         </a>
         <a class="alink ms-1" (click)="delete(item.id)">
