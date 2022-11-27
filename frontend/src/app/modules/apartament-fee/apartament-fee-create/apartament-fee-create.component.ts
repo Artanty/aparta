@@ -165,6 +165,8 @@ export class ApartamentFeeCreateComponent implements OnInit {
             name: newForm.name,
             sum: newForm.sum,
             currancy: newForm.currancy,
+            month: newForm.month,
+            year: newForm.year,
             organization_id: newForm.organization_id,
             apartament_id: newForm.apartament_id,
             organizationTariff_id: newForm.organizationTariff_id,

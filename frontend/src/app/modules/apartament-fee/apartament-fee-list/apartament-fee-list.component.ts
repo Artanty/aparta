@@ -18,15 +18,19 @@ export class ApartamentFeeListComponent implements OnInit {
   items1$?: Observable<any>
   items$?: Observable<any>
   selectedItemsSet = new Set()
-  name: FormControl = new FormControl('электро пушкин')
+  name: FormControl = new FormControl(null)
+  year: FormControl = new FormControl(null)
   filterFormGroup: FormGroup = new FormGroup({
     emitter: new FormControl(null),
-    name: this.name
+    name: this.name,
+    year: this.year
   })
   sortFormGroup: FormGroup = new FormGroup({
-    sum: new FormControl(0)
+    sum: new FormControl(0),
+    month: new FormControl(0)
   })
-  names: any[] = []
+  nameOptions: any[] = []
+  yearOptions: any[] = []
   constructor(
     private ApartamentFeeServ: ApartamentFeeService,
     private ActivatedRoute: ActivatedRoute,
@@ -37,8 +41,8 @@ export class ApartamentFeeListComponent implements OnInit {
     this.apartament_id = this.ActivatedRoute.snapshot.paramMap.get('apartament_id') || ''
     let obs$: Observable<any>
     const mapPipe = (res: any) => {
-      this.names = orderBy(removeDuplicatedObj(res, 'name'), 'name', 'desc')
-      this.names.unshift({ name: 'Все' })
+      this.nameOptions = orderBy(removeDuplicatedObj(res, 'name'), 'name', 'desc')
+      this.yearOptions = orderBy(removeDuplicatedObj(res, 'year'), 'year', 'desc').map((el: any) => ({ name: el.year, value: el.year }))
       return orderBy(res, 'paidDate', 'asc')
     }
     if (this.apartament_id) {
@@ -61,19 +65,39 @@ export class ApartamentFeeListComponent implements OnInit {
           let items = res[0]
           const filters = res[1]
           const sort = res[2]
-          if (filters.name) {
+          if (filters) {
             items = items.filter((el: any) => {
-              if (filters.name && filters.name !== 'Все') {
-                return el.name === filters.name
-              }
-              return true
+              let itemFiltered: boolean = false
+              let result = true
+              // if (filters.name) {
+              //   result = el.name === filters.name
+              // }
+              // if (filters.year && filters.year !== null) {
+              //   console.log(filters.year)
+              //   result = +el.year === +filters.year
+              // }
+              Object.keys(filters).forEach((filter: any) => {
+                if (filters[filter] && !itemFiltered) {
+                  result = String(el[filter]) === String(filters[filter])
+                  if (result === false) {
+                    itemFiltered = true
+                  }
+                }
+              })
+              return result
             })
           }
           if (sort.sum && sort.sum !== 0) {
-            console.log(sort)
-            items = orderBy(items, Object.keys(sort)[0], sort.sum > 0 ? 'asc' : 'desc')
+            items = orderBy(items, 'sum', sort.sum > 0 ? 'asc' : 'desc')
+          } else if (sort.month && sort.month !== 0) {
+            const format = (month: number) => {
+              const date = new Date()
+              return date.setMonth(month)
+            }
+            items = orderBy(items, 'month', sort.month > 0 ? 'asc' : 'desc', format)
+          } else if (sort.year && sort.year !== 0) {
+            // items = orderBy(items, 'year', sort.year > 0 ? 'asc' : 'desc')
           } else {
-            console.log(888)
             items = orderBy(items, 'name', 'asc')
           }
           return items
@@ -97,23 +121,30 @@ export class ApartamentFeeListComponent implements OnInit {
   ngOnInit(): void {
     setTimeout(()=>{
       this.filterFormGroup.patchValue({
-        name: null
+        name: null,
+        year: null
       })
       this.sortFormGroup.patchValue({
-        sum: 0
+        sum: 0,
+        month: 0
       })
     },500)
   }
 
   tableSort(column: string){
-    let value
-    const currentValue = this.sortFormGroup.controls['sum'].value
+    let value: number
+    const currentValue = this.sortFormGroup.controls[column].value
     if (currentValue === 1) value = 0
     if (currentValue === 0) value = -1
     if (currentValue === -1) value = 1
-    this.sortFormGroup.patchValue({
-      [column]: value
-    })
+    const patchObject = Object.keys(this.sortFormGroup.controls)
+    .reduce((acc: any, key: string) => {
+      return {
+        ...acc,
+        [key]: key === column ? value : 0
+      }
+    }, {})
+    this.sortFormGroup.patchValue(patchObject)
   }
 
   selectItem (id: number) {
@@ -147,5 +178,7 @@ export class ApartamentFeeListComponent implements OnInit {
     ).subscribe()
 
   }
-
+  filterFormGroupResetControl(controlName: string) {
+    this.filterFormGroup.controls[controlName]?.reset()
+  }
 }

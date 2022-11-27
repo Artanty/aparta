@@ -8,9 +8,12 @@
         </a>
       </th>
       <th>
-        <div class="wrp">
+        <div class="select__wrapper">
+          <div class="select__closeBtn">
+            <i class="fas fa-times" (click)="filterFormGroupResetControl('name')"></i>
+          </div>
           <select class="form-control form-select" [formControl]="name">
-            <option *ngFor="let item of names"
+            <option *ngFor="let item of nameOptions"
             [value]="item.name">{{ item.name }}</option>
           </select>
           <label [class.form-floating-label]="name.value" class="form-label select-label " style="margin-left: 0px;">Название</label>
@@ -21,17 +24,36 @@
         <span class="sortWrap" (click)="tableSort('sum')">
           <i class="sortUp fas fa-sort-up"
           [class.active]="sortFormGroup.controls['sum'].value === 1"
-
           ></i>
           <i class="sortDonw fas fa-sort-down"
           [class.active]="sortFormGroup.controls['sum'].value === -1"
-
           ></i>
         </span>
 
       </th>
-      <th>Месяц</th>
-      <th>Год</th>
+      <th>
+        <span class="alink thSort" (click)="tableSort('month')">Месяц</span>
+        <span class="sortWrap" (click)="tableSort('month')">
+          <i class="sortUp fas fa-sort-up"
+          [class.active]="sortFormGroup.controls['month'].value === 1"
+          ></i>
+          <i class="sortDonw fas fa-sort-down"
+          [class.active]="sortFormGroup.controls['month'].value === -1"
+          ></i>
+        </span>
+      </th>
+      <th>
+        <div class="select__wrapper">
+          <div class="select__closeBtn">
+            <i class="fas fa-times" (click)="filterFormGroupResetControl('year')"></i>
+          </div>
+          <select class="form-control form-select" [formControl]="year">
+            <option *ngFor="let item of yearOptions"
+            [value]="item.name">{{ item.name }}</option>
+          </select>
+          <label [class.form-floating-label]="year.value" class="form-label select-label " style="margin-left: 0px;">Год</label>
+        </div>
+      </th>
       <th *ngIf="!apartament_id">
         Квартира
       </th>

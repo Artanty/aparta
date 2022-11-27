@@ -1,12 +1,23 @@
-export const orderBy = (data: any, key: any, order: any) => {
+export const orderBy = (data: any, key: any, order: any, format?: Function) => {
   data.sort((a: any, b: any) => {
-    if (a[key] < b[key]) {
-      return order === 'asc' ? 1 : -1
+    if (format) {
+      if (format(a[key]) < format(b[key])) {
+        return order === 'asc' ? 1 : -1
+      }
+      if (format(a[key]) > format(b[key])) {
+        return order === 'desc' ? 1 : -1
+      }
+      return 0
+    } else {
+      if (a[key] < b[key]) {
+        return order === 'asc' ? 1 : -1
+      }
+      if (a[key] > b[key]) {
+        return order === 'desc' ? 1 : -1
+      }
+      return 0
     }
-    if (a[key] > b[key]) {
-      return order === 'desc' ? 1 : -1
-    }
-    return 0
+
   })
   return JSON.parse(JSON.stringify(data))
 }

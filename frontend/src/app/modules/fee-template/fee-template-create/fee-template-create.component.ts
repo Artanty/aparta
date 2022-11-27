@@ -27,6 +27,8 @@ export class FeeTemplateCreateComponent implements OnInit {
   description: FormControl = new FormControl(null)
   sum: FormControl = new FormControl(null)
   currancy: FormControl = new FormControl(null)
+  month: FormControl = new FormControl(null)
+  year: FormControl = new FormControl(null)
   organization_id: FormControl = new FormControl(null)
   payVariant: FormControl = new FormControl(null)
   organizationTariff_id: FormControl = new FormControl(null)
@@ -37,10 +39,13 @@ export class FeeTemplateCreateComponent implements OnInit {
     description: this.description,
     sum: this.sum,
     currancy: this.currancy,
+    month: this.month,
+    year: this.year,
     organization_id: this.organization_id,
     payVariant: this.payVariant,
     organizationTariff_id: this.organizationTariff_id
   })
+  yearOptions: any[] = []
 
   currancyOptions: any[] = []
   payVariantOptions: any[] = payVariants
@@ -64,6 +69,8 @@ export class FeeTemplateCreateComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.yearOptions = this.getYearOptions()
+
     this.currancyOptions = this.getCurrancyOptions()
     this.OrganizationServ.getOrganizations().subscribe()
     this.OrganizationTariffServ.getOrganizationTariffs().subscribe()
@@ -79,6 +86,8 @@ export class FeeTemplateCreateComponent implements OnInit {
       description: formGroupValue.description,
       sum: formGroupValue.sum,
       currancy: formGroupValue.currancy,
+      month: Number(formGroupValue.month),
+      year: formGroupValue.year,
       organization_id: formGroupValue.organization_id,
       organizationTariff_id: formGroupValue.organizationTariff_id,
       payVariant: formGroupValue.payVariant
@@ -98,6 +107,18 @@ export class FeeTemplateCreateComponent implements OnInit {
 
   back() {
     this.Location.back()
+  }
+
+  private getYearOptions() {
+    const nowYear = new Date().getFullYear()
+    return [
+      { name: nowYear - 4, id: nowYear - 4 },
+      { name: nowYear - 3, id: nowYear - 3 },
+      { name: nowYear - 2, id: nowYear - 2 },
+      { name: nowYear - 1, id: nowYear - 1 },
+      { name: nowYear, id: nowYear },
+      { name: nowYear + 1, id: nowYear + 1 }
+    ]
   }
 
   private getCurrancyOptions () {

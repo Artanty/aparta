@@ -46,6 +46,8 @@ class FeeTemplateController extends Controller
         $feeTemplate->description = $request->description;
         $feeTemplate->sum = $request->sum;
         $feeTemplate->currancy = $request->currancy;
+        $feeTemplate->month = $request->month;
+        $feeTemplate->year = $request->year;
         $feeTemplate->payVariant = $request->payVariant;
         $feeTemplate->apartament_id = $request->apartament_id;
         $feeTemplate->organization_id = $request->organization_id;
@@ -92,6 +94,8 @@ class FeeTemplateController extends Controller
         $feeTemplate->description = $request->description;
         $feeTemplate->sum = $request->sum;
         $feeTemplate->currancy = $request->currancy;
+        $feeTemplate->month = $request->month;
+        $feeTemplate->year = $request->year;
         $feeTemplate->payVariant = $request->payVariant;
         $feeTemplate->apartament_id = $request->apartament_id;
         $feeTemplate->organization_id = $request->organization_id;

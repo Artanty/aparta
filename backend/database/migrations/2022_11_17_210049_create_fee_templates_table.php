@@ -19,6 +19,8 @@ class CreateFeeTemplatesTable extends Migration
             $table->text('description')->nullable();
             $table->integer('currancy')->nullable();
             $table->double('sum', 8, 2)->nullable();
+            $table->integer('month')->nullable();
+            $table->integer('year')->nullable();
             $table->bigInteger('organizationTariff_id')->nullable();
             $table->bigInteger('organization_id')->nullable();
             $table->bigInteger('apartament_id');

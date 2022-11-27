@@ -8,6 +8,7 @@ use App\Http\Requests\StoreApartamentRequest;
 use App\Http\Requests\UpdateApartamentRequest;
 use App\Http\Requests\GetApartamentRequest;
 use App\Http\Requests\DeleteApartamentRequest;
+use App\Http\Requests\GetApartamentFeesRequest;
 
 
 class ApartamentController extends Controller
@@ -122,10 +123,11 @@ class ApartamentController extends Controller
         return $model;
     }
 
-    public function getApartamentFees($request)
+    public function getApartamentFees(GetApartamentFeesRequest $request)
     {
-        $apartamentFees = Apartament::findOrFail($request)->fees()->get();
+        $apartamentFees = Apartament::findOrFail($request->route('id'))->fees()->get();
         return response()->json($apartamentFees);
+        // return ;
     }
 
     public function getApartamentUsers($request)
