@@ -31,9 +31,29 @@
         </span>
 
       </th>
-      <th>
-        <span class="alink thSort" (click)="tableSort('month')">Месяц</span>
-        <span class="sortWrap" (click)="tableSort('month')">
+      <th class="flexRowCenterCenter">
+        <div class="select__wrapper">
+          <div class="select__closeBtn">
+            <i class="fas fa-times" (click)="filterFormGroupResetControl('month')"></i>
+          </div>
+          <select class="form-control form-select" [formControl]="month">
+            <option value="1">Январь</option>
+            <option value="2">Февраль</option>
+            <option value="3">Март</option>
+            <option value="4">Апрель</option>
+            <option value="5">Май</option>
+            <option value="6">Июнь</option>
+            <option value="7">Июль</option>
+            <option value="8">Август</option>
+            <option value="9">Сентябрь</option>
+            <option value="10">Октябрь</option>
+            <option value="11">Ноябрь</option>
+            <option value="12">Декабрь</option>
+          </select>
+          <label [class.form-floating-label]="month.value" class="form-label select-label " style="margin-left: 0px;">Месяц</label>
+        </div>
+        <!-- <span class="alink thSort" (click)="tableSort('month')">Месяц</span> -->
+        <span class="sortWrap" (click)="tableSort('month')" *ngIf="!month.value">
           <i class="sortUp fas fa-sort-up"
           [class.active]="sortFormGroup.controls['month'].value === 1"
           ></i>
@@ -57,14 +77,24 @@
       <th *ngIf="!apartament_id">
         Квартира
       </th>
-      <th>Оплачено</th>
+      <th>
+        <span class="alink thSort" (click)="tableSort('paidDate')">Оплачено</span>
+        <span class="sortWrap" (click)="tableSort('paidDate')">
+          <i class="sortUp fas fa-sort-up"
+          [class.active]="sortFormGroup.controls['paidDate'].value === 1"
+          ></i>
+          <i class="sortDonw fas fa-sort-down"
+          [class.active]="sortFormGroup.controls['paidDate'].value === -1"
+          ></i>
+        </span>
+        </th>
       <th>
       </th>
     </tr>
   </thead>
   <tbody *ngIf="tableLoading$ | async" class="tbodyLoading">
     <tr>
-      <td colspan="6">
+      <td colspan="7">
         <div class="spinner-border spinner" role="status">
           <span class="visually-hidden">Loading...</span>
         </div>
@@ -81,8 +111,21 @@
       <td class="alink" [routerLink]="['update', item.id]">
         {{ item.name }}
       </td>
-      <td>
-        {{ item.sum }}
+      <td class="currancyTd">
+        <ng-template [ngIf]="currancy === item.currancy">
+          {{ item.sum }}
+        </ng-template>
+        <ng-template [ngIf]="currancy !== item.currancy">
+          <div class="flexRowBetweenCenter">
+            {{ item | getCurrancy:'currancy':'sum':currancy | number:'.0-2' }}
+            <div>
+              <span class="currancyTd__initialCurrancy"
+              >({{ item.sum }} {{ item | getCurrancy:'currancy' }})</span>
+            </div>
+
+          </div>
+        </ng-template>
+
       </td>
       <td>
         {{ item.month | humanMonth }}

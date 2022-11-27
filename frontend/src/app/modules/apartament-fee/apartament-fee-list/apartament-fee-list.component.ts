@@ -1,36 +1,50 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { combineLatest, combineLatestWith, concat, finalize, map, Observable, of, startWith, Subscription, withLatestFrom } from 'rxjs';
+import { Component, ElementRef, OnDestroy, OnInit, Output, ViewChild, EventEmitter, Input } from '@angular/core';
+import { combineLatest, combineLatestWith, concat, finalize, map, Observable, of, startWith, Subscription, tap, withLatestFrom } from 'rxjs';
 import { ApartamentFeeService } from '../apartament-fee.service';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { MessageService } from '../../shared/services/message/message.service';
 import { orderBy, removeDuplicatedObj } from '../../shared/helpers';
 import { FormControl, FormGroup } from '@angular/forms';
+import { GetCurrancyPipe } from '../../shared/pipes/get-currancy.pipe';
+// import { GetCurrancyPipe } from ''
 
 @Component({
   selector: 'app-apartament-fee-list',
   templateUrl: './apartament-fee-list.component.html',
   styleUrls: ['./apartament-fee-list.component.scss']
 })
-export class ApartamentFeeListComponent implements OnInit {
+export class ApartamentFeeListComponent implements OnInit, OnDestroy {
+
+  currancy: number = 941
+  @Input() set _currancy(value: number) {
+    this.currancy = value;
+    setTimeout(() => {
+      this.filterFormGroup.updateValueAndValidity()
+    }, 0)
+  }
+  @Output() amountOut: EventEmitter<number> = new EventEmitter<number>()
   @ViewChild ('popoverTrigger') popoverTrigger: ElementRef | undefined
   apartament_id: string
   tableLoading$: Observable<boolean>
-  items1$?: Observable<any>
   items$?: Observable<any>
   selectedItemsSet = new Set()
   name: FormControl = new FormControl(null)
+  month: FormControl = new FormControl(null)
   year: FormControl = new FormControl(null)
   filterFormGroup: FormGroup = new FormGroup({
-    emitter: new FormControl(null),
     name: this.name,
+    month: this.month,
     year: this.year
   })
   sortFormGroup: FormGroup = new FormGroup({
     sum: new FormControl(0),
-    month: new FormControl(0)
+    month: new FormControl(0),
+    paidDate: new FormControl(0)
   })
   nameOptions: any[] = []
   yearOptions: any[] = []
+  subs$?: Subscription
+
   constructor(
     private ApartamentFeeServ: ApartamentFeeService,
     private ActivatedRoute: ActivatedRoute,
@@ -39,77 +53,91 @@ export class ApartamentFeeListComponent implements OnInit {
     this.ApartamentFeeServ.setApartamentFeesLoading(true)
     this.tableLoading$ = this.ApartamentFeeServ.apartamentFeesLoading$
     this.apartament_id = this.ActivatedRoute.snapshot.paramMap.get('apartament_id') || ''
+    console.log(this.apartament_id)
     let obs$: Observable<any>
-    const mapPipe = (res: any) => {
+    const mapPipeSetSelectOptions = (res: any) => {
+      console.log(res)
       this.nameOptions = orderBy(removeDuplicatedObj(res, 'name'), 'name', 'desc')
       this.yearOptions = orderBy(removeDuplicatedObj(res, 'year'), 'year', 'desc').map((el: any) => ({ name: el.year, value: el.year }))
       return orderBy(res, 'paidDate', 'asc')
     }
+    const mapPipeFilterAndSort = (res: any) => {
+      let items = res[0]
+      const filters = res[1]
+      const sort = res[2]
+      if (filters) {
+        items = items.filter((el: any) => {
+          let itemFiltered: boolean = false
+          let result = true
+          Object.keys(filters).forEach((filter: any) => {
+            if (filters[filter] && !itemFiltered) {
+              result = String(el[filter]) === String(filters[filter])
+              if (result === false) {
+                itemFiltered = true
+              }
+            }
+          })
+          return result
+        })
+      }
+      if (sort.sum && sort.sum !== 0) {
+        const format = (obj: any) => {
+          if (obj.currancy !== this.currancy) {
+            return new GetCurrancyPipe().transform(obj, 'currancy', 'sum', this.currancy)
+          }
+          return obj.sum
+        }
+        items = orderBy(items, 'sum', sort.sum > 0 ? 'asc' : 'desc', format)
+      } else if (sort.month && sort.month !== 0) {
+        const format = (obj: any) => {
+          const date = new Date()
+          return date.setMonth(obj.month)
+        }
+        items = orderBy(items, 'month', sort.month > 0 ? 'asc' : 'desc', format)
+      } else if (sort.paidDate && sort.paidDate !== 0) {
+        items = orderBy(items, 'paidDate', sort.paidDate > 0 ? 'asc' : 'desc')
+      } else {
+        items = orderBy(items, 'name', 'asc')
+      }
+      return items
+    }
+    const mapPipeCountAmount = (res: any) => {
+      let amount = res.reduce((accumulator: any, current: any) => {
+        let currentValue = current.sum
+        if (current.currancy !== this.currancy) {
+          currentValue = new GetCurrancyPipe().transform(current, 'currancy', 'sum', this.currancy)
+        }
+        return accumulator + +currentValue
+      }, 0)
+      this.amountOut.emit(amount)
+      return res
+    }
     if (this.apartament_id) {
       obs$ = this.ApartamentFeeServ.getFeesOfApartament(+this.apartament_id)
-      this.items1$ = this.ApartamentFeeServ.apartamentFees$.pipe(
-        map(mapPipe),
+      this.items$ = this.ApartamentFeeServ.apartamentFees$.pipe(
+        map(mapPipeSetSelectOptions),
         combineLatestWith(this.filterFormGroup.valueChanges, this.sortFormGroup.valueChanges),
-        map((res: any) => {
-          console.log(res)
-          return res
-        })
+        map(mapPipeFilterAndSort),
+        map(mapPipeCountAmount)
       )
     } else {
       obs$ = this.ApartamentFeeServ.getAllFees()
       this.items$ = this.ApartamentFeeServ.allFees$.pipe(
-        map(mapPipe),
+        map(mapPipeSetSelectOptions),
         combineLatestWith(this.filterFormGroup.valueChanges, this.sortFormGroup.valueChanges),
-        map((res: any) => {
-          console.log(res)
-          let items = res[0]
-          const filters = res[1]
-          const sort = res[2]
-          if (filters) {
-            items = items.filter((el: any) => {
-              let itemFiltered: boolean = false
-              let result = true
-              // if (filters.name) {
-              //   result = el.name === filters.name
-              // }
-              // if (filters.year && filters.year !== null) {
-              //   console.log(filters.year)
-              //   result = +el.year === +filters.year
-              // }
-              Object.keys(filters).forEach((filter: any) => {
-                if (filters[filter] && !itemFiltered) {
-                  result = String(el[filter]) === String(filters[filter])
-                  if (result === false) {
-                    itemFiltered = true
-                  }
-                }
-              })
-              return result
-            })
-          }
-          if (sort.sum && sort.sum !== 0) {
-            items = orderBy(items, 'sum', sort.sum > 0 ? 'asc' : 'desc')
-          } else if (sort.month && sort.month !== 0) {
-            const format = (month: number) => {
-              const date = new Date()
-              return date.setMonth(month)
-            }
-            items = orderBy(items, 'month', sort.month > 0 ? 'asc' : 'desc', format)
-          } else if (sort.year && sort.year !== 0) {
-            // items = orderBy(items, 'year', sort.year > 0 ? 'asc' : 'desc')
-          } else {
-            items = orderBy(items, 'name', 'asc')
-          }
-          return items
-        })
+        map(mapPipeFilterAndSort),
+        map(mapPipeCountAmount)
       )
-      // this.items$ = combineLatest(items: this.items$, this.filterFormGroup.valueChanges)
     }
 
-    obs$.subscribe({
+    this.subs$ = obs$.subscribe({
       next: (res: any) => {
         this.MessageServ.sendMessage('success', '', 'Счетa загружены')
         this.ApartamentFeeServ.setApartamentFeesLoading(false)
+        setTimeout(()=>{
+          this.filterFormGroup.updateValueAndValidity()
+          this.sortFormGroup.updateValueAndValidity()
+        }, 0)
       },
       error: (err: any) => {
         this.MessageServ.sendMessage('error', 'Ошибка!', err.error.message)
@@ -119,16 +147,15 @@ export class ApartamentFeeListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    setTimeout(()=>{
-      this.filterFormGroup.patchValue({
-        name: null,
-        year: null
-      })
-      this.sortFormGroup.patchValue({
-        sum: 0,
-        month: 0
-      })
-    },500)
+    // setTimeout(()=>{
+    //   this.filterFormGroup.updateValueAndValidity()
+    //   this.sortFormGroup.updateValueAndValidity()
+    // }, 10)
+  }
+
+  ngOnDestroy (): void {
+    console.log('destroyed')
+    this.subs$?.unsubscribe()
   }
 
   tableSort(column: string){

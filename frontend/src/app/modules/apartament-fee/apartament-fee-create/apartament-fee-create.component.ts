@@ -25,13 +25,6 @@ export class ApartamentFeeCreateComponent implements OnInit {
 
   @ViewChild ('popoverTrigger') popoverTrigger: ElementRef | undefined
   modalRef: MdbModalRef<ModalCreateFeeTemplateComponent> | null = null;
-  // showBasic: boolean = false
-  openModal(data: any) {
-    const config = {
-      data: { modalInputdata: data}
-    }
-    this.modalRef = this.modalService.open(ModalCreateFeeTemplateComponent, config)
-  }
 
   loading: boolean = false
 
@@ -120,7 +113,8 @@ export class ApartamentFeeCreateComponent implements OnInit {
     this.formGroup.get('month')?.valueChanges.subscribe((res: any) => {
       const paidDate = this.formGroup.get('paidDate')?.value
       if (paidDate) {
-        const newPaidDate = new Date(new Date(paidDate).setMonth(Number(res))).toISOString().slice(0, -14)
+        const newPaidDate = new Date(new Date(paidDate).setMonth(Number(res - 1))).toISOString().slice(0, -14)
+        // todo развести по типам шаблонов, для квартплатных - делать месяц назад, для остальных - нет
         this.formGroup.patchValue({
           paidDate: newPaidDate
         })
@@ -154,6 +148,13 @@ export class ApartamentFeeCreateComponent implements OnInit {
       this.formGroup.get('template_id')?.patchValue(null)
       this.popoverTrigger?.nativeElement.click()
     }
+  }
+
+  openModal(data: any) {
+    const config = {
+      data: { modalInputdata: data}
+    }
+    this.modalRef = this.modalService.open(ModalCreateFeeTemplateComponent, config)
   }
 
   private assignTemplate() {

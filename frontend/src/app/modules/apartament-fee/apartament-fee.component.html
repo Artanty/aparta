@@ -1,6 +1,13 @@
 <div class="container">
   <div class="d-flex justify-content-between align-items-center py-3" style="margin-top: 58px;">
     <h1 class="mb-3">Счета</h1>
+    <div class="amount">
+      {{ amount | number:'.0-2' }}
+      <select [formControl]="currancy" class="form-select amount__select">
+        <option *ngFor="let option of currancyOptions" [value]="option.id"
+        >{{ option.name }}</option>
+      </select>
+    </div>
     <div>
       <button (click)="back()" type="button" class="btn btn-outline-secondary me-3 mb-2 mt-2">Назад</button>
       <button [routerLink]="['new']" type="button" class="btn btn-outline-primary mb-2 mt-2">Добавить</button>
@@ -12,22 +19,11 @@
     <div class="col">
       <div class="card">
         <div class="card-body p-0">
-          <app-apartament-fee-list></app-apartament-fee-list>
+          <app-apartament-fee-list
+          [_currancy]="currancy.value"
+          (amountOut)="setAmount($event)"></app-apartament-fee-list>
         </div>
       </div>
     </div>
   </div>
 </div>
-
-<!--
-<h2>Обновление</h2>
-<input type="text" placeholder="apartament_id" [(ngModel)]="update_apartament_id">
-<input type="text" placeholder="Название" [(ngModel)]="update_id">
-<input type="text" placeholder="Название" [(ngModel)]="update_name">
-<input type="text" placeholder="Описание" [(ngModel)]="update_description">
-<input type="text" placeholder="Сумма" [(ngModel)]="update_sum">
-<input type="text" placeholder="Валюта" [(ngModel)]="update_currancy">
-<input type="text" placeholder="Месяц" [(ngModel)]="update_month">
-<input type="text" placeholder="Год" [(ngModel)]="update_year">
-<input type="text" placeholder="Уплочено" [(ngModel)]="update_paid">
-<button (click)="update()">Обновить</button> -->

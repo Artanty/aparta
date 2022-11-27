@@ -2,22 +2,26 @@ export const currancyCodes = [
   {
     "shortName": "RUB",
     "code": 643,
-    "name": "₽ Российский рубль"
+    "name": "₽ Российский рубль",
+    sign: '₽'
   },
   {
     "shortName": "USD",
     "code": 840,
-    "name": "$ Доллар США"
+    "name": "$ Доллар США",
+    sign: '$'
   },
   {
     "shortName": "EUR",
     "code": 978,
-    "name": "€ Евро"
+    "name": "€ Евро",
+    sign: '€'
   },
   {
     "shortName": "RSD",
     "code": 941,
-    "name": "Сербский динар"
+    "name": "Сербский динар",
+    sign: 'RSD'
   },
   {
     "shortName": "GBP",

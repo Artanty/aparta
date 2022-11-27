@@ -1,10 +1,12 @@
 export const orderBy = (data: any, key: any, order: any, format?: Function) => {
   data.sort((a: any, b: any) => {
     if (format) {
-      if (format(a[key]) < format(b[key])) {
+      const aFormatted = format(a)
+      const bFormatted = format(b)
+      if (aFormatted < bFormatted) {
         return order === 'asc' ? 1 : -1
       }
-      if (format(a[key]) > format(b[key])) {
+      if (aFormatted > bFormatted) {
         return order === 'desc' ? 1 : -1
       }
       return 0
