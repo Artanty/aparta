@@ -38,6 +38,9 @@ import { GetCurrancyPipe } from './pipes/get-currancy.pipe'
 // const maskConfig: Partial<IConfig> = {
 //   validation: true,
 // };
+export const options: Partial<null|IConfig> | (() => Partial<IConfig>) = null;
+
+
 @NgModule({
   declarations: [
     InputComponent,
