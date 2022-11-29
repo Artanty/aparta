@@ -25,11 +25,12 @@ export class ApartamentFeeComponent implements OnInit {
     private Location: Location
   ) {
     this.currancyOptions = this.getCurrancyOptions()
+    this.currancy.valueChanges.subscribe((res: any) => this.saveCurrancy(res))
     this.apartament_id = this.ActivatedRoute.snapshot.paramMap.get('apartament_id') || ''
   }
 
   ngOnInit(): void {
-
+    this.loadCurrancy()
   }
 
   setAmount(data: any) {
@@ -47,5 +48,16 @@ export class ApartamentFeeComponent implements OnInit {
       })
     }
     return []
+  }
+
+  private saveCurrancy(data: any) {
+    localStorage.setItem('apartamentFee_currancy', String(data))
+  }
+
+  private loadCurrancy() {
+    const currancy = localStorage.getItem('apartamentFee_currancy')
+    if (currancy){
+      this.currancy.setValue(Number(currancy))
+    }
   }
 }

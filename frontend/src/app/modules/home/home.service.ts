@@ -1,30 +1,23 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, map, Observable, of, Subject, tap } from 'rxjs';
+import { BehaviorSubject, Observable, of, tap } from 'rxjs';
+import { orderBy } from '../shared/helpers';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HomeService {
 
-  constructor() { }
+  constructor(
+    private http: HttpClient
+  ) { }
 
-  // getApartaments(force?: boolean): Observable<any>{
-  //   let obs$: Observable<any>
-  //   const storeItems = this.apartamentsSubj.getValue()
-  //   const storageItems = localStorage.getItem('apartaments')
-  //   if (storeItems?.length && !force) {
-  //     obs$ = of(storeItems)
-  //   } else if (storageItems && !force) {
-  //     obs$ = of(JSON.parse(storageItems))
-  //   } else {
-  //     obs$ = this.http.get<any[]>(`apartament`)
-  //   }
-  //   return obs$.pipe(
-  //     tap((res: any) => {
-  //       localStorage.setItem('apartaments', JSON.stringify(res))
-  //       this.setApartaments(res)
-  //     })
-  //   )
-  // }
+  getFeesOfApartamentOfYear(a_id: number, year: number): Observable<any>{
+    console.log(111)
+    return this.http.get<any[]>(`apartament/getApartamentFees/${a_id}?year=${year}`).pipe(
+      tap((res: any) => {
+        localStorage.setItem('apartamentFees', JSON.stringify(res))
+      })
+    )
+  }
 }

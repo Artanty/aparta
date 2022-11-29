@@ -3,13 +3,14 @@
     <h1 class="mb-3">Добавление счета</h1>
     <div class="">
       <button (click)="back()" type="button" class="btn btn-outline-secondary me-3">Назад</button>
-      <button (click)="create()" type="button" class="btn btn-outline-primary">Сохранить</button>
+      <button (click)="create()" type="button" class="btn btn-outline-primary me-3">Сохранить</button>
+      <button (click)="createAgain()" type="button" class="btn btn-outline-primary">Сохранить и добавить</button>
     </div>
   </div>
 </div>
 <div class="container">
   <div class="row">
-    <div class="col">
+    <div class="col-12 col-md-8 col-lg-10 mb-4">
       <div class="card">
         <div class="card-body p-3">
           <div *ngIf="loading" class="cardLoading">
@@ -136,8 +137,33 @@
         </div>
       </div>
     </div>
+    <div class="col-12 col-md-4 col-lg-2">
+      <div class="card">
+        <div class="card-body p-3">
+          <div class="row row gx-3 gy-4">
+            <div class="col-12 col-md-6">
+              <div class="form-check form-switch">
+                <input
+                  mdbCheckbox
+                  class="form-check-input"
+                  type="checkbox"
+                  id="flexSwitchCheckChecked"
+                  [(ngModel)]="payDatePrevMonth"
+                  (ngModelChange)="setPayDatePrevMonth($event)"
+                />
+                <label class="form-check-label" for="flexSwitchCheckChecked"
+                  >Оплата за прошлый месяц</label
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
+.
 
 <!-- Button trigger modal -->
 <!-- <button type="button" class="btn btn-primary" (click)="openModal({rr:55})">

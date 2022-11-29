@@ -6,7 +6,7 @@ export const exchangeRates = [
     to__643: 1,
     to__840: 0.017,
     to__978: 0.016,
-    to__941: 1.186
+    to__941: 1.84
   },
   {
     "shortName": "USD",

@@ -89,6 +89,16 @@
         </span>
         </th>
       <th>
+        <span class="alink thSort" (click)="tableSort('created_at')"><i class="far fa-clock"></i></span>
+        <span class="sortWrap" (click)="tableSort('created_at')">
+          <i class="sortUp fas fa-sort-up"
+          [class.active]="sortFormGroup.controls['created_at'].value === 1"
+          ></i>
+          <i class="sortDonw fas fa-sort-down"
+          [class.active]="sortFormGroup.controls['created_at'].value === -1"
+          ></i>
+        </span>
+
       </th>
     </tr>
   </thead>

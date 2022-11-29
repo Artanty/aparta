@@ -16,4 +16,12 @@ class ApartamentFee extends Model
     {
         return $this->hasOne('App\Models\Apartament', 'id', 'apartament_id');
     }
+
+    /**
+     * Get the organization of apartament fee
+     */
+    public function organization()
+    {
+        return $this->hasOne('App\Models\Organization', 'id', 'organization_id');
+    }
 }

@@ -39,7 +39,8 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
   sortFormGroup: FormGroup = new FormGroup({
     sum: new FormControl(0),
     month: new FormControl(0),
-    paidDate: new FormControl(0)
+    paidDate: new FormControl(1),
+    created_at: new FormControl(0)
   })
   nameOptions: any[] = []
   yearOptions: any[] = []
@@ -53,15 +54,16 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
     this.ApartamentFeeServ.setApartamentFeesLoading(true)
     this.tableLoading$ = this.ApartamentFeeServ.apartamentFeesLoading$
     this.apartament_id = this.ActivatedRoute.snapshot.paramMap.get('apartament_id') || ''
-    console.log(this.apartament_id)
+    // console.log(this.apartament_id)
     let obs$: Observable<any>
     const mapPipeSetSelectOptions = (res: any) => {
-      console.log(res)
+      // console.log(res)
       this.nameOptions = orderBy(removeDuplicatedObj(res, 'name'), 'name', 'desc')
       this.yearOptions = orderBy(removeDuplicatedObj(res, 'year'), 'year', 'desc').map((el: any) => ({ name: el.year, value: el.year }))
-      return orderBy(res, 'paidDate', 'asc')
+      return orderBy(res, 'paidDate', 'asc', (el: any)=> new Date(el.paidDate).getTime())
     }
     const mapPipeFilterAndSort = (res: any) => {
+      this.saveTableState()
       let items = res[0]
       const filters = res[1]
       const sort = res[2]
@@ -95,7 +97,9 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
         }
         items = orderBy(items, 'month', sort.month > 0 ? 'asc' : 'desc', format)
       } else if (sort.paidDate && sort.paidDate !== 0) {
-        items = orderBy(items, 'paidDate', sort.paidDate > 0 ? 'asc' : 'desc')
+        items = orderBy(items, 'paidDate', sort.paidDate > 0 ? 'asc' : 'desc', (el: any)=> new Date(el.paidDate).getTime())
+      } else if (sort.created_at && sort.created_at !== 0){
+        items = orderBy(items, 'paidDate', sort.created_at > 0 ? 'asc' : 'desc', (el: any)=> new Date(el.created_at).getTime())
       } else {
         items = orderBy(items, 'name', 'asc')
       }
@@ -113,7 +117,7 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
       return res
     }
     if (this.apartament_id) {
-      obs$ = this.ApartamentFeeServ.getFeesOfApartament(+this.apartament_id)
+      obs$ = this.ApartamentFeeServ.getFeesOfApartament(+this.apartament_id, true)
       this.items$ = this.ApartamentFeeServ.apartamentFees$.pipe(
         map(mapPipeSetSelectOptions),
         combineLatestWith(this.filterFormGroup.valueChanges, this.sortFormGroup.valueChanges),
@@ -135,8 +139,7 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
         this.MessageServ.sendMessage('success', '', 'Счетa загружены')
         this.ApartamentFeeServ.setApartamentFeesLoading(false)
         setTimeout(()=>{
-          this.filterFormGroup.updateValueAndValidity()
-          this.sortFormGroup.updateValueAndValidity()
+          this.loadTableState()
         }, 0)
       },
       error: (err: any) => {
@@ -147,14 +150,11 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // setTimeout(()=>{
-    //   this.filterFormGroup.updateValueAndValidity()
-    //   this.sortFormGroup.updateValueAndValidity()
-    // }, 10)
+    //
   }
 
   ngOnDestroy (): void {
-    console.log('destroyed')
+    // console.log('destroyed')
     this.subs$?.unsubscribe()
   }
 
@@ -207,5 +207,23 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
   }
   filterFormGroupResetControl(controlName: string) {
     this.filterFormGroup.controls[controlName]?.reset()
+  }
+  saveTableState() {
+    const data = {
+      sort: this.sortFormGroup.value,
+      filter: this.filterFormGroup.value
+    }
+    localStorage.setItem('apartamentFeeList', JSON.stringify(data))
+  }
+  loadTableState(){
+    const state = localStorage.getItem('apartamentFeeList')
+    if (state) {
+      // console.log(JSON.parse(state).filter)
+      this.sortFormGroup.patchValue(JSON.parse(state).sort)
+      this.filterFormGroup.patchValue(JSON.parse(state).filter)
+    } else {
+      this.filterFormGroup.updateValueAndValidity()
+      this.sortFormGroup.updateValueAndValidity()
+    }
   }
 }

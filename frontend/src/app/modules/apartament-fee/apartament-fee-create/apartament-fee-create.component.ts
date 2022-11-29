@@ -22,7 +22,7 @@ import { prependZero } from '../../shared/helpers';
   styleUrls: ['./apartament-fee-create.component.scss']
 })
 export class ApartamentFeeCreateComponent implements OnInit {
-
+  payDatePrevMonth: boolean
   @ViewChild ('popoverTrigger') popoverTrigger: ElementRef | undefined
   modalRef: MdbModalRef<ModalCreateFeeTemplateComponent> | null = null;
 
@@ -77,9 +77,10 @@ export class ApartamentFeeCreateComponent implements OnInit {
     private ApartamentFeeServ: ApartamentFeeService,
     private OrganizationServ: OrganizationService,
     private OrganizationTariffServ: OrganizationTariffService,
-    private FeeTemplateServ: FeeTemplateService
+    private FeeTemplateServ: FeeTemplateService,
+    private Router: Router
   ) {
-
+    this.payDatePrevMonth = Boolean(Number(localStorage.getItem('payDatePrevMonth')))
     try {
       const apartament_id = this.ActivatedRoute.snapshot.paramMap.get('apartament_id')
       this.formGroup.patchValue({
@@ -113,13 +114,15 @@ export class ApartamentFeeCreateComponent implements OnInit {
     this.formGroup.get('month')?.valueChanges.subscribe((res: any) => {
       const paidDate = this.formGroup.get('paidDate')?.value
       if (paidDate) {
-        const newPaidDate = new Date(new Date(paidDate).setMonth(Number(res - 1))).toISOString().slice(0, -14)
+        res = this.payDatePrevMonth ? res : (res-1)
+        const newPaidDate = new Date(new Date(paidDate).setMonth(Number(res))).toISOString().slice(0, -14)
         // todo развести по типам шаблонов, для квартплатных - делать месяц назад, для остальных - нет
         this.formGroup.patchValue({
           paidDate: newPaidDate
         })
       }
     })
+
     this.formGroup.get('year')?.valueChanges.subscribe((res: any) => {
       const paidDate = this.formGroup.get('paidDate')?.value
       if (paidDate) {
@@ -138,6 +141,12 @@ export class ApartamentFeeCreateComponent implements OnInit {
     this.yearOptions = this.getYearOptions()
     this.currancyOptions = this.getCurrancyOptions()
     this.payVariantOptions = payVariants
+
+    console.log(this.payDatePrevMonth)
+  }
+
+  setPayDatePrevMonth (data: boolean) {
+    localStorage.setItem('payDatePrevMonth', String(Number(data)))
   }
 
   closeTemplateConfirm (confirm: boolean) {
@@ -222,7 +231,6 @@ export class ApartamentFeeCreateComponent implements OnInit {
       next: (res: any) => {
         this.MessageServ.sendMessage('success', 'Успешно сохранено!', 'Счет добавлен')
         this.loading = false
-
         if (!res.template_id) {
           this.openModal(res)
         } else {
@@ -237,8 +245,51 @@ export class ApartamentFeeCreateComponent implements OnInit {
     })
   }
 
+  createAgain() {
+    this.loading = true
+    const formGroupValue = this.formGroup.value
+    let data = {
+      name: formGroupValue.name,
+      description: formGroupValue.description,
+      sum: formGroupValue.sum,
+      commission: formGroupValue.commission,
+      currancy: formGroupValue.currancy,
+      month: Number(formGroupValue.month),
+      year: formGroupValue.year,
+      paid: Boolean(formGroupValue.paid),
+      organization_id: formGroupValue.organization_id,
+      template_id: formGroupValue.template_id,
+      apartament_id: formGroupValue.apartament_id,
+      organizationTariff_id: formGroupValue.organizationTariff_id,
+      paidDate: this.isPaid ? formGroupValue.paidDate : '',
+      payVariant: formGroupValue.payVariant,
+    }
+    this.ApartamentFeeServ.create(data).subscribe({
+      next: (res: any) => {
+        this.MessageServ.sendMessage('success', 'Успешно сохранено!', 'Счет добавлен')
+      },
+      error: (err: any) => {
+        this.MessageServ.sendMessage('error', 'Ошибка!', err.error.message)
+      }
+    })
+    this.redirectTo()
+    // this.router.navigate(['items'], { relativeTo: this.route });
+
+  }
+
   back() {
     this.Location.back()
+  }
+
+  redirectTo(uri?: string) {
+    if (!uri) {
+      uri = this.Router.url
+    }
+    if (this.Router.url === '/login') {
+      uri = '/'
+    }
+    this.Router.navigateByUrl('/', {skipLocationChange: true}).then(()=>
+    this.Router.navigate([uri]));
   }
 
 }
