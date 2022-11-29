@@ -1,0 +1,94 @@
+name: Deploy Laravel Angular
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  laravel-angular-deploy:
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set env
+        run: echo "TAG=$(echo ${GITHUB_REF##*/})" >> $GITHUB_ENV
+
+      - name: Copy Angular .envs from tpls
+        run: |
+          cp src/environments/environment.tpl.ts src/environments/environment.ts
+          cp src/environments/environment.prod.tpl.ts src/environments/environment.prod.ts
+        working-directory: ./frontend
+
+      - name: Insert TAG in Angular .envs
+        uses: jacobtomlinson/gha-find-replace@master
+        with:
+          find: "T_TAG_T"
+          replace: ${{ env.TAG }}
+          include: "frontend/src/environments/"
+          exclude: ".*.tpl.ts"
+
+      - name: commit updated TAG
+        uses: EndBug/add-and-commit@v7
+        with:
+          branch: master
+          default_author: github_actor
+          pathspec_error_handling: ignore
+          pull: --no-rebase
+          push: true
+
+      - name: Use Node.js 14.15
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.15
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./frontend
+
+      - name: Build
+        run: npm run build 
+        working-directory: ./frontend
+
+      - name: move folder
+        run: |
+          ls -l
+          cp -a frontend/dist/. backend/public
+          rm -R frontend
+          mv backend/* .
+          rm -R backend
+          rm -R database/*
+          rm -R database
+          rm -R tests/*
+          rm -R tests
+          rm README.md
+          rm .gitignore
+      - name: install php
+        uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
+        with:
+          php-version: '7.2.5'
+
+      # - name: Copy .env
+      #   run: php -r "copy('.env.production', '.env');"
+
+      - name: Install Dependencies
+        run: |
+          composer install -q --ignore-platform-reqs --version=1.9.1 --optimize-autoloader --no-dev
+          chmod -R 777 storage bootstrap/cache
+      - name: Create release branch
+        run: git checkout -b release/${{ env.TAG }}
+      
+      - name: Push Build to Releases
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.TOKEN }}
+
+      - name: Deploy to Server
+        uses: easingthemes/ssh-deploy@v2.1.5
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_PRIVATE_KEY }}
+          REMOTE_HOST: vh110.timeweb.ru
+          REMOTE_USER: cs99850
+          ARGS: -rltgoDzvO --exclude .git --exclude .github
+          TARGET: aparta
