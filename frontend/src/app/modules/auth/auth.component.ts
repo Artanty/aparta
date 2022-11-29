@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
 import { AuthService } from '../shared/services/auth.service';
+import { FormControl, Validators, FormGroup } from '@angular/forms';
+import { MessageService } from '../shared/services/message/message.service';
 
 export type User = {
   created_at: string
@@ -24,65 +26,94 @@ export type AuthDataApiResponse = {
 })
 
 export class AuthComponent implements OnInit {
-  name = 'Артем Антошкин'
-  email = 'antoshkinartyom@gmail.com'
-  password = 'forgot'
-  password_confirmation = 'forgot'
+  // name = 'Артем Антошкин'
+  // email = 'antoshkinartyom@gmail.com'
+  // password = 'forgot'
+  // password_confirmation = 'forgot'
   private baseUrl = environment.baseUrl;
 
+  registerVisible: boolean = false
+
+  loading: boolean = false
+
+  // login_name: FormControl = new FormControl(null, [Validators.required])
+  login_email: FormControl = new FormControl(null, [Validators.required])
+  login_password: FormControl = new FormControl(null, [Validators.required])
+  // login_password_confirmation: FormControl = new FormControl(null, [Validators.required])
+
+  register_name: FormControl = new FormControl(null, [Validators.required])
+  register_email: FormControl = new FormControl(null, [Validators.required])
+  register_password: FormControl = new FormControl(null, [Validators.required])
+  register_password_confirmation: FormControl = new FormControl(null, [Validators.required])
+
+  loginFormGroup: FormGroup = new FormGroup({
+    // name: this.login_name,
+    email: this.login_email,
+    password: this.login_password,
+    // password_confirmation: this.login_password_confirmation
+  })
+
+  registerFormGroup: FormGroup = new FormGroup({
+    name: this.register_name,
+    email: this.register_email,
+    password: this.register_password,
+    password_confirmation: this.register_password_confirmation
+  })
+
+  isLoggedIn: boolean
 
   constructor(
     private http: HttpClient,
     private router: Router,
-    private AuthServ: AuthService
+    private AuthServ: AuthService,
+    private MessageServ: MessageService
     ) {
-
+      this.isLoggedIn = this.AuthServ.isLoggedIn()
    }
 
   ngOnInit(): void {
   }
 
+  setRegisterVisible (data: boolean) {
+    this.registerVisible = data
+  }
+
   login() {
-    const data = {
-      // name: this.name,
-      email: this.email,
-      password: this.password
-    }
-    console.log(data)
+    this.loading = true
+    const data = this.loginFormGroup.value
     this.http.post<AuthDataApiResponse>(`login`, data).subscribe({
       next: (res: AuthDataApiResponse) => {
         this.AuthServ.setToken(res.token)
         this.router.navigate(['apartament'])
+        this.MessageServ.sendMessage('success', '', 'Вход выполнен')
+        this.loading = false
       },
       error: (err: any) => {
-
+        this.MessageServ.sendMessage('error', 'Ошибка!', err.error.message)
+        this.loading = false
       }
     })
   }
+
   register() {
-    const data = {
-      name: this.name,
-      email: this.email,
-      password: this.password,
-      password_confirmation: this.password_confirmation
-    }
+    this.loading = true
+    const data = this.registerFormGroup.value
     this.http.post<AuthDataApiResponse>(`register`, data).subscribe({
       next: (res: AuthDataApiResponse) => {
         this.AuthServ.setToken(res.token)
         this.router.navigate(['apartament'])
+        this.MessageServ.sendMessage('success', '', 'Успешная регистрация')
+        this.loading = false
       },
       error: (err: any) => {
-        //
+        this.MessageServ.sendMessage('error', 'Ошибка!', err.error.message)
+        this.loading = false
       }
     })
   }
+
   logout(){
     this.AuthServ.clearToken()
     this.router.navigate(['auth'])
-  }
-  go() {
-    this.router.navigate(['apartament/2'])
-
-
   }
 }

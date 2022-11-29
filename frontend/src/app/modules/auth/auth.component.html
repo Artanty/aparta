@@ -1,9 +1,78 @@
-<button (click)="go()">go</button>
-<input type="text" placeholder="Имя" [(ngModel)]="name">
-<input type="text" placeholder="Email" [(ngModel)]="email">
-<input type="text" placeholder="Пароль" [(ngModel)]="password">
-<input type="text" placeholder="Подтверждение пароля" [(ngModel)]="password_confirmation">
+<div class="container">
+  <div class="d-flex justify-content-between align-items-center py-3" style="margin-top: 58px;">
+    <h1 class="mb-3">Вход</h1>
+    <div class="">
+      <!-- <button *ngIf="isLoggedIn" (click)="logout()" type="button" class="btn btn-outline-primary me-3">Выйти</button> -->
+    </div>
+  </div>
+</div>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-6 col-lg-6 mb-6" *ngIf="!registerVisible">
+      <div class="card">
+        <div class="card-body p-3">
+          <div *ngIf="loading" class="cardLoading">
+            <div class="spinner-border spinner" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+          <h5 class="card-title mb-4">Авторизация</h5>
+          <div *ngIf="!loading" class="row gx-3 gy-4">
+            <!-- <div class="col-12 col-md-6">
+              <app-input [control]="login_name" [label]="'Имя'"></app-input>
+            </div> -->
+            <div class="col-12">
+              <app-input [control]="login_email" [label]="'email'"></app-input>
+            </div>
+            <div class="col-12">
+              <app-input [control]="login_password" [label]="'Пароль'"></app-input>
+            </div>
+            <div class="col-6">
+              <a class="alink text-black-50" (click)="setRegisterVisible(true)"><small>Зарегистрироваться</small></a>
+            </div>
+            <div class="col-6">
+              <button *ngIf="!isLoggedIn"
+              [disabled]="loginFormGroup.status === 'INVALID'"
+              (click)="login()" type="button" class="btn btn-outline-secondary float-end">Войти</button>
+            </div>
+          </div>
 
-<button (click)="login()">Войти</button>
-<button (click)="register()">Зарегистрироваться</button>
-<button (click)="logout()">Выйти</button>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-6 mb-6" *ngIf="registerVisible">
+      <div class="card">
+        <div class="card-body p-3">
+          <div *ngIf="loading" class="cardLoading">
+            <div class="spinner-border spinner" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+          <h5 class="card-title mb-4">Регистрация</h5>
+          <div *ngIf="!loading" class="row gx-3 gy-4">
+            <div class="col-12">
+              <app-input [control]="register_name" [label]="'Имя'"></app-input>
+            </div>
+            <div class="col-12">
+              <app-input [control]="register_email" [label]="'email'"></app-input>
+            </div>
+            <div class="col-12">
+              <app-input [control]="register_password" [label]="'Пароль'"></app-input>
+            </div>
+            <div class="col-12">
+              <app-input [control]="register_password_confirmation" [label]="'Подтверждение пароля'"></app-input>
+            </div>
+            <div class="col-6">
+              <a class="alink text-black-50" (click)="setRegisterVisible(false)"><small>Войти</small></a>
+            </div>
+            <div class="col-6">
+              <button *ngIf="!isLoggedIn"
+              [disabled]="registerFormGroup.status === 'INVALID'"
+              (click)="register()" type="button" class="btn btn-outline-primary float-end">Зарегистрироваться</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

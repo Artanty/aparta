@@ -6,7 +6,7 @@ import { FeeTemplateUpdateComponent } from './fee-template-update/fee-template-u
 import { FeeTemplateComponent } from './fee-template.component';
 
 const routes: Routes = [
-  { path: '', component: FeeTemplateComponent },
+  { path: '', component: FeeTemplateComponent, canActivate: [AuthGuard] },
   {
     path: 'new',
     component: FeeTemplateCreateComponent,

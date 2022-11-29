@@ -9,8 +9,8 @@ const routes: Routes = [
   { path: '', component: ApartamentComponent, canActivate: [AuthGuard] },
   { path: 'apartament/new', component: ApartamentCreateComponent, canActivate: [AuthGuard] },
   { path: 'apartament/update/:apartament_id', component: ApartamentUpdateComponent, canActivate: [AuthGuard] },
-  { path: 'apartamentFee/:apartament_id', loadChildren: () => import('./../../modules/apartament-fee/apartament-fee.module').then(m => m.ApartamentFeeModule) },
-  { path: 'apartamentUser/:apartament_id', loadChildren: () => import('./../../modules/apartament-user/apartament-user.module').then(m => m.ApartamentUserModule) },
+  { path: 'apartamentFee/:apartament_id', loadChildren: () => import('./../../modules/apartament-fee/apartament-fee.module').then(m => m.ApartamentFeeModule), canActivate: [AuthGuard] },
+  { path: 'apartamentUser/:apartament_id', loadChildren: () => import('./../../modules/apartament-user/apartament-user.module').then(m => m.ApartamentUserModule), canActivate: [AuthGuard] },
 
 ];
 
