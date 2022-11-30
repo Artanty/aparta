@@ -1,6 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\App;
+
+$environment = App::environment();
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +15,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+if (App::environment('production')) {
+
+    Route::any('{path?}', function() {
+        return File::get(public_path() . '/index.html');
+    })->where("path", ".+");
+
+} else if (App::environment('local')) {
+
+//    Route::get('{path?}/', function () {
+//        //     return view('welcome');
+//        return File::get(public_path() . '/index.php');
+//    })->where("path", ".+");
+}
