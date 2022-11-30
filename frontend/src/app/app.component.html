@@ -1,53 +1,52 @@
 
-  <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
-    <div class="container-fluid">
-      <button
-        class="navbar-toggler"
-        type="button"
-        (click)="fixedNavbarExample.toggle()"
-        aria-controls="fixedNavbarExample"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <i class="fas fa-bars"></i>
-      </button>
-      <div
-        mdbCollapse
-        #fixedNavbarExample="mdbCollapse"
-        class="collapse navbar-collapse"
-        id="fixedNavbarExample"
-      >
-        <ul class="navbar-nav me-auto mb-lg-0">
-          <li class="nav-item active">
-            <a class="nav-link" [routerLink]="''" [routerLinkActive]="['active']">Главная</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" [routerLink]="'apartament'" [routerLinkActive]="['active']">Квартиры</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" [routerLink]="'apartamentFee'" [routerLinkActive]="['active']">Счета</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" [routerLink]="'feeTemplate'" [routerLinkActive]="['active']">Шаблоны счетов</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" [routerLink]="'organization'" [routerLinkActive]="['active']">Организации</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" [routerLink]="'organizationTariff'" [routerLinkActive]="['active']">Услуги</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" [routerLink]="'apartamentUser'" [routerLinkActive]="['active']">Пользователи</a>
-          </li>
-        </ul>
-        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-          <li class="nav-item active">
-            <a class="nav-link alink" (click)="logout()">{{ isLoggedIn ? 'Выход' : 'Вход' }}</a>
-          </li>
-        </ul>
-      </div>
+<nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
+  <div class="container-fluid">
+    <button
+      class="navbar-toggler"
+      type="button"
+      (click)="fixedNavbarExample.toggle()"
+      aria-controls="fixedNavbarExample"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <i class="fas fa-bars"></i>
+    </button>
+    <div
+      mdbCollapse
+      #fixedNavbarExample="mdbCollapse"
+      class="collapse navbar-collapse"
+      id="fixedNavbarExample"
+    >
+      <ul class="navbar-nav me-auto mb-lg-0">
+        <li class="nav-item active">
+          <a class="nav-link" [routerLink]="''" [routerLinkActive]="['active']">Главная</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="'apartament'" [routerLinkActive]="['active']">Квартиры</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="'apartamentFee'" [routerLinkActive]="['active']">Счета</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="'feeTemplate'" [routerLinkActive]="['active']">Шаблоны счетов</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="'organization'" [routerLinkActive]="['active']">Организации</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="'organizationTariff'" [routerLinkActive]="['active']">Услуги</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="'apartamentUser'" [routerLinkActive]="['active']">Пользователи</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <li class="nav-item active">
+          <a class="nav-link alink" (click)="logout()">{{ isLoggedIn ? 'Выход' : 'Вход' }}</a>
+        </li>
+      </ul>
     </div>
-  </nav>
-  <router-outlet></router-outlet>
-
+  </div>
+</nav>
+<router-outlet></router-outlet>
 <app-message-list></app-message-list>
