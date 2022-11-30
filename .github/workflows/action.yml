@@ -67,7 +67,7 @@ jobs:
       - name: install php
         uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
         with:
-          php-version: '7.3.1'
+          php-version: '7.2.5'
 
       # - name: Copy .env
       #   run: php -r "copy('.env.production', '.env');"
