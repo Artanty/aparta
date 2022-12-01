@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 use Illuminate\Database\Eloquent\Model;
 
 class ApartamentUser extends Model
 {
-    use HasFactory;
+
 
     /**
      * Get the user details of the apartament user

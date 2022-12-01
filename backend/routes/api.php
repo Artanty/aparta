@@ -14,24 +14,23 @@ use Illuminate\Support\Facades\Auth;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-// Route::post('/login', function () {
-//     $folder = auth()->user()->id;
-//     return response()->json($folder);
+
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
+//     return $request->user();
 // });
 
-Route::post('/register', 'App\Http\Controllers\Auth\UserAuthController@register');
-Route::post('/login', 'App\Http\Controllers\Auth\UserAuthController@login');
+// Route::post('/register', 'Auth\UserAuthController@register');
+Route::post('login', 'Auth\UserAuthController@login');
 
+Route::resource('apartament', 'ApartamentController');
+Route::get('apartament/getApartamentFees/{id}', 'ApartamentController@getApartamentFees');
+Route::get('apartament/getApartamentUsers/{id}', 'ApartamentController@getApartamentUsers');
 
-Route::resource('/apartament', 'App\Http\Controllers\ApartamentController');
-Route::get('/apartament/getApartamentFees/{id}', 'App\Http\Controllers\ApartamentController@getApartamentFees');
-Route::get('/apartament/getApartamentUsers/{id}', 'App\Http\Controllers\ApartamentController@getApartamentUsers');
+Route::resource('apartamentFee', 'ApartamentFeeController');
 
-Route::resource('/apartamentFee', 'App\Http\Controllers\ApartamentFeeController');
+Route::resource('apartamentUser', 'ApartamentUserController');
+Route::get('apartamentUser/findUserByEmail/{email}', 'ApartamentUserController@findUserByEmail');
 
-Route::resource('/apartamentUser', 'App\Http\Controllers\ApartamentUserController');
-Route::get('/apartamentUser/findUserByEmail/{email}', 'App\Http\Controllers\ApartamentUserController@findUserByEmail');
-
-Route::resource('/feeTemplate', 'App\Http\Controllers\FeeTemplateController');
-Route::resource('/organization', 'App\Http\Controllers\OrganizationController');
-Route::resource('/organizationTariff', 'App\Http\Controllers\OrganizationTariffController');
+Route::resource('feeTemplate', 'FeeTemplateController');
+Route::resource('organization', 'OrganizationController');
+Route::resource('organizationTariff', 'OrganizationTariffController');
