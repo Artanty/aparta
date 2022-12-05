@@ -125,35 +125,53 @@ class ApartamentController extends Controller
 
     public function getApartamentFees(GetApartamentFeesRequest $request)
     {
-        // $apartamentFees = Apartament::findOrFail($request->route('id'))->fees()
-        // ->where('year', '=', $request->year)->get();
-        // return response()->json($apartamentFees);
-
-        // $apartamentFees = Apartament::findOrFail($request->route('id'))->fees()
-        // ->when(isset($request->year), function($query) use ($request){
-        //     $query->where('year', '=', $request->year)->with('organization');
-        //   },function($query){
-        //     $query->where("year", '>', 0);
-        //   })->get();
-        //   return response()->json($apartamentFees);
-
         $apartamentFees = Apartament::findOrFail($request->route('id'))->fees()
-        ->when(isset($request->year), function($query) use ($request){
-            $query->where('year', '=', $request->year)->with('organization');
-          },function($query){
+        ->get();
+        return response()->json($apartamentFees);
+    }
+
+    // public function getApartamentFees2(GetApartamentFeesRequest $request) // get apart fess of year
+    // {
+    //     $apartamentFees = Apartament::findOrFail($request->route('id'))->fees()
+    //     ->when(isset($request->year), function($query) use ($request){
+    //         $query->where('year', '=', $request->year)->with('organization');
+    //       },function($query){
+    //         $query->where("year", '>', 0);
+    //       })->get();
+
+    //     $collection = collect($apartamentFees);
+    //     $grouped = $collection->mapToGroups(function ($item, $key) {
+    //         return [$item['organization_id'] => $item];
+    //     });
+    //     return response()->json($grouped);
+    // }
+    public function getApartamentFees2(GetApartamentFeesRequest $request) // get apart fess group by year and organizations
+    {
+        $apartamentFees = Apartament::findOrFail($request->route('id'))->fees()->with('organization')
+        ->when(isset($request->yearFrom), function($query) use ($request){
+            $query->where('year', '>=', $request->yearFrom)->with('organization');
+            },function($query){
             $query->where("year", '>', 0);
-          })->get();
-        //new
-        // if (isset($request->year)) {
-        //     $apartamentFees2 = Apartament::findOrFail($request->route('id'))->fees()
-        //     ->where('year', '=', $request->year+1)->with('organization')->get();
-        // }
-        //new end
-        $collection = collect($apartamentFees);
-        $grouped = $collection->mapToGroups(function ($item, $key) {
-            return [$item['organization_id'] => $item];
-        });
-        return response()->json($grouped);
+            })
+        ->get()
+        ->groupBy([
+            'organization_id',
+            'year'
+        ]);
+        return response()->json($apartamentFees);
+
+        // $collection = collect($apartamentFees);
+        // $grouped = $collection->mapToGroups(function ($item, $key) {
+        //     return [$item['year'] => $item];
+        // });
+        // $grouped = $collection->groupBy([
+        //     'organization_id',
+        //     function($item) {
+        //         return $item['year'];
+        //     },
+        // ], $preserveKeys = true);
+
+        // return response()->json($grouped);
     }
 
     public function getApartamentUsers($request)
@@ -161,5 +179,28 @@ class ApartamentController extends Controller
         // $apartamentUsers = ApartamentUser::with('userDetails')->where('apartament_id', '=', $request)->get();
         $apartamentUsers = Apartament::findOrFail($request)->users()->get();
         return response()->json($apartamentUsers);
+    }
+    public function getApartamentFees2norm(GetApartamentFeesRequest $request) // get apart fess group by year and organizations
+    {
+        $apartamentFees = Apartament::findOrFail($request->route('id'))->fees()->with('organization')
+        ->get()
+        ->groupBy([
+            'organization_id',
+            'year'
+        ]);
+        return response()->json($apartamentFees);
+
+        // $collection = collect($apartamentFees);
+        // $grouped = $collection->mapToGroups(function ($item, $key) {
+        //     return [$item['year'] => $item];
+        // });
+        // $grouped = $collection->groupBy([
+        //     'organization_id',
+        //     function($item) {
+        //         return $item['year'];
+        //     },
+        // ], $preserveKeys = true);
+
+        // return response()->json($grouped);
     }
 }

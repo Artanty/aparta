@@ -26,6 +26,8 @@ Route::resource('apartament', 'ApartamentController');
 Route::get('apartament/getApartamentFees/{id}', 'ApartamentController@getApartamentFees');
 Route::get('apartament/getApartamentUsers/{id}', 'ApartamentController@getApartamentUsers');
 
+Route::get('apartament/getApartamentFees2/{id}', 'ApartamentController@getApartamentFees2');
+
 Route::resource('apartamentFee', 'ApartamentFeeController');
 
 Route::resource('apartamentUser', 'ApartamentUserController');

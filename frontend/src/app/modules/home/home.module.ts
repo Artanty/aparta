@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+import { SharedModule } from '../shared/shared.module';
+
 import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home.component';
 import { NgChartsModule } from 'ng2-charts';
@@ -12,7 +14,8 @@ import { NgChartsModule } from 'ng2-charts';
   imports: [
     CommonModule,
     HomeRoutingModule,
-    NgChartsModule
+    NgChartsModule,
+    SharedModule
   ]
 })
 export class HomeModule { }

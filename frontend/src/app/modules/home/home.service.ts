@@ -13,11 +13,14 @@ export class HomeService {
   ) { }
 
   getFeesOfApartamentOfYear(a_id: number, year: number): Observable<any>{
-    console.log(111)
-    return this.http.get<any[]>(`apartament/getApartamentFees/${a_id}?year=${year}`).pipe(
-      tap((res: any) => {
-        localStorage.setItem('apartamentFees', JSON.stringify(res))
-      })
-    )
+    return this.http.get<any[]>(`apartament/getApartamentFees2/${a_id}?year=${year}`)
+  }
+
+  getFeesOfApartamentGroupedBy(a_id: number, yearFrom: number, yearTo: number, groupBy: string = 'year'): Observable<any>{
+    let request = `apartament/getApartamentFees2/${a_id}?groupBy=${groupBy}`
+    if (yearFrom && yearTo) {
+      request += `&yearFrom=${yearFrom}&yearTo=${yearTo}`
+    }
+    return this.http.get<any[]>(request)
   }
 }

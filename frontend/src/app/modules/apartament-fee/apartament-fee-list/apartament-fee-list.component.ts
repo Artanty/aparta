@@ -1,9 +1,9 @@
 import { Component, ElementRef, OnDestroy, OnInit, Output, ViewChild, EventEmitter, Input } from '@angular/core';
-import { combineLatest, combineLatestWith, concat, finalize, map, Observable, of, startWith, Subscription, tap, withLatestFrom } from 'rxjs';
+import { combineLatest, combineLatestWith, concat, filter, finalize, map, Observable, of, startWith, Subscription, tap, withLatestFrom } from 'rxjs';
 import { ApartamentFeeService } from '../apartament-fee.service';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { MessageService } from '../../shared/services/message/message.service';
-import { orderBy, removeDuplicatedObj } from '../../shared/helpers';
+import { isNonNull, orderBy, removeDuplicatedObj } from '../../shared/helpers';
 import { FormControl, FormGroup } from '@angular/forms';
 import { GetCurrancyPipe } from '../../shared/pipes/get-currancy.pipe';
 // import { GetCurrancyPipe } from ''
@@ -116,9 +116,11 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
       this.amountOut.emit(amount)
       return res
     }
+
     if (this.apartament_id) {
       obs$ = this.ApartamentFeeServ.getFeesOfApartament(+this.apartament_id, true)
       this.items$ = this.ApartamentFeeServ.apartamentFees$.pipe(
+        filter(isNonNull),
         map(mapPipeSetSelectOptions),
         combineLatestWith(this.filterFormGroup.valueChanges, this.sortFormGroup.valueChanges),
         map(mapPipeFilterAndSort),
@@ -127,6 +129,7 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
     } else {
       obs$ = this.ApartamentFeeServ.getAllFees()
       this.items$ = this.ApartamentFeeServ.allFees$.pipe(
+        filter(isNonNull),
         map(mapPipeSetSelectOptions),
         combineLatestWith(this.filterFormGroup.valueChanges, this.sortFormGroup.valueChanges),
         map(mapPipeFilterAndSort),

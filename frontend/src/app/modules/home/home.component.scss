@@ -1,0 +1,22 @@
+.yearsBefore{
+  width: 182px;
+  display: flex;
+  align-items: center;
+  &__label{
+    white-space: nowrap;
+    margin-bottom: 2px;
+  }
+  &__select{
+    margin-left: 20px;
+    border: none!important;
+    font-size: 14px;
+    width: 202px;
+  }
+}
+
+.bodyLoading{
+  text-align: center;
+  height: calc(100vh - 300px);
+  display: flex;
+  align-items: center;
+}
