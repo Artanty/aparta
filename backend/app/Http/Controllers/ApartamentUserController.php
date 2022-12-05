@@ -105,10 +105,10 @@ class ApartamentUserController extends Controller
      */
     public function findUserByEmail($request)
     {
-        $user = User::where('email', '=', $request)
+        return User::where('email', '=', $request)
                     ->where('id', '!=', auth()->guard('api')->user()->id)
-                    ->first();
-        return response()->json($user);
+                    ->firstOrFail();
+        // return response()->json($user);
     }
 
 }

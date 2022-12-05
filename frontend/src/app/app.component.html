@@ -2,10 +2,11 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
   <div class="container-fluid">
     <button
+      #navbarToggler
       class="navbar-toggler"
       type="button"
-      (click)="fixedNavbarExample.toggle()"
-      aria-controls="fixedNavbarExample"
+      (click)="fixedNavbar.toggle()"
+      aria-controls="fixedNavbar"
       aria-expanded="false"
       aria-label="Toggle navigation"
     >
@@ -13,9 +14,9 @@
     </button>
     <div
       mdbCollapse
-      #fixedNavbarExample="mdbCollapse"
+      #fixedNavbar="mdbCollapse"
       class="collapse navbar-collapse"
-      id="fixedNavbarExample"
+      id="fixedNavbar"
     >
       <ul class="navbar-nav me-auto mb-lg-0">
         <li class="nav-item active">

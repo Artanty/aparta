@@ -1,31 +1,20 @@
-<h2>Поиск пользователя</h2>
-<input type="text" placeholder="email" [(ngModel)]="user_email">
-<br>
-<button (click)="findUserByEmail()">Найти пользователя по email</button>
-
-<h2>Создание</h2>
-<input type="text" placeholder="apartament_id" [(ngModel)]="apartament_id">
-{{ apartament_name }}
-<input type="text" placeholder="user_id" [(ngModel)]="user_id">
-{{ user_name }}
-
-<button (click)="create()">Создать</button>
-<br>
-
-<h2>Получение</h2>
-<button (click)="read()">Получить</button>
-<br>
-<ul>
-  <li *ngFor="let item of items">
-    {{ item.id + ' | ' + item?.user_details?.name }}
-    <button (click)="placeToUpdate(item)">Обновить</button>
-    <button (click)="delete(item.id)">Удалить</button>
-  </li>
-
-</ul>
-<br>
-<h2>Обновление</h2>
-<input type="text" placeholder="Название" [(ngModel)]="update_id">
-<input type="text" placeholder="Название" [(ngModel)]="update_name">
-<input type="text" placeholder="Адрес" [(ngModel)]="update_address">
-<button (click)="update()">Обновить</button>
+<div class="container">
+  <div class="d-flex justify-content-between align-items-center py-3" style="margin-top: 58px;">
+    <h1 class="mb-3">Пользователи</h1>
+    <div>
+      <button (click)="back()" type="button" class="btn btn-outline-secondary me-3 mb-2 mt-2">Назад</button>
+      <button [routerLink]="['new']" type="button" class="btn btn-outline-primary mb-2 mt-2">Добавить</button>
+    </div>
+  </div>
+</div>
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <div class="card">
+        <div class="card-body p-0">
+          <app-apartament-user-list></app-apartament-user-list>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

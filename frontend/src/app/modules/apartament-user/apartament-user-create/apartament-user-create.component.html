@@ -1,0 +1,87 @@
+<div class="container">
+  <div class="d-flex justify-content-between align-items-center py-3" style="margin-top: 58px;">
+    <h1 class="mb-3">Добавление пользователя</h1>
+    <div class="">
+      <button (click)="back()" type="button" class="btn btn-outline-secondary me-3">Назад</button>
+      <button (click)="createApartamentUser()"
+      [disabled]="!foundUser_id || !selectedApartament" type="button" class="btn btn-outline-primary">Сохранить</button>
+    </div>
+  </div>
+</div>
+<div class="container">
+  <div class="row">
+    <div *ngIf="foundUser_id && selectedApartament" class="col-12 mb-3">
+      <p class="float-end">Открыть пользователю <b>{{ foundUser_name }}</b> квартиру <b>{{ selectedApartament?.name }}</b> для редактирования</p>
+    </div>
+    <div class="col-12 col-md-6">
+      <div class="card">
+        <div class="card-body p-3">
+          <ng-template [ngIf]="userFind_visible">
+            <h5 class="card-title mb-4">Поиск пользователя</h5>
+            <div *ngIf="userFind_loading" class="cardLoading">
+              <div class="spinner-border spinner" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+            <div *ngIf="!userFind_loading" class="row gx-3 gy-4">
+              <div class="col-12">
+                <app-input [control]="userFind_email" [label]="'email'"></app-input>
+              </div>
+
+              <div class="col-12">
+                <span *ngIf="userFind_inited && userFind_status" class="badge bg-success">Выбран</span>
+                <span *ngIf="userFind_inited && !userFind_status" class="badge bg-danger">Не найден</span>
+              </div>
+              <div class="col-12">
+                <button
+                [disabled]="!userFind_email.valid"
+                (click)="findUserByEmail()" type="button" class="btn btn-outline-primary float-end btn-sm">Найти</button>
+              </div>
+            </div>
+          </ng-template>
+          <ng-template [ngIf]="!userFind_visible">
+            <h5 class="card-title mb-4">Пользователь</h5>
+            <div *ngIf="userFind_loading" class="cardLoading">
+              <div class="spinner-border spinner" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+            <div *ngIf="!userFind_loading" class="row gx-3 gy-4">
+              <div class="col-12">
+                {{ foundUser_name }}
+              </div>
+              <div class="col-12">
+                <span *ngIf="userFind_inited && userFind_status" class="badge bg-success">Выбран</span>
+              </div>
+              <div class="col-12">
+                <a class="alink text-black-50" (click)="userFind_visible = true"><small>Назад к поиску</small></a>
+              </div>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-6">
+      <div class="card">
+        <div class="card-body p-3">
+          <h5 class="card-title mb-4">Выбор квартиры</h5>
+          <div *ngIf="selectApartament_tableLoading" class="cardLoading">
+            <div class="spinner-border spinner" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+          <ul *ngIf="!selectApartament_tableLoading">
+            <li *ngFor="let item of selectApartament_tableItemg$ | async"
+            class="flexRowBetweenCenter mb-2">
+              {{ item.name }}
+              <button class="btn  btn-sm"
+                [ngClass]="item.id !== selectedApartament?.id ? 'btn-outline-primary' : 'btn-primary'"
+              (click)="selectApartament(item)"
+              >{{ item.id !== selectedApartament?.id ? 'Выбрать' : 'Выбрано' }}</button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Auth;
 //     return $request->user();
 // });
 
-// Route::post('/register', 'Auth\UserAuthController@register');
+Route::post('register', 'Auth\UserAuthController@register');
 Route::post('login', 'Auth\UserAuthController@login');
 
 Route::resource('apartament', 'ApartamentController');

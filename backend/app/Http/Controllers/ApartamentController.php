@@ -25,6 +25,7 @@ class ApartamentController extends Controller
             ->get();
 
         return $apartaments;
+        // return auth()->guard('api')->user()->id;
     }
 
     /**

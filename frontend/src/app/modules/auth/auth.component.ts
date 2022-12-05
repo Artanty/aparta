@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, isDevMode, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
@@ -72,6 +72,19 @@ export class AuthComponent implements OnInit {
    }
 
   ngOnInit(): void {
+    if(isDevMode()){
+      console.log(33)
+      this.registerFormGroup.patchValue({
+        name: 'test',
+        email: 'test@gmail.com',
+        password: 'test',
+        password_confirmation: 'test'
+      })
+      this.loginFormGroup.patchValue({
+        email: 'antoshkinartyom@gmail.com',
+        password: 'forgot'
+      })
+    }
   }
 
   setRegisterVisible (data: boolean) {

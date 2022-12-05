@@ -28,6 +28,9 @@ import { ApartamentService } from '../shared/services/apartament/apartament.serv
   ],
   providers: [
     ApartamentService
-  ]
+  ],
+  // exports: [
+  //   ApartamentListComponent
+  // ]
 })
 export class ApartamentModule { }

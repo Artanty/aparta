@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,  } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common'
+
 
 @Component({
   selector: 'app-apartament-user',
@@ -28,7 +30,8 @@ export class ApartamentUserComponent implements OnInit {
   update_address = ''
   constructor(
     private http: HttpClient,
-    private ActivatedRoute: ActivatedRoute
+    private ActivatedRoute: ActivatedRoute,
+    private Location: Location
   ) {
     this.apartament_id = this.ActivatedRoute.snapshot.paramMap.get('apartament_id') || ''
 
@@ -37,32 +40,9 @@ export class ApartamentUserComponent implements OnInit {
   ngOnInit(): void {
     this.read()
   }
-  findUserByEmail() {
-    this.http.get(`${this.baseUrl}/apartamentUser/findUserByEmail/${this.user_email}`).subscribe(
-      (res: any) => {
-        if (res?.id){
-          this.user_id = res.id
-          this.user_name = res.name
-        }
-
-      }
-    )
-  }
-
-  create() {
-    const data = {
-      apartament_id: this.apartament_id,
-      user_id: this. user_id
-    }
-    this.http.post(`${this.baseUrl}/apartamentUser`, data).subscribe(
-      (res: any) => {
-        this.items.push(res)
-      }
-    )
-  }
 
   read() {
-    this.http.get(`${this.baseUrl}/apartament/getApartamentUsers/${this.apartament_id}`).subscribe({
+    this.http.get(`apartament/getApartamentUsers/${this.apartament_id}`).subscribe({
       next: (res: any) => {
         this.items = res
       },
@@ -82,7 +62,7 @@ export class ApartamentUserComponent implements OnInit {
       name: this.update_name,
       address: this.update_address
     }
-    this.http.put(`${this.baseUrl}/apartamentUser/${data.id}`, data).subscribe({
+    this.http.put(`apartamentUser/${data.id}`, data).subscribe({
       next: (res: any) => {
         this.items = this.items.map((el: any) => {
           if (el.id === res.id) {
@@ -95,10 +75,12 @@ export class ApartamentUserComponent implements OnInit {
     )
   }
   delete(id: number) {
-    this.http.delete(`${this.baseUrl}/apartamentUser/${id}`).subscribe(res=> {
+    this.http.delete(`apartamentUser/${id}`).subscribe(res=> {
       this.items = this.items.filter((el: any) => el.id !== id)
     })
   }
-
+  back() {
+    this.Location.back()
+  }
 
 }
