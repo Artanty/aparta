@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ChartData, ChartDataset } from 'chart.js';
-import { orderBy, removeDuplicatedObj } from '../shared/helpers';
 import { MessageService } from '../shared/services/message/message.service';
 import { OrganizationService } from '../shared/services/organization/organization.service';
 import { HomeService } from './home.service';
