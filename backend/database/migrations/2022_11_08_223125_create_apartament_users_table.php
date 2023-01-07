@@ -17,6 +17,8 @@ class CreateApartamentUsersTable extends Migration
             $table->increments('id');
             $table->bigInteger('apartament_id');
             $table->bigInteger('user_id');
+            $table->boolean('status');
+            $table->smallInteger('role');
             $table->timestamps();
         });
     }

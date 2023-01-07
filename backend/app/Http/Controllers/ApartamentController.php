@@ -9,7 +9,7 @@ use App\Http\Requests\UpdateApartamentRequest;
 use App\Http\Requests\GetApartamentRequest;
 use App\Http\Requests\DeleteApartamentRequest;
 use App\Http\Requests\GetApartamentFeesRequest;
-
+use DB;
 
 class ApartamentController extends Controller
 {
@@ -23,9 +23,17 @@ class ApartamentController extends Controller
         $apartaments = Apartament::select('*')
             ->where('creator_id', auth()->guard('api')->user()->id)
             ->get();
+        // $apartaments = DB::table('apartaments')
+        //    ->whereExists(function ($query) {
+        //        $query->select(DB::raw(1))
+        //              ->from('apartament_users')
+        //              ->whereColumn('apartament_users.apartament_id', 'apartaments.id')
+        //              ->where('apartament_users.user_id', '=', auth()->guard('api')->user()->id);
+        //    })->get();
 
         return $apartaments;
         // return auth()->guard('api')->user()->id;
+        // $apartamentUsers = Apartament::findOrFail($request)->users()->get();
     }
 
     /**
@@ -151,7 +159,8 @@ class ApartamentController extends Controller
         $apartamentFees = Apartament::findOrFail($request->route('id'))->fees()->with('organization')
         ->when(isset($request->yearFrom), function($query) use ($request){
             $query->where('year', '>=', $request->yearFrom)->with('organization');
-            },function($query){
+            },
+            function($query){
             $query->where("year", '>', 0);
             })
         ->get()

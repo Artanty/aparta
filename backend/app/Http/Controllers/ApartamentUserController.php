@@ -43,6 +43,8 @@ class ApartamentUserController extends Controller
         $apartamentUser = new ApartamentUser;
         $apartamentUser->apartament_id = $request->apartament_id;
         $apartamentUser->user_id = $request->user_id;
+        $apartamentUser->status = $request->status;
+        $apartamentUser->role = $request->role;
 
         $apartamentUser->save();
 
@@ -80,7 +82,15 @@ class ApartamentUserController extends Controller
      */
     public function update(UpdateApartamentUserRequest $request, ApartamentUser $apartamentUser)
     {
-        //
+
+        $apartamentUser->apartament_id = $request->apartament_id;
+        $apartamentUser->user_id = $request->user_id;
+        $apartamentUser->status = $request->status;
+        $apartamentUser->role = $request->role;
+
+        $apartamentUser->save();
+
+        return $apartamentUser;
     }
 
     /**

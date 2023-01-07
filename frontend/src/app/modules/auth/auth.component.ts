@@ -73,7 +73,6 @@ export class AuthComponent implements OnInit {
 
   ngOnInit(): void {
     if(isDevMode()){
-      console.log(33)
       this.registerFormGroup.patchValue({
         name: 'test',
         email: 'test@gmail.com',

@@ -57,7 +57,6 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
     // console.log(this.apartament_id)
     let obs$: Observable<any>
     const mapPipeSetSelectOptions = (res: any) => {
-      // console.log(res)
       this.nameOptions = orderBy(removeDuplicatedObj(res, 'name'), 'name', 'desc')
       this.yearOptions = orderBy(removeDuplicatedObj(res, 'year'), 'year', 'desc').map((el: any) => ({ name: el.year, value: el.year }))
       return orderBy(res, 'paidDate', 'asc', (el: any)=> new Date(el.paidDate).getTime())

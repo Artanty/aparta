@@ -34,7 +34,8 @@ import { ModalComponent } from './features/modal/modal.component';
 
 import { NgxMaskModule, IConfig } from 'ngx-mask';
 import { HumanMonthPipe } from './pipes/human-month.pipe';
-import { GetCurrancyPipe } from './pipes/get-currancy.pipe'
+import { GetCurrancyPipe } from './pipes/get-currancy.pipe';
+
 // const maskConfig: Partial<IConfig> = {
 //   validation: true,
 // };
@@ -48,6 +49,7 @@ export const options: Partial<null|IConfig> | (() => Partial<IConfig>) = null;
     ModalComponent,
     HumanMonthPipe,
     GetCurrancyPipe,
+
 
 
   ],
@@ -80,7 +82,8 @@ export const options: Partial<null|IConfig> | (() => Partial<IConfig>) = null;
 
   ],
   exports: [
-    CommonModule, FormsModule,
+    CommonModule,
+    FormsModule,
     NgxMaskModule,
     MdbAccordionModule,
     MdbCarouselModule,

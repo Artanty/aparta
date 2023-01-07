@@ -1,5 +1,5 @@
 .yearsBefore{
-  width: 182px;
+  // width: 182px;
   display: flex;
   align-items: center;
   &__label{
@@ -20,3 +20,34 @@
   display: flex;
   align-items: center;
 }
+
+.hiddenOrganizations {
+  &__wrapper{
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  &__item{
+    & label{
+      text-overflow: ellipsis!important;
+      display: block;
+      white-space: nowrap!important;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow-wrap: break-word;
+    }
+  }
+}
+
+.apartament{
+  // width: 182px;
+  display: flex;
+  align-items: center;
+  &__select{
+    margin-left: 20px;
+    border: none!important;
+    font-size: 14px;
+    width: 200px;
+  }
+}
+

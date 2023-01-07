@@ -27,4 +27,12 @@ class Apartament extends Model
     {
         return $this->hasMany('App\Models\ApartamentUser', 'apartament_id', 'id')->with('userDetails');
     }
+
+    /**
+     * Get the users with user details of the apartament
+     */
+    public function usersToEdit()
+    {
+        return $this->hasMany('App\Models\ApartamentUser', 'apartament_id', 'id');
+    }
 }

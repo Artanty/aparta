@@ -1,12 +1,40 @@
 <div class="container">
-  <div class="d-flex justify-content-between align-items-center py-3" style="margin-top: 58px;">
-    <h1 class="mb-3">Главная</h1>
-    <div class="yearsBefore">
-      <label class="yearsBefore__label">Сравнить с данными за:</label>
+  <div class="row py-3" style="margin-top: 58px;">
+    <!-- <h1 class="col-12 col-md-6 mb-3">Главная</h1> -->
+    <div class="col-12 col-md-6 mb-3 apartament">
+      <label class="apartament__label">Квартира</label>
+      <select [formControl]="apartament_id" class="form-select apartament__select">
+        <option *ngFor="let option of apartamentOptions$ | async" [value]="option.id"
+        >{{ option.name }}</option>
+      </select>
+    </div>
+    <div class="col-12 col-md-6 yearsBefore justify-content-end">
+      <label class="yearsBefore__label">Сравнить с <span class="d-none d-md-inline">данными за</span>:</label>
       <select [formControl]="yearsBefore" class="form-select yearsBefore__select">
         <option *ngFor="let option of yearsBeforeOptions" [value]="option.id"
         >{{ option.name }}</option>
       </select>
+    </div>
+    <div class="col-12 hiddenOrganizations">
+      <div class="row hiddenOrganizations__wrapper">
+        <ng-template ngFor let-i="index" let-c="count" let-item [ngForOf]="organizations">
+          <div class="form-check col-12 col-md-3 hiddenOrganizations__item">
+            <input
+              mdbCheckbox
+              class="form-check-input"
+              type="checkbox"
+              [title]="item.name"
+              [ngModel]="getHiddenOrganizationValue(item.id)"
+              [id]="'flexCheckDefault_' + item.id"
+              (change)="hideOrganization(item.id)"
+            />
+            <label class="form-check-label" [for]="'flexCheckDefault_' + item.id"
+            [title]="item.name">
+              {{ item.name }}
+            </label>
+          </div>
+        </ng-template>
+      </div>
     </div>
   </div>
 </div>
@@ -21,7 +49,7 @@
   </div>
   <div class="row">
     <ng-template ngFor let-i="index" let-c="count" let-item [ngForOf]="organizations">
-      <div class="col-12 col-lg-6 mb-3">
+      <div class="col-12 col-lg-6 mb-3" [class.d-none]="!getHiddenOrganizationValue(item.id)">
         <div class="card" style="overflow-x: auto;">
           <div class="card-body p-3">
             <h5 class="card-title">{{ item.name }}</h5>

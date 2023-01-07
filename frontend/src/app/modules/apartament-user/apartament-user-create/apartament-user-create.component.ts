@@ -2,7 +2,7 @@ import { ApartamentService } from './../../shared/services/apartament/apartament
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
+import { Router, NavigationEnd, ActivatedRoute, RouterModule } from '@angular/router';
 import { Location } from '@angular/common'
 import { MessageService } from '../../shared/services/message/message.service';
 import { FeeTemplateService } from '../../shared/services/feeTemplate/fee-template.service';
@@ -31,6 +31,9 @@ export class ApartamentUserCreateComponent implements OnInit {
   selectApartament_tableLoading: boolean = false
   selectApartament_tableItemg$: Observable<any>
   selectedApartament: any = null
+
+  role: boolean = true
+  status: boolean = true
 
   route_apartament_id: number | null
 
@@ -108,7 +111,9 @@ export class ApartamentUserCreateComponent implements OnInit {
     this.selectApartament_tableLoading = true
     const data = {
       apartament_id: this.selectedApartament.id,
-      user_id: this.foundUser_id
+      user_id: this.foundUser_id,
+      role: Number(this.role) + 1,
+      status: this.status
     }
     this.ApartamentUserServ.createApartamentUser(data)
     .pipe(finalize(() => {

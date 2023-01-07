@@ -11,7 +11,7 @@
 <div class="container">
   <div class="row">
     <div *ngIf="foundUser_id && selectedApartament" class="col-12 mb-3">
-      <p class="float-end">Открыть пользователю <b>{{ foundUser_name }}</b> квартиру <b>{{ selectedApartament?.name }}</b> для редактирования</p>
+      <p class="float-end">Открыть пользователю <b>{{ foundUser_name }}</b> квартиру <b>{{ selectedApartament?.name }}</b> для <b>{{ role ? 'редактирования' : 'просмотра' }}</b></p>
     </div>
     <div class="col-12 col-md-6">
       <div class="card">
@@ -58,6 +58,44 @@
               </div>
             </div>
           </ng-template>
+        </div>
+      </div>
+
+      <div class="card mt-4">
+        <div class="card-body p-3">
+
+            <h5 class="card-title mb-4">Поиск пользователя</h5>
+
+            <div class="row gx-3 gy-4">
+              <div class="col-12">
+                <div class="form-check form-switch">
+                  <input
+                    mdbCheckbox
+                    class="form-check-input"
+                    type="checkbox"
+                    id="flexSwitchCheckDefault"
+                    [(ngModel)]="status"
+                  />
+                  <label class="form-check-label" for="flexSwitchCheckDefault"
+                    >Активный</label
+                  >
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="form-check form-switch">
+                  <input
+                    mdbCheckbox
+                    class="form-check-input"
+                    type="checkbox"
+                    id="flexSwitchCheckDefault"
+                    [(ngModel)]="role"
+                  />
+                  <label class="form-check-label" for="flexSwitchCheckDefault"
+                    >Может редактировать</label
+                  >
+                </div>
+              </div>
+            </div>
         </div>
       </div>
     </div>
