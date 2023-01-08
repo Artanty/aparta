@@ -1,0 +1,20 @@
+@media (max-width: 500px) {
+  h1{
+
+    font-size: 22px;
+  }
+}
+.topButtons{
+  display: flex;
+}
+.date{
+  // width: 182px;
+  display: flex;
+  align-items: center;
+  &__input{
+    margin-left: 20px;
+    height: 36px;
+    font-size: 14px;
+    border-color: #dfdfdf;
+  }
+}

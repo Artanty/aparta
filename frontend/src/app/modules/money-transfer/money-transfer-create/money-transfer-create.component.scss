@@ -1,0 +1,32 @@
+@media (max-width: 500px) {
+  h1{
+
+    font-size: 22px;
+  }
+}
+.topButtons{
+  display: flex;
+}
+.cardLoading{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+}
+.spinner{
+  color:#5069ee;
+}
+
+.date{
+  // width: 182px;
+  display: flex;
+  align-items: center;
+  &__input{
+    margin-left: 20px;
+    height: 36px;
+    font-size: 14px;
+    border-color: #dfdfdf;
+  }
+}
+
+

@@ -36,3 +36,6 @@ Route::get('apartamentUser/findUserByEmail/{email}', 'ApartamentUserController@f
 Route::resource('feeTemplate', 'FeeTemplateController');
 Route::resource('organization', 'OrganizationController');
 Route::resource('organizationTariff', 'OrganizationTariffController');
+
+Route::resource('moneyTransfer', 'MoneyTransferController');
+
