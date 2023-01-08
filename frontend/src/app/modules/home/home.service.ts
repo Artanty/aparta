@@ -16,8 +16,8 @@ export class HomeService {
     return this.http.get<any[]>(`apartament/getApartamentFees2/${a_id}?year=${year}`)
   }
 
-  getFeesOfApartamentGroupedBy(a_id: number, yearFrom: number, yearTo: number, groupBy: string = 'year'): Observable<any>{
-    let request = `apartament/getApartamentFees2/${a_id}?groupBy=${groupBy}`
+  getFeesOfApartamentGroupedBy(a_id: number, yearFrom: number, yearTo: number, groupBy1: string, groupBy2: string): Observable<any>{
+    let request = `apartament/getApartamentFees2/${a_id}?groupBy1=${groupBy1}&groupBy2=${groupBy2}`
     if (yearFrom && yearTo) {
       request += `&yearFrom=${yearFrom}&yearTo=${yearTo}`
     }

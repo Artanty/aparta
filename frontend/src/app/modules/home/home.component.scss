@@ -1,18 +1,4 @@
-.yearsBefore{
-  // width: 182px;
-  display: flex;
-  align-items: center;
-  &__label{
-    white-space: nowrap;
-    margin-bottom: 2px;
-  }
-  &__select{
-    margin-left: 20px;
-    border: none!important;
-    font-size: 14px;
-    width: 202px;
-  }
-}
+
 
 .bodyLoading{
   text-align: center;
@@ -51,3 +37,34 @@
   }
 }
 
+.groupBy1{
+  // width: 182px;
+  display: flex;
+  align-items: center;
+  &__label{
+    white-space: nowrap;
+    margin-bottom: 2px;
+  }
+  &__select{
+    margin-left: 20px;
+    border: none!important;
+    font-size: 14px;
+    width: 202px;
+  }
+}
+
+.yearsBefore{
+  // width: 182px;
+  display: flex;
+  align-items: center;
+  &__label{
+    white-space: nowrap;
+    margin-bottom: 2px;
+  }
+  &__select{
+    margin-left: 20px;
+    border: none!important;
+    font-size: 14px;
+    width: 202px;
+  }
+}

@@ -154,34 +154,37 @@ class ApartamentController extends Controller
     //     });
     //     return response()->json($grouped);
     // }
+    private function setGroupBy1 ($request) {
+        $groupBy1 = 'organization_id';
+        switch($request->groupBy1) {
+            case 'template':
+                $groupBy1 = 'template_id';
+                break;
+            case 'name':
+                $groupBy1 = 'name';
+                break;
+            default:
+                $groupBy1 = 'organization_id';
+        }
+        return $groupBy1;
+    }
     public function getApartamentFees2(GetApartamentFeesRequest $request) // get apart fess group by year and organizations
     {
-        $apartamentFees = Apartament::findOrFail($request->route('id'))->fees()->with('organization')
+        // todo add required groupBy param!!
+        $groupBy1 = $this->setGroupBy1($request);
+        $apartamentFees = Apartament::findOrFail($request->route('id'))->fees()
         ->when(isset($request->yearFrom), function($query) use ($request){
-            $query->where('year', '>=', $request->yearFrom)->with('organization');
+                $query->where('year', '>=', $request->yearFrom)->with(['organization', 'template']);
             },
             function($query){
-            $query->where("year", '>', 0);
+                $query->where("year", '>', 0)->with(['organization', 'template']);
             })
         ->get()
         ->groupBy([
-            'organization_id',
-            'year'
+            $groupBy1,
+            (isset($request->groupBy2) && $request->groupBy2 == 'year') ? 'year' : 'year'
         ]);
         return response()->json($apartamentFees);
-
-        // $collection = collect($apartamentFees);
-        // $grouped = $collection->mapToGroups(function ($item, $key) {
-        //     return [$item['year'] => $item];
-        // });
-        // $grouped = $collection->groupBy([
-        //     'organization_id',
-        //     function($item) {
-        //         return $item['year'];
-        //     },
-        // ], $preserveKeys = true);
-
-        // return response()->json($grouped);
     }
 
     public function getApartamentUsers($request)

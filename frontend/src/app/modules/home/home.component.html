@@ -1,21 +1,37 @@
 <div class="container">
   <div class="row py-3" style="margin-top: 58px;">
-    <!-- <h1 class="col-12 col-md-6 mb-3">Главная</h1> -->
-    <div class="col-12 col-md-6 mb-3 apartament">
-      <label class="apartament__label">Квартира</label>
+
+    <div class="col-12 col-md-6 col-lg-4 apartament">
+      <label class="apartament__label">
+        <i class="fas fa-home d-inline d-md-none"></i>
+        <span class="d-none d-md-inline">Квартира</span>
+      </label>
       <select [formControl]="apartament_id" class="form-select apartament__select">
         <option *ngFor="let option of apartamentOptions$ | async" [value]="option.id"
         >{{ option.name }}</option>
       </select>
     </div>
-    <div class="col-12 col-md-6 yearsBefore justify-content-end">
-      <label class="yearsBefore__label">Сравнить с <span class="d-none d-md-inline">данными за</span>:</label>
+    <div class="col-12 col-md-6 col-lg-4 groupBy1 ">
+      <label class="groupBy1__label">
+        <i class="fas fa-cubes d-inline d-md-none"></i>
+        <span class="d-none d-md-inline">Группировать по:</span>
+      </label>
+      <select [formControl]="groupBy1" class="form-select groupBy1__select">
+        <option *ngFor="let option of groupBy1Options" [value]="option.id"
+        >{{ option.name }}</option>
+      </select>
+    </div>
+    <div class="col-12 col-md-12 col-lg-4 yearsBefore ">
+      <label class="yearsBefore__label">
+        <i class="fas fa-balance-scale d-inline d-md-none"></i>
+        <span class="d-none d-md-inline">Сравнить:</span>
+      </label>
       <select [formControl]="yearsBefore" class="form-select yearsBefore__select">
         <option *ngFor="let option of yearsBeforeOptions" [value]="option.id"
         >{{ option.name }}</option>
       </select>
     </div>
-    <div class="col-12 hiddenOrganizations">
+    <div class="col-12 hiddenOrganizations mt-3 ">
       <div class="row hiddenOrganizations__wrapper">
         <ng-template ngFor let-i="index" let-c="count" let-item [ngForOf]="organizations">
           <div class="form-check col-12 col-md-3 hiddenOrganizations__item">

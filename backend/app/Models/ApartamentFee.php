@@ -24,4 +24,12 @@ class ApartamentFee extends Model
     {
         return $this->hasOne('App\Models\Organization', 'id', 'organization_id');
     }
+
+    /**
+     * Get the template of apartament fee
+     */
+    public function template()
+    {
+        return $this->hasOne('App\Models\FeeTemplate', 'id', 'template_id');
+    }
 }

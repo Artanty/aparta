@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ChartData, ChartDataset } from 'chart.js';
-import { Observable } from 'rxjs';
+import { groupBy, Observable } from 'rxjs';
 import { ApartamentService } from '../shared/services/apartament/apartament.service';
 import { MessageService } from '../shared/services/message/message.service';
 import { OrganizationService } from '../shared/services/organization/organization.service';
@@ -44,6 +44,12 @@ export type ApartamentFeeWithOrganization =
 export interface ApartamentFeesByYear {
   [year: number]: ApartamentFeeWithOrganization[]
 }
+export enum EGroupBy1 {
+  'organization',
+  'template',
+  'name'
+}
+export type TGroupBy1 = 'organization' | 'template'
 
 @Component({
   selector: 'app-home',
@@ -60,6 +66,12 @@ export class HomeComponent implements OnInit {
     { id: 5, name: 'Последние 5 лет' },
     { id: 50, name: 'Все время' }
   ]
+  groupBy1: FormControl = new FormControl(0)
+  groupBy1Options: any[] = [
+    { id: 0, name: 'Организации' },
+    { id: 1, name: 'Шаблону' },
+    { id: 2, name: 'Названию' },
+  ]
   organizations: Organization[] | any[] = []
   hiddenOrganizations: Set<number> = new Set()
   loading: boolean = true
@@ -67,7 +79,8 @@ export class HomeComponent implements OnInit {
   apartamentOptions$: Observable<any[]>
   mainFilterFormGroup: FormGroup = new FormGroup({
     apartament_id: this.apartament_id,
-    yearsBefore: this.yearsBefore
+    yearsBefore: this.yearsBefore,
+    groupBy1: this.groupBy1
   })
   constructor(
     private HomeServ: HomeService,
@@ -83,7 +96,8 @@ export class HomeComponent implements OnInit {
       startDate.setFullYear(new Date().getFullYear() - res.yearsBefore)
       const yearFrom = startDate.getFullYear()
       const yearTo = new Date().getFullYear()
-      this.getFeesOfApartamentGrouped(apartament_id, yearFrom, yearTo)
+      const groupByValue = EGroupBy1[res.groupBy1] as TGroupBy1
+      this.getFeesOfApartamentGrouped(apartament_id, yearFrom, yearTo, groupByValue)
     })
 
     this.ApartamentServ.getApartaments().subscribe((res: any) => {
@@ -104,18 +118,24 @@ export class HomeComponent implements OnInit {
   obj: any = {}
   ready: any = []
 
-  getFeesOfApartamentGrouped(apartament_id: number, yearForm: number, yearTo: number) {
+  getFeesOfApartamentGrouped(apartament_id: number, yearForm: number, yearTo: number, groupBy1: TGroupBy1) {
     this.loading = true
     this.organizations = []
-    this.HomeServ.getFeesOfApartamentGroupedBy(apartament_id, yearForm, yearTo).subscribe({
+    // let groupBy1 = 'template'
+    let groupBy2 = 'year'
+    this.HomeServ.getFeesOfApartamentGroupedBy(apartament_id, yearForm, yearTo, groupBy1, groupBy2).subscribe({
       next: (res: any) => {
         Object.entries(res).forEach(([organizationId, apartamentFeesByYear], i: number) => { // value - 2018: [{…}]
-          let orgName: string = ''
-          let orgId: number = 0
+          let name: string = ''
+          let id: number = 0
           const datasets: ChartDataset<'bar'>[] | any[] = []
           Object.entries(apartamentFeesByYear as ApartamentFeesByYear).forEach(([year, apartamentFeeWithOrganization], i: number) => {
-            orgName = apartamentFeeWithOrganization[0].organization?.name
-            orgId = apartamentFeeWithOrganization[0].organization?.id
+            name = groupBy1 === 'organization' ?
+              apartamentFeeWithOrganization?.[0].organization?.name :
+              apartamentFeeWithOrganization?.[0].template?.name
+            id = groupBy1 === 'organization' ?
+              apartamentFeeWithOrganization?.[0].organization?.id :
+              apartamentFeeWithOrganization?.[0].template?.id
             const dataset: ChartDataset<'bar'> = {
               data: this.buildValuesByMonths(apartamentFeeWithOrganization),
               label: year
@@ -123,8 +143,8 @@ export class HomeComponent implements OnInit {
             datasets.push(dataset)
           })
           const organization = {
-            name: orgName,
-            id: orgId,
+            name: name,
+            id: id,
             barChartData: {
               labels: this.mapMonths(),
               datasets: datasets
