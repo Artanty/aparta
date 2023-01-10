@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of, tap } from 'rxjs';
-import { orderBy } from '../shared/helpers';
+import { orderBy } from '../../helpers';
 
 @Injectable({
   providedIn: 'root'
@@ -151,5 +151,14 @@ export class ApartamentFeeService {
 
   getFee(id: number): Observable<any>{
     return this.http.get<any[]>(`apartamentFee/${id}`)
+  }
+
+  clear () {
+    this.setAllFees([])
+    this.setApartamentFees([])
+    this.setApartamentFeesLoading(false)
+    localStorage.removeItem('apartamentFees')
+    localStorage.removeItem('allFees')
+    localStorage.removeItem('apartamentFeeList')
   }
 }

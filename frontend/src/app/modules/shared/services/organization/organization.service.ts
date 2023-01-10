@@ -69,4 +69,10 @@ export class OrganizationService {
       })
     )
   }
+
+  clear() {
+    this.setOrganizations([])
+    this.setOrganizationsLoading(false)
+    localStorage.removeItem('organizations')
+  }
 }

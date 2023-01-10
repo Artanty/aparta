@@ -12,7 +12,7 @@ import { HttpClient } from '@angular/common/http';
 import { OrganizationService } from '../../../shared/services/organization/organization.service';
 import { Observable } from 'rxjs';
 import { OrganizationTariffService } from '../../../shared/services/organizationTariff/organization-tariff.service';
-import { ApartamentFeeService } from '../../apartament-fee.service';
+import { ApartamentFeeService } from '../../../shared/services/apartamentFee/apartament-fee.service';
 import { payVariants } from 'src/app/modules/shared/payVariants';
 
 

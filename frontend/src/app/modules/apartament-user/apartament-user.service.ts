@@ -85,4 +85,8 @@ export class ApartamentUserService {
     // getFeeTemplate(id: number): Observable<any>{
     //   return this.http.get<any[]>(`feeTemplate/${id}`)
     // }
+    clear() {
+      this.setApartamentUsers([])
+      this.setApartamentUsersLoading(false)
+    }
   }

@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, Renderer2, ViewChild } from '@angular/core';
-import { AuthService } from './modules/shared/services/auth.service';
+import { AuthService } from './modules/shared/services/auth/auth.service';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -20,7 +21,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     private elementRef: ElementRef,
     private renderer: Renderer2
   ) {
-    this.isLoggedIn = this.AuthServ.isLoggedIn()
+    this.Router.events.pipe(filter((res: any) => res instanceof NavigationEnd)).subscribe((val) => {
+      this.isLoggedIn = this.AuthServ.isLoggedIn()
+    });
   }
 
   ngAfterViewInit() {

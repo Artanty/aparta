@@ -2,9 +2,10 @@ import { Component, isDevMode, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
-import { AuthService } from '../shared/services/auth.service';
+import { AuthService } from '../shared/services/auth/auth.service';
 import { FormControl, Validators, FormGroup } from '@angular/forms';
 import { MessageService } from '../shared/services/message/message.service';
+
 
 export type User = {
   created_at: string

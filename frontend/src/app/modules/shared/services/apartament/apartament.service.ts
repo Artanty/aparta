@@ -67,4 +67,11 @@ export class ApartamentService {
     return this.http.delete(`apartament/${id}`)
   }
 
+  clear(){
+    console.log(99)
+    this.setApartaments([])
+    this.setApartamentsLoading(false)
+    localStorage.removeItem('apartaments')
+  }
+
 }

@@ -4,7 +4,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common'
 import { MessageService } from '../../shared/services/message/message.service';
-import { ApartamentFeeService } from '../apartament-fee.service';
+import { ApartamentFeeService } from '../../shared/services/apartamentFee/apartament-fee.service';
 import { currancyCodes } from './../../shared/currancyCodes';
 import { payVariants } from './../../shared/payVariants';
 import { MdbModalConfig, MdbModalRef, MdbModalService } from 'mdb-angular-ui-kit/modal';

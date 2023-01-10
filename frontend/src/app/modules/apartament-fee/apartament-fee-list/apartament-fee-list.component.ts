@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnDestroy, OnInit, Output, ViewChild, EventEmitter, Input } from '@angular/core';
 import { combineLatest, combineLatestWith, concat, filter, finalize, map, Observable, of, startWith, Subscription, tap, withLatestFrom } from 'rxjs';
-import { ApartamentFeeService } from '../apartament-fee.service';
+import { ApartamentFeeService } from '../../shared/services/apartamentFee/apartament-fee.service';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { MessageService } from '../../shared/services/message/message.service';
 import { isNonNull, orderBy, removeDuplicatedObj } from '../../shared/helpers';

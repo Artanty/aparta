@@ -21,6 +21,10 @@ export class MessageService {
   private messagesSubj: BehaviorSubject<any> = new BehaviorSubject<any>([]);
   messages$: Observable<any[]> = this.messagesSubj.asObservable();
 
+  setMessages(val: any){
+    this.messagesSubj.next(val);
+  }
+
   sendMessage(type: messageType, header: string, body: string, length?: number){
     length = length ? length : this.messageLength[type]
     const message = {
@@ -35,14 +39,13 @@ export class MessageService {
     this.setMessages(messages)
   }
 
-  setMessages(val: any){
-    this.messagesSubj.next(val);
-  }
-
   closeMessage(dateId: string) {
     let messages = this.messagesSubj.getValue()
     messages = messages.filter((el: any) => el.date !== dateId)
     this.setMessages(messages)
   }
 
+  clear () {
+    this.setMessages([])
+  }
 }

@@ -68,4 +68,9 @@ export class OrganizationTariffService {
       })
     )
   }
+  clear() {
+    this.setOrganizationTariffs([])
+    this.setOrganizationTariffsLoading(false)
+    localStorage.removeItem('organizationTariffs')
+  }
 }

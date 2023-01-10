@@ -91,4 +91,9 @@ export class FeeTemplateService {
   getFeeTemplate(id: number): Observable<any>{
     return this.http.get<any[]>(`feeTemplate/${id}`)
   }
+  clear() {
+    this.setFeeTemplates([])
+    this.setFeeTemplatesLoading(false)
+    localStorage.removeItem('feeTemplates')
+  }
 }
