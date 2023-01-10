@@ -53,36 +53,34 @@ export class ApartamentUserService {
       )
     }
 
-    // update(data: any) {
-    //   return this.http.put(`feeTemplate/${data.id}`, data).pipe(
-    //     tap({
-    //       next: (res: any) => {
-    //         localStorage.removeItem('feeTemplates')
-    //         let storeItems = this.feeTemplatesSubj.getValue()
-    //         storeItems = storeItems.map((el: any) => {
-    //           if (el.id === res.id) {
-    //             el = { ...el, ...res }
-    //           }
-    //           return el
-    //         })
-    //         this.setFeeTemplates(storeItems)
-    //       }
-    //     })
-    //   )
-    // }
+    update(data: any) {
+      return this.http.put(`apartamentUser/${data.id}`, data).pipe(
+        tap({
+          next: (res: any) => {
+            let storeItems = this.apartamentUsersSubj.getValue()
+            storeItems = storeItems.map((el: any) => {
+              if (el.id === res.id) {
+                el = { ...el, ...res }
+              }
+              return el
+            })
+            this.setApartamentUsers(storeItems)
+          }
+        })
+      )
+    }
 
-    // delete(id: number) {
-    //   return this.http.delete(`feeTemplate/${id}`).pipe(
-    //     tap({
-    //       next: () => {
-    //         localStorage.removeItem('feeTemplates')
-    //         let storeItems = this.apartamentUsersSubj.getValue()
-    //         storeItems = storeItems.filter((el: any) => el.id !== id)
-    //         this.setApartamentUsers(storeItems)
-    //       }
-    //     })
-    //   )
-    // }
+    delete(id: number) {
+      return this.http.delete(`apartamentUser/${id}`).pipe(
+        tap({
+          next: () => {
+            let storeItems = this.apartamentUsersSubj.getValue()
+            storeItems = storeItems.filter((el: any) => el.id !== id)
+            this.setApartamentUsers(storeItems)
+          }
+        })
+      )
+    }
 
     // getFeeTemplate(id: number): Observable<any>{
     //   return this.http.get<any[]>(`feeTemplate/${id}`)

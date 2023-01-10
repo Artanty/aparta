@@ -42,14 +42,14 @@ export class ApartamentUserComponent implements OnInit {
   }
 
   read() {
-    this.http.get(`apartament/getApartamentUsers/${this.apartament_id}`).subscribe({
-      next: (res: any) => {
-        this.items = res
-      },
-      error: (err: any) => {
-        alert(err.message)
-      }
-    })
+    // this.http.get(`apartament/getApartamentUsers/${this.apartament_id}`).subscribe({
+    //   next: (res: any) => {
+    //     this.items = res
+    //   },
+    //   error: (err: any) => {
+    //     alert(err.message)
+    //   }
+    // })
   }
   placeToUpdate(item: any) {
     this.update_id = item.id
