@@ -1,6 +1,12 @@
 <div class="container">
   <div class="d-flex justify-content-between align-items-center py-3" style="margin-top: 58px;">
     <h1 class="mb-3">Счета</h1>
+    <div class="apartament">
+      <select [formControl]="apartament" class="form-select">
+        <option value="null" disabled>Квартира</option>
+        <option *ngFor="let option of apartamentOptions$ | async" [value]="option.id">{{ option.name }}</option>
+      </select>
+    </div>
     <div class="amount">
       {{ amount | number:'.0-2' }}
       <select [formControl]="currancy" class="form-select amount__select">

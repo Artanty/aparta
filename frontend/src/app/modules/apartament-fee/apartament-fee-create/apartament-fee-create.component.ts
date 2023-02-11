@@ -142,9 +142,30 @@ export class ApartamentFeeCreateComponent implements OnInit {
     this.currancyOptions = this.getCurrancyOptions()
     this.payVariantOptions = payVariants
 
-    console.log(this.payDatePrevMonth)
+    this.setCopiedApartament()
   }
 
+  setCopiedApartament () {
+    const copied = this.ApartamentFeeServ.getCopiedApartament()
+    if (copied) {
+      this.formGroup.patchValue({
+        name: copied.name,
+        description: copied.description,
+        sum: copied.sum,
+        commission: copied.commission,
+        currancy: copied.currancy,
+        month: Number(copied.month),
+        year: copied.year,
+        paid: Boolean(copied.paid),
+        organization_id: copied.organization_id,
+        template_id: copied.template_id,
+        apartament_id: copied.apartament_id,
+        organizationTariff_id: copied.organizationTariff_id,
+        paidDate: this.isPaid ? copied.paidDate : '',
+        payVariant: copied.payVariant,
+      })
+    }
+  }
   setPayDatePrevMonth (data: boolean) {
     localStorage.setItem('payDatePrevMonth', String(Number(data)))
   }
@@ -273,8 +294,6 @@ export class ApartamentFeeCreateComponent implements OnInit {
       }
     })
     this.redirectTo()
-    // this.router.navigate(['items'], { relativeTo: this.route });
-
   }
 
   back() {
@@ -288,7 +307,7 @@ export class ApartamentFeeCreateComponent implements OnInit {
     if (this.Router.url === '/login') {
       uri = '/'
     }
-    this.Router.navigateByUrl('/', {skipLocationChange: true}).then(()=>
+    this.Router.navigateByUrl('/', { skipLocationChange: true }).then(()=>
     this.Router.navigate([uri]));
   }
 

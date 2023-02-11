@@ -24,7 +24,7 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
   }
   @Output() amountOut: EventEmitter<number> = new EventEmitter<number>()
   @ViewChild ('popoverTrigger') popoverTrigger: ElementRef | undefined
-  apartament_id: string
+  apartament_id: string = ''
   tableLoading$: Observable<boolean>
   items$?: Observable<any>
   selectedItemsSet = new Set()
@@ -53,7 +53,7 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
   ) {
     this.ApartamentFeeServ.setApartamentFeesLoading(true)
     this.tableLoading$ = this.ApartamentFeeServ.apartamentFeesLoading$
-    this.apartament_id = this.ActivatedRoute.snapshot.paramMap.get('apartament_id') || ''
+
     // console.log(this.apartament_id)
     let obs$: Observable<any>
     const mapPipeSetSelectOptions = (res: any) => {
@@ -115,26 +115,31 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
       this.amountOut.emit(amount)
       return res
     }
+    this.ActivatedRoute.params.subscribe((res: any) => {
+      if (res.apartament_id && res.apartament_id !== '0') {
+        this.apartament_id = res.apartament_id
+        this.ApartamentFeeServ.getFeesOfApartament(+this.apartament_id, true).subscribe()
+      }
+    })
+    obs$ = this.ApartamentFeeServ.apartamentFees$
+    this.items$ = this.ApartamentFeeServ.apartamentFees$.pipe(
+      filter(isNonNull),
+      map(mapPipeSetSelectOptions),
+      combineLatestWith(this.filterFormGroup.valueChanges, this.sortFormGroup.valueChanges),
+      map(mapPipeFilterAndSort),
+      map(mapPipeCountAmount)
+    )
 
-    if (this.apartament_id) {
-      obs$ = this.ApartamentFeeServ.getFeesOfApartament(+this.apartament_id, true)
-      this.items$ = this.ApartamentFeeServ.apartamentFees$.pipe(
-        filter(isNonNull),
-        map(mapPipeSetSelectOptions),
-        combineLatestWith(this.filterFormGroup.valueChanges, this.sortFormGroup.valueChanges),
-        map(mapPipeFilterAndSort),
-        map(mapPipeCountAmount)
-      )
-    } else {
-      obs$ = this.ApartamentFeeServ.getAllFees()
-      this.items$ = this.ApartamentFeeServ.allFees$.pipe(
-        filter(isNonNull),
-        map(mapPipeSetSelectOptions),
-        combineLatestWith(this.filterFormGroup.valueChanges, this.sortFormGroup.valueChanges),
-        map(mapPipeFilterAndSort),
-        map(mapPipeCountAmount)
-      )
-    }
+    // else {
+    //   obs$ = this.ApartamentFeeServ.getAllFees()
+    //   this.items$ = this.ApartamentFeeServ.allFees$.pipe(
+    //     filter(isNonNull),
+    //     map(mapPipeSetSelectOptions),
+    //     combineLatestWith(this.filterFormGroup.valueChanges, this.sortFormGroup.valueChanges),
+    //     map(mapPipeFilterAndSort),
+    //     map(mapPipeCountAmount)
+    //   )
+    // }
 
     this.subs$ = obs$.subscribe({
       next: (res: any) => {

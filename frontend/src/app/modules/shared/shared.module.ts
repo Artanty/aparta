@@ -49,9 +49,6 @@ export const options: Partial<null|IConfig> | (() => Partial<IConfig>) = null;
     ModalComponent,
     HumanMonthPipe,
     GetCurrancyPipe,
-
-
-
   ],
   imports: [
     CommonModule,
@@ -73,7 +70,6 @@ export const options: Partial<null|IConfig> | (() => Partial<IConfig>) = null;
     MdbTooltipModule,
     MdbValidationModule,
     NgxMaskModule.forRoot(),
-
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

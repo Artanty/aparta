@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
+import { Router, NavigationEnd, ActivatedRoute, ActivationEnd } from '@angular/router';
 import { Location } from '@angular/common'
 import { currancyCodes } from './../shared/currancyCodes';
 import { FormControl } from '@angular/forms';
+import { filter, Observable, tap } from 'rxjs';
+import { ApartamentService } from '../shared/services/apartament/apartament.service';
 
 
 @Component({
@@ -14,23 +16,46 @@ import { FormControl } from '@angular/forms';
 })
 export class ApartamentFeeComponent implements OnInit {
 
-  apartament_id: string
+  apartament_id: string = ''
   amount: number = 0
   currancy: FormControl = new FormControl(941)
   currancyOptions: any[] = []
-
+  apartament: FormControl = new FormControl()
+  apartamentOptions$: Observable<any[]>
   constructor(
     private http: HttpClient,
     private ActivatedRoute: ActivatedRoute,
-    private Location: Location
+    private Location: Location,
+    private ApartamentServ: ApartamentService,
+    private Router: Router
   ) {
+    this.ApartamentServ.getApartaments().subscribe()
     this.currancyOptions = this.getCurrancyOptions()
     this.currancy.valueChanges.subscribe((res: any) => this.saveCurrancy(res))
-    this.apartament_id = this.ActivatedRoute.snapshot.paramMap.get('apartament_id') || ''
+
+    this.ActivatedRoute.params.subscribe((res: any) => {
+      if (res.apartament_id) {
+        this.apartament_id = res.apartament_id
+        this.apartament.setValue(+this.apartament_id)
+      }
+    })
+    this.apartamentOptions$ = this.ApartamentServ.apartaments$.pipe(
+      tap((res: any) => {
+        if (res[0]?.id) {
+          this.Router.navigateByUrl('apartament/apartamentFee/' + res[0].id)
+        }
+      })
+    )
+    this.apartament.valueChanges.subscribe((res: string | null) => {
+      if (res) {
+        this.Router.navigateByUrl(this.Router.url.replace(this.apartament_id, res))
+      }
+    })
   }
 
   ngOnInit(): void {
     this.loadCurrancy()
+
   }
 
   setAmount(data: any) {

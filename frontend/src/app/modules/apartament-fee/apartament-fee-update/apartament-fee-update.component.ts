@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
+import { Router, NavigationEnd, ActivatedRoute, Route } from '@angular/router';
 import { Location } from '@angular/common'
 import { MessageService } from '../../shared/services/message/message.service';
 import { ApartamentFeeService } from '../../shared/services/apartamentFee/apartament-fee.service';
@@ -79,6 +79,7 @@ export class ApartamentFeeUpdateComponent implements OnInit {
     private http: HttpClient,
     private ActivatedRoute: ActivatedRoute,
     private Location: Location,
+    private Router: Router,
     private MessageServ: MessageService,
     private ApartamentServ: ApartamentService,
     private ApartamentFeeServ: ApartamentFeeService,
@@ -248,6 +249,29 @@ export class ApartamentFeeUpdateComponent implements OnInit {
 
   back() {
     this.Location.back()
+  }
+
+  makeCopy () {
+    const formGroupValue = this.formGroup.value
+    let data = {
+      name: formGroupValue.name,
+      description: formGroupValue.description,
+      sum: formGroupValue.sum,
+      commission: formGroupValue.commission,
+      currancy: formGroupValue.currancy,
+      month: Number(formGroupValue.month),
+      year: formGroupValue.year,
+      paid: Boolean(formGroupValue.paid),
+      organization_id: formGroupValue.organization_id,
+      template_id: formGroupValue.template_id,
+      apartament_id: formGroupValue.apartament_id,
+      organizationTariff_id: formGroupValue.organizationTariff_id,
+      paidDate: this.isPaid ? formGroupValue.paidDate : '',
+      payVariant: formGroupValue.payVariant,
+    }
+    this.ApartamentFeeServ.setCopiedApartament(data)
+    // this.Router.navigate(["/apartament/new"], ) // {skipLocationChange: true}
+    this.Router.navigate(['apartamentFee', 'new'])
   }
 
 }

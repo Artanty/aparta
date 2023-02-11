@@ -16,6 +16,9 @@ export class ApartamentFeeService {
   private apartamentFeesLoadingSubj: BehaviorSubject<boolean> = new BehaviorSubject<any>(false)
   apartamentFeesLoading$: Observable<boolean> = this.apartamentFeesLoadingSubj.asObservable()
 
+  private copiedApartamentSubj: BehaviorSubject<any> = new BehaviorSubject<any>(null)
+  copiedApartamentSubj$: Observable<any> = this.copiedApartamentSubj.asObservable()
+
   apartamentFeesLoaded: boolean = false
   allFeesLoaded: boolean = false
 
@@ -23,6 +26,12 @@ export class ApartamentFeeService {
     private http: HttpClient
   ) { }
 
+  setCopiedApartament (data: any) {
+    this.copiedApartamentSubj.next(data)
+  }
+  getCopiedApartament (): any {
+    return this.copiedApartamentSubj.getValue()
+  }
   setAllFees (val: any) {
     this.allFeesSubj.next(val)
   }
