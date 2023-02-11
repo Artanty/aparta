@@ -7,14 +7,11 @@ import { orderBy } from '../../helpers';
   providedIn: 'root'
 })
 export class ApartamentFeeService {
-  private allFeesSubj: BehaviorSubject<any> = new BehaviorSubject<any>([])
-  allFees$: Observable<any[]> = this.allFeesSubj.asObservable()
+  private feesSubj: BehaviorSubject<any> = new BehaviorSubject<any>([])
+  fees$: Observable<any[]> = this.feesSubj.asObservable()
 
-  private apartamentFeesSubj: BehaviorSubject<any> = new BehaviorSubject<any>([])
-  apartamentFees$: Observable<any[]> = this.apartamentFeesSubj.asObservable()
-
-  private apartamentFeesLoadingSubj: BehaviorSubject<boolean> = new BehaviorSubject<any>(false)
-  apartamentFeesLoading$: Observable<boolean> = this.apartamentFeesLoadingSubj.asObservable()
+  private loadingSubj$: BehaviorSubject<boolean> = new BehaviorSubject<any>(false)
+  loading$: Observable<boolean> = this.loadingSubj$.asObservable()
 
   private copiedApartamentSubj: BehaviorSubject<any> = new BehaviorSubject<any>(null)
   copiedApartamentSubj$: Observable<any> = this.copiedApartamentSubj.asObservable()
@@ -32,54 +29,42 @@ export class ApartamentFeeService {
   getCopiedApartament (): any {
     return this.copiedApartamentSubj.getValue()
   }
-  setAllFees (val: any) {
-    this.allFeesSubj.next(val)
+
+  setFees (val: any) {
+    this.feesSubj.next(val)
   }
 
-  setApartamentFees (val: any) {
-    this.apartamentFeesSubj.next(val)
+  setLoading (val: boolean) {
+    this.loadingSubj$.next(val)
   }
 
-  setApartamentFeesLoading (val: boolean) {
-    this.apartamentFeesLoadingSubj.next(val)
-  }
-
-  getAllFees(force?: boolean): Observable<any>{
+  getFees(a_id: number | string, force?: boolean): Observable<any>{
     let obs$: Observable<any>
-    const storeItems = this.allFeesSubj.getValue()
-    const storageItems = localStorage.getItem('allFees')
+    const storeItems = this.feesSubj.getValue()
+    const storageItems = localStorage.getItem('fees')
     if (storeItems?.length && !force) {
       obs$ = of(storeItems)
     } else if (storageItems && !force) {
       obs$ = of(JSON.parse(storageItems))
     } else {
-      obs$ = this.http.get<any[]>(`apartamentFee`)
+      if (a_id === 'all') {
+        obs$ = this.http.get<any[]>(`apartamentFee`)
+      } else {
+        obs$ = this.http.get<any[]>(`apartament/getApartamentFees/${a_id}`)
+      }
     }
     return obs$.pipe(
       tap((res: any) => {
-        localStorage.setItem('allFees', JSON.stringify(res))
-        this.setAllFees(res)
-        this. allFeesLoaded = true
-      })
-    )
-  }
+        localStorage.setItem('fees', JSON.stringify(res))
+        this.setFees(res)
+        if (a_id === 'all') {
+          this.allFeesLoaded = true
+          this.apartamentFeesLoaded = false
+        } else {
+          this.allFeesLoaded = false
+          this.apartamentFeesLoaded = true
+        }
 
-  getFeesOfApartament(a_id: number, force?: boolean): Observable<any>{
-    let obs$: Observable<any>
-    const storeItems = this.apartamentFeesSubj.getValue()
-    const storageItems = localStorage.getItem('apartamentFees')
-    if (storeItems?.length && this.ifFeeLoaded(storeItems, a_id) && !force) {
-      obs$ = of(storeItems)
-    } else if (storageItems && this.ifFeeLoaded(JSON.parse(storageItems), a_id) && !force) {
-      obs$ = of(JSON.parse(storageItems))
-    } else {
-      obs$ = this.http.get<any[]>(`apartament/getApartamentFees/${a_id}`)
-    }
-    return obs$.pipe(
-      tap((res: any) => {
-        localStorage.setItem('apartamentFees', JSON.stringify(res))
-        this.setApartamentFees(res)
-        this.apartamentFeesLoaded = true
       })
     )
   }
@@ -92,22 +77,14 @@ export class ApartamentFeeService {
     return result
   }
 
-  create(data: any) { //apartamentFeeOnly
+  create(data: any) {
     return this.http.post(`apartamentFee`, data).pipe(
       tap({
         next: (res: any) => {
-          localStorage.removeItem('apartamentFees')
-          localStorage.removeItem('allFees')
-          if (this.apartamentFeesLoaded){
-            let storeApartamentFees = this.apartamentFeesSubj.getValue()
-            storeApartamentFees.push(res)
-            this.setApartamentFees(orderBy(storeApartamentFees,'paidDate', 'asc'))
-          }
-          if (this.allFeesLoaded){
-            let storeAllFees = this.allFeesSubj.getValue()
-            storeAllFees.push(res)
-            this.setAllFees(orderBy(storeAllFees,'paidDate', 'asc'))
-          }
+          localStorage.removeItem('fees')
+          let storeFees = this.feesSubj.getValue()
+          storeFees.push(res)
+          this.setFees(orderBy(storeFees,'paidDate', 'asc'))
         }
       })
     )
@@ -117,42 +94,28 @@ export class ApartamentFeeService {
     return this.http.put(`apartamentFee/${data.id}`, data).pipe(
       tap({
         next: (res: any) => {
-          localStorage.removeItem('apartamentFees')
-          localStorage.removeItem('allFees')
-          let storeApartamentFees = this.apartamentFeesSubj.getValue()
-          storeApartamentFees = storeApartamentFees.map((el: any) => {
+          localStorage.removeItem('fees')
+          let storeFees = this.feesSubj.getValue()
+          storeFees = storeFees.map((el: any) => {
             if (el.id === res.id) {
               el = { ...el, ...res }
             }
             return el
           })
-          this.setApartamentFees(storeApartamentFees)
-          let storeAllFees = this.allFeesSubj.getValue()
-          storeAllFees = storeAllFees.map((el: any) => {
-            if (el.id === res.id) {
-              el = { ...el, ...res }
-            }
-            return el
-          })
-          this.setAllFees(storeAllFees)
+          this.setFees(storeFees)
         }
       })
     )
   }
 
   delete(id: number) {
-
     return this.http.delete(`apartamentFee/${id}`).pipe(
       tap({
-        next: (res:any) => {
-          localStorage.removeItem('apartamentFees')
-          localStorage.removeItem('allFees')
-          let storeApartamentFees = this.apartamentFeesSubj.getValue()
-          storeApartamentFees = storeApartamentFees.filter((el: any) => el.id !== id)
-          this.setApartamentFees(storeApartamentFees)
-          let storeAllFees = this.allFeesSubj.getValue()
-          storeAllFees = storeAllFees.filter((el: any) => el.id !== id)
-          this.setAllFees(storeAllFees)
+        next: (res: any) => {
+          localStorage.removeItem('fees')
+          let storeFees = this.feesSubj.getValue()
+          storeFees = storeFees.filter((el: any) => el.id !== id)
+          this.setFees(storeFees)
         }
       })
     )
@@ -163,11 +126,9 @@ export class ApartamentFeeService {
   }
 
   clear () {
-    this.setAllFees([])
-    this.setApartamentFees([])
-    this.setApartamentFeesLoading(false)
-    localStorage.removeItem('apartamentFees')
-    localStorage.removeItem('allFees')
+    this.setFees([])
+    this.setLoading(false)
     localStorage.removeItem('apartamentFeeList')
+    localStorage.removeItem('fees')
   }
 }

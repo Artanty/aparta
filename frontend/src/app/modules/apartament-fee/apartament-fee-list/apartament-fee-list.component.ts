@@ -51,8 +51,8 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
     private ActivatedRoute: ActivatedRoute,
     private MessageServ: MessageService
   ) {
-    this.ApartamentFeeServ.setApartamentFeesLoading(true)
-    this.tableLoading$ = this.ApartamentFeeServ.apartamentFeesLoading$
+    this.ApartamentFeeServ.setLoading(true)
+    this.tableLoading$ = this.ApartamentFeeServ.loading$
 
     // console.log(this.apartament_id)
     let obs$: Observable<any>
@@ -116,13 +116,17 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
       return res
     }
     this.ActivatedRoute.params.subscribe((res: any) => {
-      if (res.apartament_id && res.apartament_id !== '0') {
+      if (res.apartament_id && res.apartament_id !== 'all') {
         this.apartament_id = res.apartament_id
-        this.ApartamentFeeServ.getFeesOfApartament(+this.apartament_id, true).subscribe()
+        this.ApartamentFeeServ.getFees(+this.apartament_id, true).subscribe()
+      }
+      if (res.apartament_id && res.apartament_id === 'all') {
+        this.apartament_id = ''
+        this.ApartamentFeeServ.getFees('all', true).subscribe()
       }
     })
-    obs$ = this.ApartamentFeeServ.apartamentFees$
-    this.items$ = this.ApartamentFeeServ.apartamentFees$.pipe(
+    obs$ = this.ApartamentFeeServ.fees$
+    this.items$ = this.ApartamentFeeServ.fees$.pipe(
       filter(isNonNull),
       map(mapPipeSetSelectOptions),
       combineLatestWith(this.filterFormGroup.valueChanges, this.sortFormGroup.valueChanges),
@@ -130,28 +134,17 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
       map(mapPipeCountAmount)
     )
 
-    // else {
-    //   obs$ = this.ApartamentFeeServ.getAllFees()
-    //   this.items$ = this.ApartamentFeeServ.allFees$.pipe(
-    //     filter(isNonNull),
-    //     map(mapPipeSetSelectOptions),
-    //     combineLatestWith(this.filterFormGroup.valueChanges, this.sortFormGroup.valueChanges),
-    //     map(mapPipeFilterAndSort),
-    //     map(mapPipeCountAmount)
-    //   )
-    // }
-
     this.subs$ = obs$.subscribe({
       next: (res: any) => {
         this.MessageServ.sendMessage('success', '', 'Счетa загружены')
-        this.ApartamentFeeServ.setApartamentFeesLoading(false)
+        this.ApartamentFeeServ.setLoading(false)
         setTimeout(()=>{
           this.loadTableState()
         }, 0)
       },
       error: (err: any) => {
         this.MessageServ.sendMessage('error', 'Ошибка!', err.error.message)
-        this.ApartamentFeeServ.setApartamentFeesLoading(false)
+        this.ApartamentFeeServ.setLoading(false)
       }
     })
   }
@@ -190,16 +183,16 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
   }
 
   delete(id: number) {
-    this.ApartamentFeeServ.setApartamentFeesLoading(true)
+    this.ApartamentFeeServ.setLoading(true)
     this.ApartamentFeeServ.delete(id).subscribe({
       next: (res: any) => {
         this.MessageServ.sendMessage('success', 'Успешно!', 'Счет удален')
-        this.ApartamentFeeServ.setApartamentFeesLoading(false)
+        this.ApartamentFeeServ.setLoading(false)
         this.selectedItemsSet.delete(id)
       },
       error: (err: any) => {
         this.MessageServ.sendMessage('error', 'Ошибка!', err.error.message)
-        this.ApartamentFeeServ.setApartamentFeesLoading(false)
+        this.ApartamentFeeServ.setLoading(false)
       }
     })
   }

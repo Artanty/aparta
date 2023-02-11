@@ -39,13 +39,7 @@ export class ApartamentFeeComponent implements OnInit {
         this.apartament.setValue(+this.apartament_id)
       }
     })
-    this.apartamentOptions$ = this.ApartamentServ.apartaments$.pipe(
-      tap((res: any) => {
-        if (res[0]?.id) {
-          this.Router.navigateByUrl('apartament/apartamentFee/' + res[0].id)
-        }
-      })
-    )
+    this.apartamentOptions$ = this.ApartamentServ.apartaments$
     this.apartament.valueChanges.subscribe((res: string | null) => {
       if (res) {
         this.Router.navigateByUrl(this.Router.url.replace(this.apartament_id, res))

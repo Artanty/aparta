@@ -14,7 +14,7 @@ const routes: Routes = [
   },
   {
     path: 'update/:feeTemplate_id',
-    component: FeeTemplateUpdateComponent,
+    component: FeeTemplateCreateComponent, // FeeTemplateUpdateComponent
     canActivate: [AuthGuard]
   }
 ];
