@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, finalize, Observable, of, tap } from 'rxjs';
 import { orderBy } from '../../helpers';
-import { GetFeesApiResponseItem } from './types';
+import { ApartamentFeeCreateApiRequest, ApartamentFeeCreateApiResponse, GetFeesApiResponseItem } from './types';
 
 @Injectable({
   providedIn: 'root'
@@ -81,10 +81,10 @@ export class ApartamentFeeService {
     return result
   }
 
-  create(data: any) {
-    return this.http.post(`apartamentFee`, data).pipe(
+  create(data: ApartamentFeeCreateApiRequest): Observable<ApartamentFeeCreateApiResponse> {
+    return this.http.post<ApartamentFeeCreateApiResponse>(`apartamentFee`, data).pipe(
       tap({
-        next: (res: any) => {
+        next: (res: ApartamentFeeCreateApiResponse) => {
           localStorage.removeItem('fees')
           let storeFees = this.feesSubj.getValue()
           storeFees.push(res)
@@ -125,8 +125,13 @@ export class ApartamentFeeService {
     )
   }
 
-  getFee(id: number): Observable<any>{
-    return this.http.get<any[]>(`apartamentFee/${id}`)
+  getFee(id: number): Observable<GetFeesApiResponseItem>{
+    this.setLoading(true)
+    return this.http.get<GetFeesApiResponseItem>(`apartamentFee/${id}`).pipe(
+      finalize(() => {
+        this.setLoading(false)
+      })
+    )
   }
 
   clear () {

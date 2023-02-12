@@ -7,7 +7,7 @@ import { isNonNull, orderBy, removeDuplicatedObj } from '../../shared/helpers';
 import { FormControl, FormGroup } from '@angular/forms';
 import { GetCurrancyPipe } from '../../shared/pipes/get-currancy.pipe';
 import { GetFeesApiResponseItem } from '../../shared/services/apartamentFee/types';
-// import { GetCurrancyPipe } from ''
+
 
 @Component({
   selector: 'app-apartament-fee-list',
@@ -50,7 +50,8 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
   constructor(
     private ApartamentFeeServ: ApartamentFeeService,
     private ActivatedRoute: ActivatedRoute,
-    private MessageServ: MessageService
+    private MessageServ: MessageService,
+    private Router: Router
   ) {
     this.tableLoading$ = this.ApartamentFeeServ.loading$
     let obs$: Observable<any>
@@ -173,6 +174,29 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
     } else {
       this.selectedItemsSet.add(id)
     }
+  }
+  copyApartamentFee (id: number) {
+    this.ApartamentFeeServ.getFee(id).subscribe({
+      next: (res: GetFeesApiResponseItem) => {
+        let data = {
+          name: res.name,
+          description: res.description,
+          sum: res.sum,
+          currancy: res.currancy,
+          month: Number(res.month),
+          year: res.year,
+          paid: Boolean(res.paid),
+          template_id: res.template_id,
+          apartament_id: res.apartament_id,
+          paidDate: res.paidDate,
+        }
+        this.ApartamentFeeServ.setCopiedApartament(data)
+        this.Router.navigate(['apartamentFee', 'new'])
+      },
+      error: (err: any) => {
+        this.MessageServ.sendMessage('error', 'Ошибка!', err.error.message)
+      }
+    })
   }
 
   delete(id: number) {

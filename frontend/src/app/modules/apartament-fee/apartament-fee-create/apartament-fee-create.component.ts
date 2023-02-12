@@ -16,6 +16,8 @@ import { ApartamentService } from '../../shared/services/apartament/apartament.s
 import { OrganizationTariffService } from '../../shared/services/organizationTariff/organization-tariff.service';
 import { prependZero } from '../../shared/helpers';
 import { FeeTemplateApiResponseItem } from '../../shared/services/feeTemplate/types';
+import { ApartamentFeeCreateApiRequest, GetFeesApiResponseItem } from '../../shared/services/apartamentFee/types';
+import { ModalUpdateFeeTemplateComponent } from './modal-update-fee-template/modal-update-fee-template.component';
 
 @Component({
   selector: 'app-apartament-fee-create',
@@ -23,6 +25,8 @@ import { FeeTemplateApiResponseItem } from '../../shared/services/feeTemplate/ty
   styleUrls: ['./apartament-fee-create.component.scss']
 })
 export class ApartamentFeeCreateComponent implements OnInit {
+  initialTemplateObj: FeeTemplateApiResponseItem | null = null
+  allowUpdateTemplate: null | GetFeesApiResponseItem = null
   apartamentFee_id: number = 0
   payDatePrevMonth: boolean
   @ViewChild ('popoverTrigger') popoverTrigger: ElementRef | undefined
@@ -54,8 +58,6 @@ export class ApartamentFeeCreateComponent implements OnInit {
     private MessageServ: MessageService,
     private ApartamentServ: ApartamentService,
     private ApartamentFeeServ: ApartamentFeeService,
-    private OrganizationServ: OrganizationService,
-    private OrganizationTariffServ: OrganizationTariffService,
     private FeeTemplateServ: FeeTemplateService,
     private Router: Router
   ) {
@@ -94,8 +96,9 @@ export class ApartamentFeeCreateComponent implements OnInit {
     }
 
     this.apartamentOptions$ = this.ApartamentServ.apartaments$
-    this.formGroup.get('template_id')?.valueChanges.subscribe((res: any) => {
+    this.formGroup.get('template_id')?.valueChanges.subscribe((res: number | null) => {
       if (res !== null) {
+        this.loadFeeTemplate(res)
         const foundDirty = Object.keys(this.formGroup.controls).find((name: any) => {
           return name !== 'template_id' && this.formGroup.get(name)?.dirty
         })
@@ -123,7 +126,16 @@ export class ApartamentFeeCreateComponent implements OnInit {
       this.formGroup.patchValue({
         paidDate: new Date().toISOString().slice(0, -14)
       })
+      this.loadCurrancy()
     }
+    this.formGroup.valueChanges.pipe().subscribe((res: any) => {
+      this.allowUpdateTemplate = null
+      if (res.template_id) {
+        if (this.initialTemplateObj) {
+          this.allowUpdateTemplate = !this.feeEqualTemplate(res, this.initialTemplateObj) ? res : null
+        }
+      }
+    })
   }
 
   get isPaid () {
@@ -131,7 +143,6 @@ export class ApartamentFeeCreateComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadCurrancy()
     this.yearOptions = this.getYearOptions()
     this.currancyOptions = this.getCurrancyOptions()
     this.setCopiedApartament()
@@ -188,6 +199,7 @@ export class ApartamentFeeCreateComponent implements OnInit {
         payVariant: copied.payVariant,
       })
     }
+    setTimeout(() => this.ApartamentFeeServ.setCopiedApartament(null), 0)
   }
 
   setPayDatePrevMonth (data: boolean) {
@@ -206,7 +218,7 @@ export class ApartamentFeeCreateComponent implements OnInit {
     }
   }
 
-  openModal(data: any) {
+  createTemplateOpenModal(data: any) {
     const config = {
       data: { modalInputdata: data}
     }
@@ -224,10 +236,7 @@ export class ApartamentFeeCreateComponent implements OnInit {
             currancy: newForm.currancy,
             month: newForm.month,
             year: newForm.year,
-            organization_id: newForm.organization_id,
-            apartament_id: newForm.apartament_id,
-            organizationTariff_id: newForm.organizationTariff_id,
-            payVariant: newForm.payVariant
+            apartament_id: newForm.apartament_id
           })
         }
       }
@@ -263,7 +272,7 @@ export class ApartamentFeeCreateComponent implements OnInit {
   getApartamentFee (id: number) {
     this.loading = true
     this.ApartamentFeeServ.getFee(id).subscribe({
-      next: (res: any) => {
+      next: (res: GetFeesApiResponseItem) => {
         this.formGroup.patchValue({
           name: res.name,
           description: res.description,
@@ -288,7 +297,7 @@ export class ApartamentFeeCreateComponent implements OnInit {
   create() {
     this.loading = true
     const formGroupValue = this.formGroup.value
-    let data = {
+    let data: ApartamentFeeCreateApiRequest = {
       name: formGroupValue.name,
       description: formGroupValue.description,
       sum: formGroupValue.sum,
@@ -305,7 +314,7 @@ export class ApartamentFeeCreateComponent implements OnInit {
         this.MessageServ.sendMessage('success', 'Успешно сохранено!', 'Счет добавлен')
         this.loading = false
         if (!res.template_id) {
-          this.openModal(res)
+          this.createTemplateOpenModal(res)
         } else {
           this.Location.back()
         }
@@ -364,7 +373,7 @@ export class ApartamentFeeCreateComponent implements OnInit {
       next: (res: any) => {
         this.MessageServ.sendMessage('success', 'Успешно сохранено!', 'Счет добавлен')
         if (!res.template_id) {
-          this.openModal(res)
+          this.createTemplateOpenModal(res)
         }
         this.loading = false
         this.Location.back()
@@ -441,5 +450,36 @@ export class ApartamentFeeCreateComponent implements OnInit {
     let formControl: FormControl = new FormControl(null)
     formControl = (formGroup.get(formControlId) as FormControl) || new FormControl(null)
     return formControl
+  }
+
+  loadFeeTemplate (id: number) {
+    this.FeeTemplateServ.getFeeTemplate(id).subscribe({
+      next: (res: FeeTemplateApiResponseItem) => {
+        this.initialTemplateObj = res
+      },
+      error: (err: any) => {
+        this.MessageServ.sendMessage('error', 'Ошибка!', err.error.message)
+      }
+    })
+  }
+
+  feeEqualTemplate (fee: any, template: any): boolean {
+    return fee.apartament_id === template.apartament_id &&
+      fee.name === template.name &&
+      fee.description === template.description &&
+      fee.sum === template.sum &&
+      fee.currancy === template.currancy &&
+      fee.month === template.month &&
+      fee.year === template.year
+  }
+
+  updateTemplateOpenModal () {
+    const config = {
+      data: {
+        template: this.initialTemplateObj,
+        fee: this.allowUpdateTemplate
+      }
+    }
+    this.modalRef = this.modalService.open(ModalUpdateFeeTemplateComponent, config)
   }
 }

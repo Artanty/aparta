@@ -15,6 +15,7 @@ export class InputComponent implements OnInit {
   // @Input() pattern: RegExp | string = new RegExp(/\d+(\.\d{2})?/)
   @Input() currancyFormat: boolean = false
   @Input() mask: string = ''
+  @Input() noValid: boolean = false
 
 
   id: number

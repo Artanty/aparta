@@ -153,3 +153,11 @@
   border: 1px solid #dfdfdf!important;
   background-size: 17px 18px!important;
 }
+
+::ng-deep .cursor{
+  cursor: pointer;
+}
+
+::ng-deep .form-outline .form-control[readonly] {
+  background-color: #fbfbfb;
+}

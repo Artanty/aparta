@@ -14,3 +14,12 @@ export type FeeTemplateApiResponseItem = {
   "created_at": string
   "updated_at": string
 }
+
+export type FeeTemplateUpdateApiRequest = {
+  "name": string
+  "apartament_id": number
+  "description": string
+  "sum": number
+  "currancy": number
+  "id": number
+}

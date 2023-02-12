@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from '../shared/guards/auth.guard';
 import { FeeTemplateCreateComponent } from './fee-template-create/fee-template-create.component';
-import { FeeTemplateUpdateComponent } from './fee-template-update/fee-template-update.component';
 import { FeeTemplateComponent } from './fee-template.component';
 
 const routes: Routes = [
@@ -14,7 +13,7 @@ const routes: Routes = [
   },
   {
     path: 'update/:feeTemplate_id',
-    component: FeeTemplateCreateComponent, // FeeTemplateUpdateComponent
+    component: FeeTemplateCreateComponent,
     canActivate: [AuthGuard]
   }
 ];

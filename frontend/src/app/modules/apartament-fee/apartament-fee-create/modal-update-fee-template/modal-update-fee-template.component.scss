@@ -1,0 +1,20 @@
+.amount{
+  width: 182px;
+  display: flex;
+  align-items: center;
+  &__select{
+    margin-left: 20px;
+    border: none!important;
+    font-size: 14px;
+    width: 84px;
+  }
+}
+.cardLoading{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+}
+.spinner{
+  color:#5069ee;
+}

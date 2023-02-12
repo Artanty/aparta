@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of, tap } from 'rxjs';
-import { FeeTemplateApiResponseItem } from './types';
+import { FeeTemplateApiResponseItem, FeeTemplateUpdateApiRequest } from './types';
 
 @Injectable({
   providedIn: 'root'
@@ -58,10 +58,10 @@ export class FeeTemplateService {
     )
   }
 
-  update(data: any) {
-    return this.http.put(`feeTemplate/${data.id}`, data).pipe(
+  update(data: FeeTemplateUpdateApiRequest): Observable<FeeTemplateApiResponseItem> {
+    return this.http.put<FeeTemplateApiResponseItem>(`feeTemplate/${data.id}`, data).pipe(
       tap({
-        next: (res: any) => {
+        next: (res: FeeTemplateApiResponseItem) => {
           localStorage.removeItem('feeTemplates')
           let storeItems = this.feeTemplatesSubj.getValue()
           storeItems = storeItems.map((el: any) => {
@@ -89,8 +89,8 @@ export class FeeTemplateService {
     )
   }
 
-  getFeeTemplate(id: number): Observable<any>{
-    return this.http.get<any[]>(`feeTemplate/${id}`)
+  getFeeTemplate(id: number): Observable<FeeTemplateApiResponseItem>{
+    return this.http.get<FeeTemplateApiResponseItem>(`feeTemplate/${id}`)
   }
   clear() {
     this.setFeeTemplates([])

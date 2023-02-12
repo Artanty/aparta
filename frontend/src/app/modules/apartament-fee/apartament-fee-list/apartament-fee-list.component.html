@@ -156,7 +156,10 @@
       </td>
       <td>
         <a [routerLink]="['update', item.id]" class="link me-2">
-          <i class="fas fa-pen fa-lg me-2" style="color:#797979"></i>
+          <i class="fas fa-pen fa-lg me-1" style="color:#797979"></i>
+        </a>
+        <a class="alink me-2" (click)="copyApartamentFee(item.id)">
+          <i class="far fa-copy fa-lg" style="color:#797979"></i>
         </a>
         <a class="alink ms-1" (click)="delete(item.id)">
           <i class="fas fa-trash-alt fa-lg" style="color:#797979"></i>

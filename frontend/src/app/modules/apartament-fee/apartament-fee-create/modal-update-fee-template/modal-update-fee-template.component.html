@@ -1,0 +1,98 @@
+<div class="modal-header">
+  <h5 class="modal-title" id="exampleModalLabel">Обновление шаблона</h5>
+  <button
+    type="button" [disabled]="loading"
+    class="btn-close"
+    aria-label="Close"
+    (click)="modalRef.close()"
+  ></button>
+</div>
+<div class="modal-body">
+  <div *ngIf="!loading" class="row gx-3 gy-4">
+    <div class="col-12">
+      <h6>Название</h6>
+      <div class="mb-2 d-flex">
+        <app-input [noValid]="true" [control]="getControl(templateFormGroup, 'name')" [label]="'Было'" [readonly]="true" class="flex-grow-1"></app-input>
+        <button
+        *ngIf="getControl(templateFormGroup, 'name')?.value && getControl(templateFormGroup, 'name')?.value !== getControl(formGroup, 'name')?.value"
+        (click)="resetControl('name')"
+        type="button" class="btn btn-outline-secondary ms-2"><i class="fas fa-long-arrow-alt-left me-2"></i>Вернуть</button>
+      </div>
+      <app-input [noValid]="true" [control]="getControl(formGroup, 'name')" [label]="'Станет'"></app-input>
+    </div>
+    <div class="col-12">
+      <h6>Описание</h6>
+      <div class="mb-2 d-flex">
+        <app-input [noValid]="true" [control]="getControl(templateFormGroup, 'description')" [label]="'Было'" [readonly]="true" class="flex-grow-1"></app-input>
+        <button
+        *ngIf="getControl(templateFormGroup, 'description')?.value && getControl(templateFormGroup, 'description')?.value !== getControl(formGroup, 'description')?.value"
+        (click)="resetControl('description')"
+        type="button" class="btn btn-outline-secondary ms-2"><i class="fas fa-long-arrow-alt-left me-2"></i>Вернуть</button>
+      </div>
+      <app-input [noValid]="true" [control]="getControl(formGroup, 'description')" [label]="'Станет'"></app-input>
+    </div>
+    <div class="col-12">
+      <h6>Сумма и валюта</h6>
+      <div class="mb-2 d-flex">
+        <div class="row flex-grow-1">
+          <div class="col flex-grow-1">
+            <app-input [noValid]="true" [control]="getControl(templateFormGroup, 'sum')" [mask]="'separator.2'" [label]="'Было'" [readonly]="true"></app-input>
+          </div>
+          <div class="col flex-grow-0 ms-2 me-4">
+            <ng-container *ngFor="let option of currancyOptions">
+              <ng-container *ngIf="getControl(templateFormGroup, 'currancy')?.value === option.id">
+                {{ option.name }}
+              </ng-container>
+            </ng-container>
+          </div>
+        </div>
+        <button
+        *ngIf="getControl(templateFormGroup, 'sum')?.value && getControl(templateFormGroup, 'sum')?.value !== getControl(formGroup, 'sum')?.value ||
+        getControl(templateFormGroup, 'currancy')?.value && getControl(templateFormGroup, 'currancy')?.value !== getControl(formGroup, 'currancy')?.value"
+        (click)="resetControl(['sum', 'currancy'])"
+        type="button" class="btn btn-outline-secondary ms-2"><i class="fas fa-long-arrow-alt-left me-2"></i>Вернуть</button>
+      </div>
+      <div>
+        <div class="row">
+          <div class="col-7">
+            <app-input [noValid]="true" [control]="getControl(formGroup, 'sum')" [mask]="'separator.2'" [label]="'Станет'"></app-input>
+          </div>
+          <div class="col-5">
+            <select [formControl]="getControl(formGroup, 'currancy')" class="form-select amount__select">
+              <option *ngFor="let option of currancyOptions" [value]="option.id">{{ option.name }}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12">
+      <h6>Квартира</h6>
+      <div class="mb-2 d-flex">
+        <ng-container *ngFor="let option of (apartamentOptions$ | async)">
+          <ng-container *ngIf="getControl(templateFormGroup, 'apartament_id')?.value === option.id">
+            <app-input [noValid]="true" [control]="getControl(templateFormGroup, 'apartament_name')" [label]="'Было'" [readonly]="true" class="flex-grow-1"></app-input>
+          </ng-container>
+        </ng-container>
+        <button
+        *ngIf="getControl(templateFormGroup, 'apartament_id')?.value && getControl(templateFormGroup, 'apartament_id')?.value !== getControl(formGroup, 'apartament_id')?.value"
+        (click)="resetControl('apartament_id')"
+        type="button" class="btn btn-outline-secondary ms-2"><i class="fas fa-long-arrow-alt-left me-2"></i>Вернуть</button>
+      </div>
+      <select [formControl]="getControl(formGroup, 'apartament_id')" class="form-select">
+        <option disabled value="null">Квартира</option>
+        <option *ngFor="let option of (apartamentOptions$ | async)" [value]="option.id">{{ option.name }}</option>
+      </select>
+    </div>
+  </div>
+  <div *ngIf="loading" class="cardLoading">
+    <div class="spinner-border spinner" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" [disabled]="loading" class="btn btn-outline-secondary" (click)="modalRef.close()">
+    Отмена
+  </button>
+  <button type="button" [disabled]="loading" class="btn btn-outline-primary" (click)="update()">Сохранить</button>
+</div>

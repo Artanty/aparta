@@ -66,11 +66,11 @@
           <div  *ngIf="!loading" class="row gx-3 gy-4">
             <div class="col-12">
               <button
-              #popoverTrigger
-              type="button"
-              class="popoverHiddenTrigger"
-              mdbPopoverTitle="Применить выбранный шаблон?"
-              [mdbPopover]="template"
+                #popoverTrigger
+                type="button"
+                class="popoverHiddenTrigger"
+                mdbPopoverTitle="Применить выбранный шаблон?"
+                [mdbPopover]="template"
               >
               </button>
               <ng-template #template>
@@ -86,6 +86,9 @@
                 <option value="null">Шаблон</option>
                 <option *ngFor="let option of templateOptions$ | async" [value]="option.id">{{ option.name }}</option>
               </select>
+            </div>
+            <div class="col-12" *ngIf="allowUpdateTemplate">
+              <a (click)="updateTemplateOpenModal()" class="link-secondary cursor">Обновить шаблон</a>
             </div>
             <div class="col-12">
               <div class="form-check form-switch">
@@ -143,15 +146,5 @@
         </div>
       </div>
     </div>
-
   </div>
 </div>
-
-
-<!-- Button trigger modal -->
-<!-- <button type="button" class="btn btn-primary" (click)="openModal({rr:55})">
-  Launch demo modal
-</button> -->
-
-
-
