@@ -1,16 +1,21 @@
 <div class="container">
   <div class="d-flex justify-content-between align-items-center py-3" style="margin-top: 58px;">
-    <h1 class="mb-3">Добавление счета</h1>
+    <h1 class="mb-3">{{ apartamentFee_id ? 'Изменение счета' : 'Добавление счета' }}</h1>
     <div class="">
-      <button (click)="back()" type="button" class="btn btn-outline-secondary me-3">Назад</button>
-      <button (click)="create()" type="button" class="btn btn-outline-primary me-3">Сохранить</button>
-      <button (click)="createAgain()" type="button" class="btn btn-outline-primary">Сохранить и повторить</button>
+      <button (click)="back()" type="button" class="btn btn-outline-secondary me-3 mb-2 mt-2">Назад</button>
+
+      <button *ngIf="apartamentFee_id" (click)="delete()" type="button" class="btn btn-outline-secondary me-3 mb-2 mt-2">Удалить</button>
+      <button *ngIf="apartamentFee_id" (click)="makeCopy()" type="button" class="btn btn-outline-secondary me-3 mb-2 mt-2">Создать копию</button>
+      <button *ngIf="apartamentFee_id" (click)="update()" type="button" class="btn btn-outline-primary me-3 mb-2 mt-2">Сохранить</button>
+
+      <button *ngIf="!apartamentFee_id" (click)="create()" type="button" class="btn btn-outline-primary me-3 mb-2 mt-2">Создать</button>
+      <button *ngIf="!apartamentFee_id" (click)="createAgain()" type="button" class="btn btn-outline-primary mb-2 mt-2">Создать и повторить</button>
     </div>
   </div>
 </div>
 <div class="container">
-  <div class="row">
-    <div class="col-12 col-md-8 col-lg-10 mb-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-6 col-lg-4 mb-4">
       <div class="card">
         <div class="card-body p-3">
           <div *ngIf="loading" class="cardLoading">
@@ -19,10 +24,47 @@
             </div>
           </div>
           <div *ngIf="!loading" class="row gx-3 gy-4">
-            <div class="col-12 col-md-6">
-              <app-input [control]="name" [label]="'Название'"></app-input>
+            <div class="col-12">
+              <app-input [control]="getControl(formGroup, 'name')" [label]="'Название'"></app-input>
             </div>
-            <div class="col-12 col-md-6">
+
+            <div class="col-7">
+              <app-input [control]="getControl(formGroup, 'sum')" [mask]="'separator.2'" [label]="'Сумма'"></app-input>
+            </div>
+            <div class="col-5">
+              <select [formControl]="getControl(formGroup, 'currancy')" class="form-select amount__select">
+                <option *ngFor="let option of currancyOptions" [value]="option.id">{{ option.name }}</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <input mdbInput
+              class="form-control"
+               [formControl]="getControl(formGroup, 'paidDate')" type="date" id="start" name="trip-start">
+            </div>
+
+            <div class="col-12">
+              <select [formControl]="getControl(formGroup, 'apartament_id')" class="form-select">
+                <option value="null" disabled>Квартира</option>
+                <option *ngFor="let option of apartamentOptions$ | async" [value]="option.id">{{ option.name }}</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <app-input [control]="getControl(formGroup, 'description')" [label]="'Описание'"></app-input>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-5 col-lg-3">
+      <div class="card">
+        <div class="card-body p-3">
+          <div *ngIf="loading" class="cardLoading">
+            <div class="spinner-border spinner" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+          <div  *ngIf="!loading" class="row gx-3 gy-4">
+            <div class="col-12">
               <button
               #popoverTrigger
               type="button"
@@ -40,36 +82,28 @@
                 </div>
                 </div>
               </ng-template>
-              <select [formControl]="template_id" class="form-select">
+              <select [formControl]="getControl(formGroup, 'template_id')" class="form-select">
                 <option value="null">Шаблон</option>
                 <option *ngFor="let option of templateOptions$ | async" [value]="option.id">{{ option.name }}</option>
               </select>
             </div>
-
-
-            <div class="col-12 col-md-6">
+            <div class="col-12">
               <div class="form-check form-switch">
                 <input
                   mdbCheckbox
                   class="form-check-input"
                   type="checkbox"
                   id="flexSwitchCheckChecked"
-                  [formControl]="paid"
+                  [(ngModel)]="payDatePrevMonth"
+                  (ngModelChange)="setPayDatePrevMonth($event)"
                 />
                 <label class="form-check-label" for="flexSwitchCheckChecked"
-                  >Оплачено</label
+                  >Оплата за прошлый месяц</label
                 >
               </div>
             </div>
-            <div class="col-12 col-md-6">
-              <app-input [control]="sum" [mask]="'separator.2'" [label]="'Сумма'"></app-input>
-            </div>
-            <div class="col-12 col-md-4">
-              <input  mdbInput
-              class="form-control" [class.d-none]="!isPaid" [formControl]="paidDate" type="date" id="start" name="trip-start">
-            </div>
-            <div class="col-12 col-md-4">
-              <select [formControl]="month" class="form-select">
+            <div class="col-6">
+              <select [formControl]="getControl(formGroup, 'month')" class="form-select">
                 <option value="null" disabled>Месяц</option>
                 <option value="1">Январь</option>
                 <option value="2">Февраль</option>
@@ -85,74 +119,23 @@
                 <option value="12">Декабрь</option>
               </select>
             </div>
-            <div class="col-12 col-md-4">
-              <select [formControl]="year" class="form-select">
+            <div class="col-6">
+              <select [formControl]="getControl(formGroup, 'year')" class="form-select">
                 <option value="null" disabled>Год</option>
                 <option *ngFor="let option of yearOptions" [value]="option.id">{{ option.name }}</option>
               </select>
             </div>
-
-            <div class="col-12 col-md-6">
-              <select [formControl]="currancy" class="form-select">
-                <option value="null" disabled>Валюта</option>
-                <option *ngFor="let option of currancyOptions" [value]="option.id">{{ option.name }}</option>
-              </select>
-            </div>
-            <div class="col-12 col-md-6">
-              <select [formControl]="payVariant" class="form-select">
-                <option value="null" disabled>Способ оплаты</option>
-                <option *ngFor="let option of payVariantOptions" [value]="option.id">{{ option.name }}</option>
-              </select>
-            </div>
-
-
-
-            <div class="col-12 col-md-6">
-              <app-input [control]="commission" [mask]="'separator.2'" [label]="'Комиссия'"></app-input>
-            </div>
-
             <div class="col-12">
-              <select [formControl]="organization_id" class="form-select">
-                <option value="null" disabled>Организация</option>
-                <option *ngFor="let option of organizationOptions$ | async" [value]="option.id">{{ option.name }}</option>
-              </select>
-            </div>
-            <div class="col-12 col-md-6">
-              <select [formControl]="organizationTariff_id" class="form-select">
-                <option disabled value="null">Сервис</option>
-                <option *ngFor="let option of organizationTariffOptions$ | async" [value]="option.id">{{ option.name }}</option>
-              </select>
-            </div>
-
-            <div class="col-12 col-md-6">
-              <select [formControl]="apartament_id" class="form-select">
-                <option value="null" disabled>Квартира</option>
-                <option *ngFor="let option of apartamentOptions$ | async" [value]="option.id">{{ option.name }}</option>
-              </select>
-            </div>
-            <div class="col-12">
-              <app-input [control]="description" [label]="'Описание'"></app-input>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-12 col-md-4 col-lg-2">
-      <div class="card">
-        <div class="card-body p-3">
-          <div class="row row gx-3 gy-4">
-            <div class="col-12 col-md-6">
               <div class="form-check form-switch">
                 <input
                   mdbCheckbox
                   class="form-check-input"
                   type="checkbox"
                   id="flexSwitchCheckChecked"
-                  [(ngModel)]="payDatePrevMonth"
-                  (ngModelChange)="setPayDatePrevMonth($event)"
+                  [formControl]="getControl(formGroup, 'paid')"
                 />
                 <label class="form-check-label" for="flexSwitchCheckChecked"
-                  >Оплата за прошлый месяц</label
+                  >Оплачено</label
                 >
               </div>
             </div>

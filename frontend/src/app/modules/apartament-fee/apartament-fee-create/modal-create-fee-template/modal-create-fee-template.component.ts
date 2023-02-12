@@ -24,30 +24,17 @@ import { payVariants } from 'src/app/modules/shared/payVariants';
 export class ModalCreateFeeTemplateComponent implements OnInit {
   loading: boolean = false
 
-  name: FormControl = new FormControl(null, [Validators.required])
-  description: FormControl = new FormControl(null)
-  sum: FormControl = new FormControl(null)
-  currancy: FormControl = new FormControl(null)
-  payVariant: FormControl = new FormControl(null)
-  organization_id: FormControl = new FormControl(null)
-  organizationTariff_id: FormControl = new FormControl(null)
-  apartament_id: FormControl = new FormControl(null)
-
   formGroup: FormGroup = new FormGroup({
-    name: this.name,
-    description: this.description,
-    sum: this.sum,
-    currancy: this.currancy,
-    payVariant: this.payVariant,
-    organization_id: this.organization_id,
-    organizationTariff_id: this.organizationTariff_id,
-    apartament_id: this.apartament_id,
+    name: new FormControl(null, [Validators.required]),
+    description: new FormControl(null),
+    sum: new FormControl(null),
+    currancy: new FormControl(null),
+    apartament_id: new FormControl(null),
   })
 
   currancyOptions: any[] = []
   payVariantOptions: any[] = []
-  organizationOptions$: Observable<any[]>
-  organizationTariffOptions$: Observable<any[]>
+
   apartamentOptions$: Observable<any[]>
   modalInputdata: any = null
   constructor(
@@ -62,30 +49,20 @@ export class ModalCreateFeeTemplateComponent implements OnInit {
     private OrganizationTariffServ: OrganizationTariffService,
     private ApartamentServ: ApartamentService
     ) {
-      this.organizationOptions$ = this.OrganizationServ.organizations$
-      this.organizationTariffOptions$ = this.OrganizationTariffServ.organizationTariffs$
       this.apartamentOptions$ = this.ApartamentServ.apartaments$
     }
 
 
   ngOnInit(): void {
     this.currancyOptions = this.getCurrancyOptions()
-    this.OrganizationServ.getOrganizations().subscribe()
-    this.OrganizationTariffServ.getOrganizationTariffs().subscribe()
     this.ApartamentServ.getApartaments().subscribe()
-    this.payVariantOptions = payVariants
-    // console.log(this.modalInputdata)
     this.formGroup.patchValue({
       name: this.modalInputdata.name,
       description: this.modalInputdata.description,
       sum: this.modalInputdata.sum,
       currancy: this.modalInputdata.currancy,
-      payVariant: this.modalInputdata.payVariant,
-      organization_id: this.modalInputdata.organization_id,
-      organizationTariff_id: this.modalInputdata.organizationTariff_id,
       apartament_id: this.modalInputdata.apartament_id
     })
-
   }
 
   create() {
@@ -97,9 +74,6 @@ export class ModalCreateFeeTemplateComponent implements OnInit {
       description: formGroupValue.description,
       sum: formGroupValue.sum,
       currancy: formGroupValue.currancy,
-      organization_id: formGroupValue.organization_id,
-      organizationTariff_id: formGroupValue.organizationTariff_id,
-      payVariant: formGroupValue.payVariant
     }
     this.FeeTemplateServ.create(data).subscribe({
       next: (res: any) => {
@@ -116,11 +90,20 @@ export class ModalCreateFeeTemplateComponent implements OnInit {
 
   private getCurrancyOptions () {
     if (Array.isArray(currancyCodes)) {
-      return currancyCodes.map((el: any) => {
-        return { name: el.shortName + ' ' + el.name, value: el.code }
+      return currancyCodes.slice(0, 4).map((el: {
+        shortName: string
+        code: number
+        name: string
+        sign?: string
+      }) => {
+        return { name: el.sign || el.shortName, id: el.code }
       })
     }
     return []
   }
-
+  getControl(formGroup: FormGroup, formControlId: string): FormControl {
+    let formControl: FormControl = new FormControl(null)
+    formControl = (formGroup.get(formControlId) as FormControl) || new FormControl(null)
+    return formControl
+  }
 }

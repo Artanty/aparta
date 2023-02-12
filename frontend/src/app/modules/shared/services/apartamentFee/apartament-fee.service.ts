@@ -1,16 +1,17 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of, tap } from 'rxjs';
+import { BehaviorSubject, finalize, Observable, of, tap } from 'rxjs';
 import { orderBy } from '../../helpers';
+import { GetFeesApiResponseItem } from './types';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApartamentFeeService {
-  private feesSubj: BehaviorSubject<any> = new BehaviorSubject<any>([])
-  fees$: Observable<any[]> = this.feesSubj.asObservable()
+  private feesSubj: BehaviorSubject<GetFeesApiResponseItem[]> = new BehaviorSubject<GetFeesApiResponseItem[]>([])
+  fees$: Observable<GetFeesApiResponseItem[]> = this.feesSubj.asObservable()
 
-  private loadingSubj$: BehaviorSubject<boolean> = new BehaviorSubject<any>(false)
+  private loadingSubj$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true)
   loading$: Observable<boolean> = this.loadingSubj$.asObservable()
 
   private copiedApartamentSubj: BehaviorSubject<any> = new BehaviorSubject<any>(null)
@@ -30,7 +31,7 @@ export class ApartamentFeeService {
     return this.copiedApartamentSubj.getValue()
   }
 
-  setFees (val: any) {
+  setFees (val: GetFeesApiResponseItem[]) {
     this.feesSubj.next(val)
   }
 
@@ -38,7 +39,8 @@ export class ApartamentFeeService {
     this.loadingSubj$.next(val)
   }
 
-  getFees(a_id: number | string, force?: boolean): Observable<any>{
+  getFees(a_id: number | string, force?: boolean): Observable<GetFeesApiResponseItem[]>{
+    this.setLoading(true)
     let obs$: Observable<any>
     const storeItems = this.feesSubj.getValue()
     const storageItems = localStorage.getItem('fees')
@@ -48,13 +50,13 @@ export class ApartamentFeeService {
       obs$ = of(JSON.parse(storageItems))
     } else {
       if (a_id === 'all') {
-        obs$ = this.http.get<any[]>(`apartamentFee`)
+        obs$ = this.http.get<GetFeesApiResponseItem[]>(`apartamentFee`)
       } else {
-        obs$ = this.http.get<any[]>(`apartament/getApartamentFees/${a_id}`)
+        obs$ = this.http.get<GetFeesApiResponseItem[]>(`apartament/getApartamentFees/${a_id}`)
       }
     }
     return obs$.pipe(
-      tap((res: any) => {
+      tap((res: GetFeesApiResponseItem[]) => {
         localStorage.setItem('fees', JSON.stringify(res))
         this.setFees(res)
         if (a_id === 'all') {
@@ -64,7 +66,9 @@ export class ApartamentFeeService {
           this.allFeesLoaded = false
           this.apartamentFeesLoaded = true
         }
-
+      }),
+      finalize(() => {
+        this.setLoading(false)
       })
     )
   }
@@ -84,7 +88,7 @@ export class ApartamentFeeService {
           localStorage.removeItem('fees')
           let storeFees = this.feesSubj.getValue()
           storeFees.push(res)
-          this.setFees(orderBy(storeFees,'paidDate', 'asc'))
+          this.setFees(orderBy(storeFees, 'paidDate', 'asc'))
         }
       })
     )

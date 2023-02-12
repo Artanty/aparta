@@ -6,6 +6,7 @@ import { MessageService } from '../../shared/services/message/message.service';
 import { isNonNull, orderBy, removeDuplicatedObj } from '../../shared/helpers';
 import { FormControl, FormGroup } from '@angular/forms';
 import { GetCurrancyPipe } from '../../shared/pipes/get-currancy.pipe';
+import { GetFeesApiResponseItem } from '../../shared/services/apartamentFee/types';
 // import { GetCurrancyPipe } from ''
 
 @Component({
@@ -51,15 +52,12 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
     private ActivatedRoute: ActivatedRoute,
     private MessageServ: MessageService
   ) {
-    this.ApartamentFeeServ.setLoading(true)
     this.tableLoading$ = this.ApartamentFeeServ.loading$
-
-    // console.log(this.apartament_id)
     let obs$: Observable<any>
-    const mapPipeSetSelectOptions = (res: any) => {
-      this.nameOptions = orderBy(removeDuplicatedObj(res, 'name'), 'name', 'desc')
-      this.yearOptions = orderBy(removeDuplicatedObj(res, 'year'), 'year', 'desc').map((el: any) => ({ name: el.year, value: el.year }))
-      return orderBy(res, 'paidDate', 'asc', (el: any)=> new Date(el.paidDate).getTime())
+    const mapPipeSetSelectOptions = (res: GetFeesApiResponseItem[]) => {
+      this.nameOptions = removeDuplicatedObj(res, 'name').sort((a: GetFeesApiResponseItem, b: GetFeesApiResponseItem) => a.name.localeCompare(b.name))
+      this.yearOptions = orderBy(removeDuplicatedObj(res, 'year'), 'year', 'desc').map((el: GetFeesApiResponseItem) => ({ name: el.year, value: el.year }))
+      return orderBy(res, (el: GetFeesApiResponseItem) => new Date(el.paidDate || 1).getTime(), 'asc')
     }
     const mapPipeFilterAndSort = (res: any) => {
       this.saveTableState()
@@ -88,17 +86,17 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
           }
           return obj.sum
         }
-        items = orderBy(items, 'sum', sort.sum > 0 ? 'asc' : 'desc', format)
+        items = orderBy(items, format, sort.sum > 0 ? 'asc' : 'desc', )
       } else if (sort.month && sort.month !== 0) {
         const format = (obj: any) => {
           const date = new Date()
           return date.setMonth(obj.month)
         }
-        items = orderBy(items, 'month', sort.month > 0 ? 'asc' : 'desc', format)
+        items = orderBy(items, format, sort.month > 0 ? 'asc' : 'desc', )
       } else if (sort.paidDate && sort.paidDate !== 0) {
-        items = orderBy(items, 'paidDate', sort.paidDate > 0 ? 'asc' : 'desc', (el: any)=> new Date(el.paidDate).getTime())
+        items = orderBy(items, (el: any)=> new Date(el.paidDate).getTime(), sort.paidDate > 0 ? 'asc' : 'desc')
       } else if (sort.created_at && sort.created_at !== 0){
-        items = orderBy(items, 'paidDate', sort.created_at > 0 ? 'asc' : 'desc', (el: any)=> new Date(el.created_at).getTime())
+        items = orderBy(items, (el: any)=> new Date(el.created_at).getTime(), sort.created_at > 0 ? 'asc' : 'desc')
       } else {
         items = orderBy(items, 'name', 'asc')
       }
@@ -116,13 +114,10 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
       return res
     }
     this.ActivatedRoute.params.subscribe((res: any) => {
-      if (res.apartament_id && res.apartament_id !== 'all') {
-        this.apartament_id = res.apartament_id
-        this.ApartamentFeeServ.getFees(+this.apartament_id, true).subscribe()
-      }
-      if (res.apartament_id && res.apartament_id === 'all') {
-        this.apartament_id = ''
-        this.ApartamentFeeServ.getFees('all', true).subscribe()
+      if (res.apartament_id) {
+        this.apartament_id = res.apartament_id !== 'all' ? res.apartament_id : ''
+        this.filterFormGroup.reset()
+        this.ApartamentFeeServ.getFees(res.apartament_id !== 'all' ? +this.apartament_id : 'all', true).subscribe()
       }
     })
     obs$ = this.ApartamentFeeServ.fees$
@@ -137,14 +132,12 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
     this.subs$ = obs$.subscribe({
       next: (res: any) => {
         this.MessageServ.sendMessage('success', '', 'Счетa загружены')
-        this.ApartamentFeeServ.setLoading(false)
         setTimeout(()=>{
           this.loadTableState()
         }, 0)
       },
       error: (err: any) => {
         this.MessageServ.sendMessage('error', 'Ошибка!', err.error.message)
-        this.ApartamentFeeServ.setLoading(false)
       }
     })
   }

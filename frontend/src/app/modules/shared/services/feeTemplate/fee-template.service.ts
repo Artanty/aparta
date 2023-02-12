@@ -1,14 +1,15 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of, tap } from 'rxjs';
+import { FeeTemplateApiResponseItem } from './types';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FeeTemplateService {
 
-  private feeTemplatesSubj: BehaviorSubject<any> = new BehaviorSubject<any>([])
-  feeTemplates$: Observable<any[]> = this.feeTemplatesSubj.asObservable()
+  private feeTemplatesSubj: BehaviorSubject<FeeTemplateApiResponseItem[]> = new BehaviorSubject<FeeTemplateApiResponseItem[]>([])
+  feeTemplates$: Observable<FeeTemplateApiResponseItem[]> = this.feeTemplatesSubj.asObservable()
 
   private feeTemplatesLoadingSubj: BehaviorSubject<boolean> = new BehaviorSubject<any>(false)
   feeTemplatesLoading$: Observable<boolean> = this.feeTemplatesLoadingSubj.asObservable()
@@ -17,7 +18,7 @@ export class FeeTemplateService {
     private http: HttpClient
   ) { }
 
-  setFeeTemplates (val: any) {
+  setFeeTemplates (val: FeeTemplateApiResponseItem[]) {
     this.feeTemplatesSubj.next(val)
   }
 
@@ -25,8 +26,8 @@ export class FeeTemplateService {
     this.feeTemplatesLoadingSubj.next(val)
   }
 
-  getFeeTemplates(force?: boolean): Observable<any>{
-    let obs$: Observable<any>
+  getFeeTemplates(force?: boolean): Observable<FeeTemplateApiResponseItem[]>{
+    let obs$: Observable<FeeTemplateApiResponseItem[]>
     const storeItems = this.feeTemplatesSubj.getValue()
     const storageItems = localStorage.getItem('feeTemplates')
     if (storeItems?.length && !force) {
@@ -34,10 +35,10 @@ export class FeeTemplateService {
     } else if (storageItems && !force) {
       obs$ = of(JSON.parse(storageItems))
     } else {
-      obs$ = this.http.get<any[]>(`feeTemplate`)
+      obs$ = this.http.get<FeeTemplateApiResponseItem[]>(`feeTemplate`)
     }
     return obs$.pipe(
-      tap((res: any) => {
+      tap((res: FeeTemplateApiResponseItem[]) => {
         localStorage.setItem('feeTemplates', JSON.stringify(res))
         this.setFeeTemplates(res)
       })
@@ -50,7 +51,7 @@ export class FeeTemplateService {
         next: (res: any) => {
           localStorage.removeItem('feeTemplates')
           let storeItems = this.feeTemplatesSubj.getValue()
-          storeItems = storeItems.push(res)
+          storeItems.push(res)
           this.setFeeTemplates(storeItems)
         }
       })

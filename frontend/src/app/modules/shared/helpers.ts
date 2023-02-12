@@ -1,29 +1,17 @@
-export const orderBy = (array: any, key: any, order: any, format?: Function) => {
-  const newArray = JSON.parse(JSON.stringify(array))
-  if (Array.isArray(newArray) && newArray.length > 1){
-    newArray.sort((a: any, b: any) => {
-      if (format) {
-        const aFormatted = format(a)
-        const bFormatted = format(b)
-        if (aFormatted < bFormatted) {
-          return order === 'asc' ? 1 : -1
-        }
-        if (aFormatted > bFormatted) {
-          return order === 'desc' ? 1 : -1
-        }
-        return 0
-      } else {
-        if (a[key] < b[key]) {
-          return order === 'asc' ? 1 : -1
-        }
-        if (a[key] > b[key]) {
-          return order === 'desc' ? 1 : -1
-        }
-        return 0
-      }
-    })
+export const orderBy = (data: any, key: string | Function, order: any) => {
+  const formatFunc = (val: any) => {
+    return typeof key === 'function' ? key(val) : val[key]
   }
-  return newArray
+  data.sort((a: any, b: any) => {
+    if (formatFunc(a) < formatFunc(b)) {
+      return order === 'asc' ? 1 : -1
+    }
+    if (formatFunc(a) > formatFunc(b)) {
+      return order === 'desc' ? 1 : -1
+    }
+    return 0
+  })
+  return data
 }
 
 export const prependZero = (data: string | number) => {

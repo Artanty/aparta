@@ -9,12 +9,13 @@ import { currancyCodes } from './../../shared/currancyCodes';
 import { payVariants } from './../../shared/payVariants';
 import { MdbModalConfig, MdbModalRef, MdbModalService } from 'mdb-angular-ui-kit/modal';
 import { ModalCreateFeeTemplateComponent } from './modal-create-fee-template/modal-create-fee-template.component'
-import { Observable, take, tap } from 'rxjs';
+import { EMPTY, map, Observable, of, take, tap, startWith, withLatestFrom, combineLatestWith } from 'rxjs';
 import { OrganizationService } from '../../shared/services/organization/organization.service';
 import { FeeTemplateService } from '../../shared/services/feeTemplate/fee-template.service';
 import { ApartamentService } from '../../shared/services/apartament/apartament.service';
 import { OrganizationTariffService } from '../../shared/services/organizationTariff/organization-tariff.service';
 import { prependZero } from '../../shared/helpers';
+import { FeeTemplateApiResponseItem } from '../../shared/services/feeTemplate/types';
 
 @Component({
   selector: 'app-apartament-fee-create',
@@ -22,48 +23,26 @@ import { prependZero } from '../../shared/helpers';
   styleUrls: ['./apartament-fee-create.component.scss']
 })
 export class ApartamentFeeCreateComponent implements OnInit {
+  apartamentFee_id: number = 0
   payDatePrevMonth: boolean
   @ViewChild ('popoverTrigger') popoverTrigger: ElementRef | undefined
-  modalRef: MdbModalRef<ModalCreateFeeTemplateComponent> | null = null;
-
+  modalRef: MdbModalRef<ModalCreateFeeTemplateComponent> | null = null
   loading: boolean = false
-
-  name: FormControl = new FormControl(null, [Validators.required])
-  description: FormControl = new FormControl(null)
-  sum: FormControl = new FormControl(null)
-  commission: FormControl = new FormControl(null)
-  currancy: FormControl = new FormControl(null)
-  month: FormControl = new FormControl(null)
-  year: FormControl = new FormControl(null)
-  paid: FormControl = new FormControl(true)
-  paidDate: FormControl = new FormControl(new Date().toISOString().slice(0, -14))
-  payVariant: FormControl = new FormControl(null)
-  organization_id: FormControl = new FormControl(null)
-  organizationTariff_id: FormControl = new FormControl(null)
-  apartament_id: FormControl = new FormControl(null, [Validators.required])
-  template_id: FormControl = new FormControl(null)
-
   formGroup: FormGroup = new FormGroup({
-    apartament_id: this.apartament_id,
-    name: this.name,
-    description: this.description,
-    sum: this.sum,
-    commission: this.commission,
-    currancy: this.currancy,
-    month: this.month,
-    year: this.year,
-    paid: this.paid,
-    paidDate: this.paidDate,
-    payVariant: this.payVariant,
-    organization_id: this.organization_id,
-    organizationTariff_id: this.organizationTariff_id,
-    template_id: this.template_id
+    apartament_id: new FormControl(null, [Validators.required]),
+    name: new FormControl(null, [Validators.required]),
+    description: new FormControl(null),
+    sum: new FormControl(null),
+    currancy: new FormControl(null),
+    month: new FormControl(null),
+    year: new FormControl(null),
+    paid: new FormControl(true),
+    paidDate: new FormControl(null),
+    template_id: new FormControl(null)
   })
   yearOptions: any[] = []
   currancyOptions: any[] = []
-  payVariantOptions: any[] = []
-  organizationOptions$: Observable<any[]>
-  organizationTariffOptions$: Observable<any[]>
+
   templateOptions$: Observable<any[]>
   apartamentOptions$: Observable<any[]>
 
@@ -81,23 +60,39 @@ export class ApartamentFeeCreateComponent implements OnInit {
     private Router: Router
   ) {
     this.payDatePrevMonth = Boolean(Number(localStorage.getItem('payDatePrevMonth')))
-    try {
-      const apartament_id = this.ActivatedRoute.snapshot.paramMap.get('apartament_id')
-      this.formGroup.patchValue({
-        apartament_id: apartament_id
-      })
 
-    } catch (error) {
-      // this.Location.back()
-    }
-    this.OrganizationServ.getOrganizations().subscribe()
-    this.OrganizationTariffServ.getOrganizationTariffs().subscribe()
     this.FeeTemplateServ.getFeeTemplates().subscribe()
     this.ApartamentServ.getApartaments().subscribe()
-    this.organizationOptions$ = this.OrganizationServ.organizations$
-    this.organizationTariffOptions$ = this.OrganizationTariffServ.organizationTariffs$
 
-    this.templateOptions$ = this.FeeTemplateServ.feeTemplates$
+    this.templateOptions$ = this.FeeTemplateServ.feeTemplates$.pipe(
+      combineLatestWith(this.formGroup.get('apartament_id')?.valueChanges.pipe(startWith(this.formGroup.get('apartament_id')?.value)) || of(this.formGroup.get('apartament_id')?.value)),
+      map((res: [FeeTemplateApiResponseItem[], string]) => {
+        const id: number = +res[1]
+        const prop = 'apartament_id'
+        if (Array.isArray(res[0]) && id) {
+          res[0].sort((a, b) => {
+            let result = 0
+            if (+a[prop] === id && +b[prop] !== id) {
+              result = -1
+            }
+            if (+a[prop] !== id && +b[prop] === id) {
+              result = 1
+            }
+            return result || a.name.localeCompare(b.name)
+          })
+        }
+        return res[0]
+      })
+    )
+    const apartament_id = this.ActivatedRoute.snapshot.paramMap.get('apartament_id')
+    if (apartament_id) {
+      setTimeout(() => {
+        this.formGroup.patchValue({
+          apartament_id: apartament_id
+        })
+      }, 0)
+    }
+
     this.apartamentOptions$ = this.ApartamentServ.apartaments$
     this.formGroup.get('template_id')?.valueChanges.subscribe((res: any) => {
       if (res !== null) {
@@ -111,38 +106,66 @@ export class ApartamentFeeCreateComponent implements OnInit {
         }
       }
     })
-    this.formGroup.get('month')?.valueChanges.subscribe((res: any) => {
-      const paidDate = this.formGroup.get('paidDate')?.value
-      if (paidDate) {
-        res = this.payDatePrevMonth ? res : (res-1)
-        const newPaidDate = new Date(new Date(paidDate).setMonth(Number(res))).toISOString().slice(0, -14)
-        // todo развести по типам шаблонов, для квартплатных - делать месяц назад, для остальных - нет
-        this.formGroup.patchValue({
-          paidDate: newPaidDate
-        })
-      }
-    })
 
-    this.formGroup.get('year')?.valueChanges.subscribe((res: any) => {
-      const paidDate = this.formGroup.get('paidDate')?.value
-      if (paidDate) {
-        const newPaidDate = new Date(new Date(paidDate).setFullYear(Number(res))).toISOString().slice(0, -14)
-        this.formGroup.patchValue({
-          paidDate: newPaidDate
-        })
+    this.formGroup.get('paidDate')?.valueChanges.subscribe((res: any) => {
+      if (res) {
+        this.setMonthAndYear(res)
       }
     })
+    this.formGroup.get('paid')?.valueChanges.subscribe((res: any) => {
+      this.setPaidDateDisable()
+    })
+    const apartamentFee_id = Number(this.ActivatedRoute.snapshot.paramMap.get('apartamentFee_id'))
+    if (apartamentFee_id) {
+      this.apartamentFee_id = apartamentFee_id
+      this.getApartamentFee(apartamentFee_id)
+    } else {
+      this.formGroup.patchValue({
+        paidDate: new Date().toISOString().slice(0, -14)
+      })
+    }
   }
+
   get isPaid () {
     return this.formGroup.get('paid')?.value
   }
 
   ngOnInit(): void {
+    this.loadCurrancy()
     this.yearOptions = this.getYearOptions()
     this.currancyOptions = this.getCurrancyOptions()
-    this.payVariantOptions = payVariants
-
     this.setCopiedApartament()
+    this.setPaidDateDisable()
+  }
+
+  setPaidDateDisable () {
+    const paid = this.formGroup.get('paid')?.value
+    if (paid) {
+      this.formGroup.get('paidDate')?.enable()
+    } else {
+      this.formGroup.get('paidDate')?.disable()
+    }
+  }
+
+  setMonthAndYear (date: string) {
+    let patchObj = {}
+    if (date) {
+      if (this.payDatePrevMonth) {
+        let copyOfDate = new Date(new Date(date).valueOf())
+        copyOfDate.setMonth(copyOfDate.getMonth() - 1)
+        patchObj = {
+          month: new Date(copyOfDate).getMonth() + 1,
+          year: new Date(copyOfDate).getFullYear()
+        }
+        console.log(patchObj)
+      } else {
+        patchObj = {
+          month: new Date(date).getMonth() + 1,
+          year: new Date(date).getFullYear()
+        }
+      }
+      this.formGroup.patchValue(patchObj, { emitEvent: false } )
+    }
   }
 
   setCopiedApartament () {
@@ -166,8 +189,11 @@ export class ApartamentFeeCreateComponent implements OnInit {
       })
     }
   }
+
   setPayDatePrevMonth (data: boolean) {
     localStorage.setItem('payDatePrevMonth', String(Number(data)))
+    const date = this.formGroup.get('paidDate')?.value
+    this.setMonthAndYear(date)
   }
 
   closeTemplateConfirm (confirm: boolean) {
@@ -222,11 +248,41 @@ export class ApartamentFeeCreateComponent implements OnInit {
 
   private getCurrancyOptions () {
     if (Array.isArray(currancyCodes)) {
-      return currancyCodes.map((el: any) => {
-        return { name: el.shortName + ' ' + el.name, id: el.code }
+      return currancyCodes.slice(0, 4).map((el: {
+        shortName: string
+        code: number
+        name: string
+        sign?: string
+      }) => {
+        return { name: el.sign || el.shortName, id: el.code }
       })
     }
     return []
+  }
+
+  getApartamentFee (id: number) {
+    this.loading = true
+    this.ApartamentFeeServ.getFee(id).subscribe({
+      next: (res: any) => {
+        this.formGroup.patchValue({
+          name: res.name,
+          description: res.description,
+          sum: res.sum,
+          currancy: res.currancy,
+          month: res.month,
+          year: res.year,
+          paid: Boolean(res.paid),
+          template_id: res.template_id,
+          apartament_id: res.apartament_id,
+          paidDate: res.paidDate,
+        })
+        this.loading = false
+      },
+      error: (err: any) => {
+        this.MessageServ.sendMessage('error', 'Ошибка!', err.error.message)
+        this.loading = false
+      }
+    })
   }
 
   create() {
@@ -236,17 +292,13 @@ export class ApartamentFeeCreateComponent implements OnInit {
       name: formGroupValue.name,
       description: formGroupValue.description,
       sum: formGroupValue.sum,
-      commission: formGroupValue.commission,
       currancy: formGroupValue.currancy,
       month: Number(formGroupValue.month),
       year: formGroupValue.year,
       paid: Boolean(formGroupValue.paid),
-      organization_id: formGroupValue.organization_id,
       template_id: formGroupValue.template_id,
       apartament_id: formGroupValue.apartament_id,
-      organizationTariff_id: formGroupValue.organizationTariff_id,
-      paidDate: this.isPaid ? formGroupValue.paidDate : '',
-      payVariant: formGroupValue.payVariant,
+      paidDate: this.isPaid ? formGroupValue.paidDate : ''
     }
     this.ApartamentFeeServ.create(data).subscribe({
       next: (res: any) => {
@@ -259,7 +311,6 @@ export class ApartamentFeeCreateComponent implements OnInit {
         }
       },
       error: (err: any) => {
-        console.log(err)
         this.loading = false
         this.MessageServ.sendMessage('error', 'Ошибка!', err.error.message)
       }
@@ -273,17 +324,13 @@ export class ApartamentFeeCreateComponent implements OnInit {
       name: formGroupValue.name,
       description: formGroupValue.description,
       sum: formGroupValue.sum,
-      commission: formGroupValue.commission,
       currancy: formGroupValue.currancy,
       month: Number(formGroupValue.month),
       year: formGroupValue.year,
       paid: Boolean(formGroupValue.paid),
-      organization_id: formGroupValue.organization_id,
       template_id: formGroupValue.template_id,
       apartament_id: formGroupValue.apartament_id,
-      organizationTariff_id: formGroupValue.organizationTariff_id,
       paidDate: this.isPaid ? formGroupValue.paidDate : '',
-      payVariant: formGroupValue.payVariant,
     }
     this.ApartamentFeeServ.create(data).subscribe({
       next: (res: any) => {
@@ -294,6 +341,72 @@ export class ApartamentFeeCreateComponent implements OnInit {
       }
     })
     this.redirectTo()
+  }
+
+  update() {
+    this.loading = true
+    const formGroupValue = this.formGroup.value
+    let data = {
+      id: this.apartamentFee_id,
+      name: formGroupValue.name,
+      description: formGroupValue.description,
+      sum: formGroupValue.sum,
+      currancy: formGroupValue.currancy,
+      month: Number(formGroupValue.month),
+      year: formGroupValue.year,
+      paid: Boolean(formGroupValue.paid),
+      template_id: formGroupValue.template_id,
+      apartament_id: formGroupValue.apartament_id,
+      paidDate: this.isPaid ? formGroupValue.paidDate : '',
+    }
+    // console.log(data)
+    this.ApartamentFeeServ.update(data).subscribe({
+      next: (res: any) => {
+        this.MessageServ.sendMessage('success', 'Успешно сохранено!', 'Счет добавлен')
+        if (!res.template_id) {
+          this.openModal(res)
+        }
+        this.loading = false
+        this.Location.back()
+      },
+      error: (err: any) => {
+        this.loading = false
+        this.MessageServ.sendMessage('error', 'Ошибка!', err.error.message)
+      }
+    })
+  }
+
+  delete() {
+    this.ApartamentFeeServ.delete(this.apartamentFee_id).subscribe({
+      next: (res: any) => {
+        this.MessageServ.sendMessage('success', 'Успешно сохранено!', 'Счет добавлен')
+        this.Location.back()
+        this.loading = false
+      },
+      error: (err: any) => {
+        this.loading = false
+        this.MessageServ.sendMessage('error', 'Ошибка!', err.error.message)
+      }
+    })
+  }
+
+  makeCopy () {
+    const formGroupValue = this.formGroup.value
+    let data = {
+      name: formGroupValue.name,
+      description: formGroupValue.description,
+      sum: formGroupValue.sum,
+      currancy: formGroupValue.currancy,
+      month: Number(formGroupValue.month),
+      year: formGroupValue.year,
+      paid: Boolean(formGroupValue.paid),
+      template_id: formGroupValue.template_id,
+      apartament_id: formGroupValue.apartament_id,
+      paidDate: this.isPaid ? formGroupValue.paidDate : ''
+    }
+    this.ApartamentFeeServ.setCopiedApartament(data)
+    // this.Router.navigate(["/apartament/new"], ) // {skipLocationChange: true}
+    this.Router.navigate(['apartamentFee', 'new'])
   }
 
   back() {
@@ -311,4 +424,22 @@ export class ApartamentFeeCreateComponent implements OnInit {
     this.Router.navigate([uri]));
   }
 
+  private saveCurrancy(data: number) {
+    localStorage.setItem('fee_currancy', String(data))
+  }
+
+  private loadCurrancy() {
+    const currancy = localStorage.getItem('fee_currancy')
+    if (currancy){
+      this.formGroup.patchValue({
+        currancy: Number(currancy)
+      })
+    }
+  }
+
+  getControl(formGroup: FormGroup, formControlId: string): FormControl {
+    let formControl: FormControl = new FormControl(null)
+    formControl = (formGroup.get(formControlId) as FormControl) || new FormControl(null)
+    return formControl
+  }
 }
