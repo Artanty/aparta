@@ -4,11 +4,11 @@ export type GetFeesApiResponseItem = {
   "description": null | string,
   "currancy": number
   "sum": string | number
-  "commission": any,
+  "commission": any
   "month": number
   "year": number
   "paid": any
-  "paidDate": null | string,
+  "paidDate": null | string
   "organization_id": number
   "organizationTariff_id": number
   "template_id": number

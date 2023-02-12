@@ -198,6 +198,9 @@ export class ApartamentFeeCreateComponent implements OnInit {
         paidDate: this.isPaid ? copied.paidDate : '',
         payVariant: copied.payVariant,
       })
+      this.formGroup.patchValue({
+        sum: copied.sum
+      })
     }
     setTimeout(() => this.ApartamentFeeServ.setCopiedApartament(null), 0)
   }
@@ -286,6 +289,9 @@ export class ApartamentFeeCreateComponent implements OnInit {
           paidDate: res.paidDate,
         })
         this.loading = false
+        this.formGroup.patchValue({
+          sum: res.sum
+        })
       },
       error: (err: any) => {
         this.MessageServ.sendMessage('error', 'Ошибка!', err.error.message)

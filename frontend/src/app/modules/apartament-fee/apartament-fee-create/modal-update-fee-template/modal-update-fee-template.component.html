@@ -50,7 +50,8 @@
         *ngIf="getControl(templateFormGroup, 'sum')?.value && getControl(templateFormGroup, 'sum')?.value !== getControl(formGroup, 'sum')?.value ||
         getControl(templateFormGroup, 'currancy')?.value && getControl(templateFormGroup, 'currancy')?.value !== getControl(formGroup, 'currancy')?.value"
         (click)="resetControl(['sum', 'currancy'])"
-        type="button" class="btn btn-outline-secondary ms-2"><i class="fas fa-long-arrow-alt-left me-2"></i>Вернуть</button>
+        type="button"  style="min-width: 122px;"
+        class="btn btn-outline-secondary ms-2"><i class="fas fa-long-arrow-alt-left me-2"></i>Вернуть</button>
       </div>
       <div>
         <div class="row">

@@ -7,6 +7,7 @@ import { isNonNull, orderBy, removeDuplicatedObj } from '../../shared/helpers';
 import { FormControl, FormGroup } from '@angular/forms';
 import { GetCurrancyPipe } from '../../shared/pipes/get-currancy.pipe';
 import { GetFeesApiResponseItem } from '../../shared/services/apartamentFee/types';
+import { MdbPopoverDirective } from 'mdb-angular-ui-kit/popover';
 
 
 @Component({
@@ -15,7 +16,7 @@ import { GetFeesApiResponseItem } from '../../shared/services/apartamentFee/type
   styleUrls: ['./apartament-fee-list.component.scss']
 })
 export class ApartamentFeeListComponent implements OnInit, OnDestroy {
-
+  deleteConfirmOpened: MdbPopoverDirective | null = null
   currancy: number = 941
   @Input() set _currancy(value: number) {
     this.currancy = value;
@@ -24,7 +25,6 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
     }, 0)
   }
   @Output() amountOut: EventEmitter<number> = new EventEmitter<number>()
-  @ViewChild ('popoverTrigger') popoverTrigger: ElementRef | undefined
   apartament_id: string = ''
   tableLoading$: Observable<boolean>
   items$?: Observable<any>
@@ -190,6 +190,7 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
           apartament_id: res.apartament_id,
           paidDate: res.paidDate,
         }
+        data.sum = res.sum
         this.ApartamentFeeServ.setCopiedApartament(data)
         this.Router.navigate(['apartamentFee', 'new'])
       },
@@ -197,6 +198,23 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
         this.MessageServ.sendMessage('error', 'Ошибка!', err.error.message)
       }
     })
+  }
+
+  deleteConfirmOnOpen(data: MdbPopoverDirective){
+    if (this.deleteConfirmOpened) {
+      this.deleteConfirmOpened?.hide()
+    }
+    this.deleteConfirmOpened = data
+  }
+  deleteConfirm (confirm: boolean, id: number) {
+    if (confirm) {
+      this.deleteConfirmOpened?.hide()
+      this.deleteConfirmOpened = null
+      this.delete(id)
+    } else {
+      this.deleteConfirmOpened?.hide()
+      this.deleteConfirmOpened = null
+    }
   }
 
   delete(id: number) {
