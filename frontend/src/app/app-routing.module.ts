@@ -12,6 +12,7 @@ const routes: Routes = [
   { path: 'feeTemplate', loadChildren: () => import('./modules/fee-template/fee-template.module').then(m => m.FeeTemplateModule) },
   { path: 'organizationTariff', loadChildren: () => import('./modules/organization-tariff/organization-tariff.module').then(m => m.OrganizationTariffModule) },
   { path: 'moneyTransfer', loadChildren: () => import('./modules/money-transfer/money-transfer.module').then(m => m.MoneyTransferModule) },
+  { path: 'exchangeRate', loadChildren: () => import('./modules/exchange-rate/exchange-rate.module').then(m => m.ExchangeRateModule) },
   { path: '**', redirectTo: 'apartamentFee' }
 ]
 

@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnDestroy, OnInit, Output, ViewChild, EventEmitter, Input } from '@angular/core';
-import { combineLatest, combineLatestWith, concat, filter, finalize, map, Observable, of, startWith, Subscription, tap, withLatestFrom } from 'rxjs';
+import { combineLatest, combineLatestWith, concat, filter, finalize, map, Observable, of, skipWhile, startWith, Subscription, tap, withLatestFrom } from 'rxjs';
 import { ApartamentFeeService } from '../../shared/services/apartamentFee/apartament-fee.service';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { MessageService } from '../../shared/services/message/message.service';
@@ -55,10 +55,12 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
   ) {
     this.tableLoading$ = this.ApartamentFeeServ.loading$
     let obs$: Observable<any>
-    const mapPipeSetSelectOptions = (res: GetFeesApiResponseItem[]) => {
-      this.nameOptions = removeDuplicatedObj(res, 'name').sort((a: GetFeesApiResponseItem, b: GetFeesApiResponseItem) => a.name.localeCompare(b.name))
-      this.yearOptions = orderBy(removeDuplicatedObj(res, 'year'), 'year', 'desc').map((el: GetFeesApiResponseItem) => ({ name: el.year, value: el.year }))
-      return orderBy(res, (el: GetFeesApiResponseItem) => new Date(el.paidDate || 1).getTime(), 'asc')
+    const tapPipeSetSelectOptions = (res: GetFeesApiResponseItem[]) => {
+      setTimeout(() => {
+        this.nameOptions = removeDuplicatedObj(res, 'name').sort((a: GetFeesApiResponseItem, b: GetFeesApiResponseItem) => a.name.localeCompare(b.name))
+        this.yearOptions = orderBy(removeDuplicatedObj(res, 'year'), 'year', 'desc').map((el: GetFeesApiResponseItem) => ({ name: el.year, value: el.year }))
+      }, 0)
+
     }
     const mapPipeFilterAndSort = (res: any) => {
       this.saveTableState()
@@ -124,15 +126,18 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
     obs$ = this.ApartamentFeeServ.fees$
     this.items$ = this.ApartamentFeeServ.fees$.pipe(
       filter(isNonNull),
-      map(mapPipeSetSelectOptions),
+      tap(tapPipeSetSelectOptions),
+      map((res: GetFeesApiResponseItem[]) => orderBy(res, (el: GetFeesApiResponseItem) => new Date(el.paidDate || 1).getTime(), 'asc')),
       combineLatestWith(this.filterFormGroup.valueChanges, this.sortFormGroup.valueChanges),
       map(mapPipeFilterAndSort),
       map(mapPipeCountAmount)
     )
 
-    this.subs$ = obs$.subscribe({
+    this.subs$ = obs$.pipe(
+      skipWhile((res: any) => !res.length)
+      ).subscribe({
       next: (res: any) => {
-        // this.MessageServ.sendMessage('success', '', 'Счетa загружены')
+        this.MessageServ.sendMessage('success', '', 'Счетa загружены')
         setTimeout(()=>{
           this.loadTableState()
         }, 0)

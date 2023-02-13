@@ -151,7 +151,7 @@ export class MoneyTransferUpdateComponent implements OnInit {
       }
       this.MoneyTransferServ.update(data).subscribe({
         next: (res: any) => {
-          this.MessageServ.sendMessage('success', 'Успешно сохранено!', 'Перевод добавлен')
+          this.MessageServ.sendMessage('success', 'Успешно сохранено!', 'Перевод обновлен')
           this.loading = false
           this.back()
         },
