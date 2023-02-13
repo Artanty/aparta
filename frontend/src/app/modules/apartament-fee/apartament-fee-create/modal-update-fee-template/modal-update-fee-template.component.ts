@@ -118,7 +118,7 @@ export class ModalUpdateFeeTemplateComponent implements OnInit {
     this.FeeTemplateServ.update(data).subscribe({
       next: (res: FeeTemplateApiResponseItem) => {
         this.MessageServ.sendMessage('success', 'Успешно сохранено!', 'Шаблон обновлен')
-        this.Location.back()
+        // this.Location.back()
         this.modalRef.close()
       },
       error: (err: any) => {

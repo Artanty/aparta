@@ -132,7 +132,7 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
 
     this.subs$ = obs$.subscribe({
       next: (res: any) => {
-        this.MessageServ.sendMessage('success', '', 'Счетa загружены')
+        // this.MessageServ.sendMessage('success', '', 'Счетa загружены')
         setTimeout(()=>{
           this.loadTableState()
         }, 0)

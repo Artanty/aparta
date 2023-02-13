@@ -105,7 +105,7 @@ export class ApartamentFeeCreateComponent implements OnInit {
         if (foundDirty) {
           this.popoverTrigger?.nativeElement.click()
         } else {
-          this.assignTemplate()
+          this.assignTemplate(false)
         }
       }
     })
@@ -211,10 +211,10 @@ export class ApartamentFeeCreateComponent implements OnInit {
     this.setMonthAndYear(date)
   }
 
-  closeTemplateConfirm (confirm: boolean) {
+  closeTemplateConfirm (confirm: boolean, onlyEmpty: boolean = false) {
     if (confirm) {
+      this.assignTemplate(onlyEmpty)
       this.popoverTrigger?.nativeElement.click()
-      this.assignTemplate()
     } else {
       this.formGroup.get('template_id')?.patchValue(null)
       this.popoverTrigger?.nativeElement.click()
@@ -228,19 +228,30 @@ export class ApartamentFeeCreateComponent implements OnInit {
     this.modalRef = this.modalService.open(ModalCreateFeeTemplateComponent, config)
   }
 
-  private assignTemplate() {
+  private assignTemplate(onlyEmpty: boolean) {
     this.templateOptions$.pipe(take(1)).subscribe(res => {
       if (res && Array.isArray(res)){
         const newForm = res.find((el: any) => +this.formGroup.get('template_id')?.value === +el.id)
         if (newForm) {
-          this.formGroup.patchValue({
-            name: newForm.name,
-            sum: newForm.sum,
-            currancy: newForm.currancy,
-            month: newForm.month,
-            year: newForm.year,
-            apartament_id: newForm.apartament_id
-          })
+          if (onlyEmpty) {
+            this.formGroup.patchValue({
+              name: this.formGroup.get('name')?.value || newForm.name,
+              sum: this.formGroup.get('sum')?.value || newForm.sum,
+              currancy: this.formGroup.get('currancy')?.value || newForm.currancy,
+              month: this.formGroup.get('month')?.value || newForm.month,
+              year: this.formGroup.get('year')?.value || newForm.year,
+              apartament_id: this.formGroup.get('apartament_id')?.value || newForm.apartament_id
+            })
+          } else {
+            this.formGroup.patchValue({
+              name: newForm.name,
+              sum: newForm.sum,
+              currancy: newForm.currancy,
+              month: newForm.month,
+              year: newForm.year,
+              apartament_id: newForm.apartament_id
+            })
+          }
         }
       }
     })
