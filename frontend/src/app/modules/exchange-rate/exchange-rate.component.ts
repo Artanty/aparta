@@ -1,6 +1,7 @@
 import { ExchangeRateService } from './exchange-rate.service';
 import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common'
+import { ApilayerApiResponse } from './exchange-rate-list/mock';
 
 @Component({
   selector: 'app-exchange-rate',
@@ -20,10 +21,10 @@ export class ExchangeRateComponent implements OnInit {
   back() {
     this.Location.back()
   }
+
   getCourses() {
-    this.ExchangeRateServ.getCourses()
-    // .subscribe({
-    //   next: (res: any) => {
+    // this.ExchangeRateServ.getCourses().subscribe({
+    //   next: (res: ApilayerApiResponse) => {
     //     console.log(res)
     //   }
     // })

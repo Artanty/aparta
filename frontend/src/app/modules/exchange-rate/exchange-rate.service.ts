@@ -1,15 +1,17 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { CreateExchangeRateApiRequest, GetExchangeRateApiResponse } from './types';
-
+import xml2js from 'xml2js';
+import { ApilayerApiResponse, apilayerResponse } from './exchange-rate-list/mock';
 @Injectable({
   providedIn: 'root'
 })
 export class ExchangeRateService {
 
   constructor(
-    private http: HttpClient,
+    private http: HttpClient
+
   ) { }
 
   load(): Observable<GetExchangeRateApiResponse[]> {
@@ -31,13 +33,12 @@ export class ExchangeRateService {
     return this.http.delete(`exchangeRate/${id}`)
   }
 
-  getCourses () {
-    this.http.get<any>(`currate.ru/api/?get=currency_list&key=377db9a280ae60f8d43c79225c38a1c3`).subscribe({
-      next: (res: any) => {
-        console.log(res)
-      }
-    })
+  getCourses (data: any): Observable<ApilayerApiResponse> {
+    // return of(apilayerResponse)
+    return this.http.get<ApilayerApiResponse>(`api.apilayer.com/currency_data/timeframe?start_date=${data.dateFrom}&end_date=${data.dateTo}&currencies=USD,EUR,RSD,GBP,RUB&source=${data.source}`)
   }
 
-
+  exchangeRateCreateBatch (data: CreateExchangeRateApiRequest[]): any {
+    return this.http.post<GetExchangeRateApiResponse>(`exchangeRate/createBatch`, { data: data })
+  }
 }

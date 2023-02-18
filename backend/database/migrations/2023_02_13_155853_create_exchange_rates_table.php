@@ -19,8 +19,9 @@ class CreateExchangeRatesTable extends Migration
             $table->integer('currancyFrom');
             $table->integer('currancyTo');
             $table->double('currancyFromValue', 8, 2);
-            $table->string('source')->nullable();
+            $table->integer('source');
             $table->timestamps();
+            $table->bigInteger('_dateCurFromCurTo');
         });
     }
 

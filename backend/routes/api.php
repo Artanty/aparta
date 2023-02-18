@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Auth;
 
 Route::post('register', 'Auth\UserAuthController@register');
 Route::post('login', 'Auth\UserAuthController@login');
+Route::any('getUser', 'Auth\UserAuthController@getUser');
 
 Route::resource('apartament', 'ApartamentController');
 Route::get('apartament/getApartamentFees/{id}', 'ApartamentController@getApartamentFees');
@@ -39,3 +40,4 @@ Route::resource('organizationTariff', 'OrganizationTariffController');
 
 Route::resource('moneyTransfer', 'MoneyTransferController');
 Route::resource('exchangeRate', 'ExchangeRateController');
+Route::post('exchangeRate/createBatch', 'ExchangeRateController@createBatch');

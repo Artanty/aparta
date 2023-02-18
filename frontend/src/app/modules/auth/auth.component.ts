@@ -2,24 +2,10 @@ import { Component, isDevMode, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
-import { AuthService } from '../shared/services/auth/auth.service';
+import { AuthService, UserLoginApiResponse } from '../shared/services/auth/auth.service';
 import { FormControl, Validators, FormGroup } from '@angular/forms';
 import { MessageService } from '../shared/services/message/message.service';
 
-
-export type User = {
-  created_at: string
-  email: string
-  email_verified_at: string
-  id: number
-  name: string
-  updated_at: string
-}
-export type AuthDataApiResponse = {
-  token: string
-  user: User
-
-}
 @Component({
   selector: 'app-auth',
   templateUrl: './auth.component.html',
@@ -94,9 +80,9 @@ export class AuthComponent implements OnInit {
   login() {
     this.loading = true
     const data = this.loginFormGroup.value
-    this.http.post<AuthDataApiResponse>(`login`, data).subscribe({
-      next: (res: AuthDataApiResponse) => {
-        this.AuthServ.setToken(res.token)
+    this.http.post<UserLoginApiResponse>(`login`, data).subscribe({
+      next: (res: UserLoginApiResponse) => {
+        this.AuthServ.setTokenAndUser(res)
         this.router.navigate(['apartament'])
         this.MessageServ.sendMessage('success', '', 'Вход выполнен')
         this.loading = false
@@ -111,9 +97,9 @@ export class AuthComponent implements OnInit {
   register() {
     this.loading = true
     const data = this.registerFormGroup.value
-    this.http.post<AuthDataApiResponse>(`register`, data).subscribe({
-      next: (res: AuthDataApiResponse) => {
-        this.AuthServ.setToken(res.token)
+    this.http.post<UserLoginApiResponse>(`register`, data).subscribe({
+      next: (res: UserLoginApiResponse) => {
+        this.AuthServ.setTokenAndUser(res)
         this.router.navigate(['apartament'])
         this.MessageServ.sendMessage('success', '', 'Успешная регистрация')
         this.loading = false

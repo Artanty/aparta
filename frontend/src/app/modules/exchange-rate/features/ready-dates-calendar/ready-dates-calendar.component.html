@@ -1,0 +1,39 @@
+<div class="row" *ngIf="getAccess()">
+  <div class="col-4">
+    <input mdbInput
+    class="form-control"
+     [formControl]="getControl(formGroup, 'dateFrom')" type="date" id="start" name="trip-start">
+  </div>
+  <div class="col-4">
+    <input mdbInput
+    class="form-control"
+     [formControl]="getControl(formGroup, 'dateTo')" type="date" id="end" name="trip-start">
+  </div>
+  <div class="col-4">
+    <button type="button" class="btn btn-outline-primary mb-2  me-2"
+    (click)="getCourses()">getCourses()</button>
+  </div>
+</div>
+<div>
+  <ng-container *ngFor="let currancy of currancyCodes; let i = index">
+    <button *ngIf="i < 4" (click)="setCurrancyFrom(currancy.shortName)"
+    type="button" class="btn btn-outline-primary mb-2 mt-2 me-2 "
+    [class.active]="currancy.shortName === selectedCurrancy"
+    >
+      <span class="d-none d-md-inline">{{ currancy.shortName }}</span>
+    </button>
+  </ng-container>
+</div>
+
+<button (click)="setMonth(-1)">&lt;</button>
+{{ date | date }}
+<button (click)="setMonth(+1)">&gt;</button>
+<ul>
+  <li class="days" *ngFor="let day of days"> {{day}} </li>
+  <li *ngFor="let date of dates"
+    [class.isset]="isset(date)"
+    [ngClass]="{ grey: !isSameMonth(date) }"
+    (click)="selected.emit(date)">
+    {{ date | date:'d' }}
+  </li>
+</ul>

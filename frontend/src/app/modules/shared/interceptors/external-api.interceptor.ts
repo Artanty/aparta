@@ -17,11 +17,13 @@ export class ExternalApiInterceptor implements HttpInterceptor {
   }
 
   selectApi (request: HttpRequest<any>) {
-    if (this.searchInUrl(request.url, 'api.unsplash.com')) {
-      return this.assignApiParams1(request)
+    const splitCount1 = this.searchInUrl(request.url, 'api.unsplash.com')
+    if (splitCount1) {
+      return this.assignApiParams1(request, splitCount1)
     }
-    if (this.searchInUrl(request.url, 'currate.ru')) {
-      return this.assignApiParams2(request)
+    const splitCount2 = this.searchInUrl(request.url, 'api.apilayer.com')
+    if (splitCount2) {
+      return this.assignApiParams2(request, splitCount2)
     }
     return request
   }
@@ -35,52 +37,33 @@ export class ExternalApiInterceptor implements HttpInterceptor {
     })
     return splitCount
   }
-  assignApiParams1(request: HttpRequest<any>): HttpRequest<any>{
-    let splitCount: number = 0
-    request.url.split('/').forEach((urlPart: string, i: number) => {
-      if (urlPart === 'api.unsplash.com') {
-        splitCount = i
+
+  assignApiParams1(request: HttpRequest<any>, splitCount: number): HttpRequest<any>{
+    let urlArr = request.url.split('/')
+    urlArr.splice(0, splitCount)
+    return request.clone({
+      url: 'https://' + urlArr.join('/'),
+      setHeaders: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Authorization': 'Client-ID XvC-s9gZjz60RgQaVityL4F0Hpaamlg71E66zM8eERs'
       }
     })
-    if (splitCount) {
-
-      let urlArr = request.url.split('/')
-      urlArr.splice(0, splitCount)
-      console.log(urlArr)
-      return request.clone({
-        url: 'https://' + urlArr.join('/'),
-        setHeaders: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Access-Control-Allow-Headers': 'Content-Type',
-          'Authorization': 'Client-ID XvC-s9gZjz60RgQaVityL4F0Hpaamlg71E66zM8eERs'
-        }
-      })
-    }
-    return request
   }
 
-  assignApiParams2(request: HttpRequest<any>): HttpRequest<any>{
-    let splitCount: number = 0
-    request.url.split('/').forEach((urlPart: string, i: number) => {
-      if (urlPart === 'currate.ru') {
-        splitCount = i
-      }
+  assignApiParams2(request: HttpRequest<any>, splitCount: number): HttpRequest<any>{
+    let urlArr = request.url.split('/')
+    urlArr.splice(0, splitCount)
+    const clone = request.clone({
+      url: 'https://' + urlArr.join('/'),
+      headers: request.headers.delete('Authorization').delete('Access-Control-Allow-Headers'),
+      setHeaders: {
+        'Content-Type': 'application/javascript',
+        'Accept': 'application/javascript',
+        'apikey': 'fXQVlAfPuL3j85v8lEnQ1JsGqgVxR2Wm',
+      },
     })
-    if (splitCount) {
-
-      let urlArr = request.url.split('/')
-      urlArr.splice(0, splitCount)
-      console.log(urlArr)
-      return request.clone({
-        url: 'https://' + urlArr.join('/'),
-        setHeaders: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Access-Control-Allow-Headers': 'Content-Type'
-        }
-      })
-    }
-    return request
+    return clone
   }
 }

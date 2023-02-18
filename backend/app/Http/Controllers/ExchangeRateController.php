@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ExchangeRate;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class ExchangeRateController extends Controller
 {
@@ -43,11 +44,26 @@ class ExchangeRateController extends Controller
         $exchangeRate->currancyFrom = $request->currancyFrom;
         $exchangeRate->currancyTo = $request->currancyTo;
         $exchangeRate->currancyFromValue = $request->currancyFromValue;
-        $exchangeRate->source = $request->source || '1';
+        $exchangeRate->source = $request->source;
+        $exchangeRate->_dateCurFromCurTo = $request->_dateCurFromCurTo;
 
         $exchangeRate->save();
 
         return $exchangeRate;
+    }
+
+    public function createBatch (Request $request) {
+        $request = (array)$request->input('data');
+        $arr = [];
+        foreach($request as $columns){
+            $model = new ExchangeRate;
+            $columns['created_at'] = Carbon::now();
+            $columns['updated_at'] = Carbon::now();
+            $step = $model->fill((array)$columns);
+            $arr[] = $step->attributesToArray();
+        }
+        ExchangeRate::insert($arr);
+        return $arr[0];
     }
 
     /**

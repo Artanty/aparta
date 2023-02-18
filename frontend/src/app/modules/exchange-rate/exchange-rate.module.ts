@@ -7,6 +7,7 @@ import { ExchangeRateCreateComponent } from './exchange-rate-create/exchange-rat
 import { ExchangeRateListComponent } from './exchange-rate-list/exchange-rate-list.component';
 
 import { SharedModule } from '../shared/shared.module';
+import { ReadyDatesCalendarComponent } from './features/ready-dates-calendar/ready-dates-calendar.component';
 
 
 @NgModule({
@@ -14,6 +15,7 @@ import { SharedModule } from '../shared/shared.module';
     ExchangeRateComponent,
     ExchangeRateCreateComponent,
     ExchangeRateListComponent,
+    ReadyDatesCalendarComponent,
 
   ],
   imports: [

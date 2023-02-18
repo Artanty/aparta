@@ -161,3 +161,8 @@
 ::ng-deep .form-outline .form-control[readonly] {
   background-color: #fbfbfb;
 }
+
+::ng-deep button.active{
+  color: #fff!important;
+  background-color: #093d94!important;
+}

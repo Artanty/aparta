@@ -41,4 +41,8 @@ class UserAuthController extends Controller
         return response(['user' => auth()->user(), 'token' => $token]);
 
     }
+    public function getUser(Request $request)
+    {
+        return auth()->guard('api')->user();
+    }
 }

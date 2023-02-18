@@ -14,4 +14,6 @@ export type CreateExchangeRateApiRequest = {
   "currancyFrom": number
   "currancyTo": number
   "currancyFromValue": number
+  _dateCurFromCurTo: number
+  source: number
 }

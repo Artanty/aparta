@@ -66,7 +66,7 @@ export class ExchangeRateCreateComponent implements OnInit {
             date: res.date,
             currancyFrom: res.currancyFrom,
             currancyTo: res.currancyTo,
-            currancyFromValue: res.currancyFromValue,
+            currancyFromValue: res.currancyFromValue
           })
         },
         error: (err: any) => {
@@ -78,12 +78,14 @@ export class ExchangeRateCreateComponent implements OnInit {
 
     create() {
       this.loading = true
-      const formGroupValue = this.formGroup.value
+      const fgv = this.formGroup.value
       let data = {
-        date: formGroupValue.date,
-        currancyFrom: formGroupValue.currancyFrom,
-        currancyTo: formGroupValue.currancyTo,
-        currancyFromValue: formGroupValue.currancyFromValue,
+        date: fgv.date,
+        currancyFrom: fgv.currancyFrom,
+        currancyTo: fgv.currancyTo,
+        currancyFromValue: fgv.currancyFromValue,
+        _dateCurFromCurTo: Number(fgv.date.replace(/-/g,'') + String(fgv.currancyFrom) + String(fgv.currancyTo)),
+        source: 1
       }
 
       this.ExchangeRateServ.create(data).subscribe({
