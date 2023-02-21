@@ -147,5 +147,43 @@
         </div>
       </div>
     </div>
+    <div class="col-12 col-md-6 col-lg-5">
+      <div class="btn-group mb-2">
+        <input
+          mdbRadio
+          type="radio"
+          class="btn-check"
+          name="options"
+          id="option1"
+          autocomplete="off"
+          [checked]="true"
+          [value]="EExchangeRateSource.MONEY_TRANSFER_LIST"
+          [formControl]="getControl(formGroup2, 'radio')"
+        />
+        <label class="btn btn-secondary" for="option1">Курс из переводов</label>
+        <input
+          mdbRadio
+          type="radio"
+          class="btn-check"
+          name="options"
+          id="option2"
+          autocomplete="off"
+          [value]="EExchangeRateSource.EXCHANGE_RATE_LIST"
+          [formControl]="getControl(formGroup2, 'radio')"
+        />
+        <label class="btn btn-secondary" for="option2">Ежедневный курс</label>
+      </div>
+      <app-widget-exchange-rate [class.d-none]="getControl(formGroup2, 'radio').value === EExchangeRateSource.MONEY_TRANSFER_LIST"
+        [sourceCurrancy]="null"
+        [destinationCurrancy]="getControl(formGroup, 'currancy').value"
+        [exchangeRateDate]="getControl(formGroup, 'paidDate')?.value"
+        (currentDayValue)="setCurrentDayRate($event)"
+      ></app-widget-exchange-rate>
+      <app-widget-money-transfer [class.d-none]="getControl(formGroup2, 'radio').value === EExchangeRateSource.EXCHANGE_RATE_LIST"
+        [destinationCurrancy]="getControl(formGroup, 'currancy').value"
+        [date]="getControl(formGroup, 'paidDate').value"
+        (selectTransferAway)="selectTransfer($event)"
+      ></app-widget-money-transfer>
+    </div>
   </div>
 </div>

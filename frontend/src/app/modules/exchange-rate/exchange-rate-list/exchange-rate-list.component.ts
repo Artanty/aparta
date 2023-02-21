@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MessageService } from '../../shared/services/message/message.service';
-import { ExchangeRateService } from '../exchange-rate.service';
+import { ExchangeRateService } from '../../shared/services/exchangeRate/exchange-rate.service';
 import { GetExchangeRateApiResponse } from '../types';
 
 

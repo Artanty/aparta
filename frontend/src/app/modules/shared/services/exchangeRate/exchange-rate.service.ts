@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { CreateExchangeRateApiRequest, GetExchangeRateApiResponse } from './types';
-import xml2js from 'xml2js';
-import { ApilayerApiResponse, apilayerResponse } from './exchange-rate-list/mock';
+import { ApilayerApiResponse } from 'src/app/modules/exchange-rate/exchange-rate-list/mock';
+import { CreateExchangeRateApiRequest, GetExchangeRateApiResponse } from 'src/app/modules/exchange-rate/types';
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -16,6 +17,9 @@ export class ExchangeRateService {
 
   load(): Observable<GetExchangeRateApiResponse[]> {
     return this.http.get<GetExchangeRateApiResponse[]>(`exchangeRate`)
+  }
+  getExchangeRatesByDate(data: any): Observable<GetExchangeRateApiResponse[]> {
+    return this.http.post<GetExchangeRateApiResponse[]>(`getExchangeRates`, data)
   }
   getExchangeRate (id: number): Observable<GetExchangeRateApiResponse> {
     return this.http.get<GetExchangeRateApiResponse>(`exchangeRate/${id}`)

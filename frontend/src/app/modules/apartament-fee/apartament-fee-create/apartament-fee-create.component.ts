@@ -18,7 +18,12 @@ import { prependZero } from '../../shared/helpers';
 import { FeeTemplateApiResponseItem } from '../../shared/services/feeTemplate/types';
 import { ApartamentFeeCreateApiRequest, GetFeesApiResponseItem } from '../../shared/services/apartamentFee/types';
 import { ModalUpdateFeeTemplateComponent } from './modal-update-fee-template/modal-update-fee-template.component';
-
+import { GetExchangeRateApiResponse } from '../../exchange-rate/types';
+import { LoadMoneyTransferApiResponse } from '../../shared/services/moneyTransfer/money-transfer.service';
+export enum EExchangeRateSource {
+  MONEY_TRANSFER_LIST = '1',
+  EXCHANGE_RATE_LIST = '2'
+}
 @Component({
   selector: 'app-apartament-fee-create',
   templateUrl: './apartament-fee-create.component.html',
@@ -42,14 +47,19 @@ export class ApartamentFeeCreateComponent implements OnInit {
     year: new FormControl(null),
     paid: new FormControl(true),
     paidDate: new FormControl(null),
-    template_id: new FormControl(null)
+    template_id: new FormControl(null),
+    rateSource: new FormControl(null),
+    rateId: new FormControl(null)
   })
   yearOptions: any[] = []
   currancyOptions: any[] = []
 
   templateOptions$: Observable<any[]>
   apartamentOptions$: Observable<any[]>
-
+  EExchangeRateSource = EExchangeRateSource
+  formGroup2: FormGroup = new FormGroup({
+    radio: new FormControl(EExchangeRateSource.MONEY_TRANSFER_LIST)
+  })
   constructor(
     private modalService: MdbModalService,
     private http: HttpClient,
@@ -61,6 +71,9 @@ export class ApartamentFeeCreateComponent implements OnInit {
     private FeeTemplateServ: FeeTemplateService,
     private Router: Router
   ) {
+    this.formGroup2.valueChanges.subscribe((res: any) => {
+      console.log(res)
+    })
     this.payDatePrevMonth = Boolean(Number(localStorage.getItem('payDatePrevMonth')))
 
     this.FeeTemplateServ.getFeeTemplates().subscribe()
@@ -298,6 +311,8 @@ export class ApartamentFeeCreateComponent implements OnInit {
           template_id: res.template_id,
           apartament_id: res.apartament_id,
           paidDate: res.paidDate,
+          rateSource: res.rateSource,
+          rateId: res.rateId
         })
         this.loading = false
         this.formGroup.patchValue({
@@ -324,7 +339,9 @@ export class ApartamentFeeCreateComponent implements OnInit {
       paid: Boolean(formGroupValue.paid),
       template_id: formGroupValue.template_id,
       apartament_id: formGroupValue.apartament_id,
-      paidDate: this.isPaid ? formGroupValue.paidDate : ''
+      paidDate: this.isPaid ? formGroupValue.paidDate : '',
+      rateSource: formGroupValue.rateSource,
+      rateId: formGroupValue.rateId
     }
     this.ApartamentFeeServ.create(data).subscribe({
       next: (res: any) => {
@@ -357,6 +374,8 @@ export class ApartamentFeeCreateComponent implements OnInit {
       template_id: formGroupValue.template_id,
       apartament_id: formGroupValue.apartament_id,
       paidDate: this.isPaid ? formGroupValue.paidDate : '',
+      rateSource: formGroupValue.rateSource,
+      rateId: formGroupValue.rateId
     }
     this.ApartamentFeeServ.create(data).subscribe({
       next: (res: any) => {
@@ -384,6 +403,8 @@ export class ApartamentFeeCreateComponent implements OnInit {
       template_id: formGroupValue.template_id,
       apartament_id: formGroupValue.apartament_id,
       paidDate: this.isPaid ? formGroupValue.paidDate : '',
+      rateSource: formGroupValue.rateSource,
+      rateId: formGroupValue.rateId
     }
     // console.log(data)
     this.ApartamentFeeServ.update(data).subscribe({
@@ -428,7 +449,9 @@ export class ApartamentFeeCreateComponent implements OnInit {
       paid: Boolean(formGroupValue.paid),
       template_id: formGroupValue.template_id,
       apartament_id: formGroupValue.apartament_id,
-      paidDate: this.isPaid ? formGroupValue.paidDate : ''
+      paidDate: this.isPaid ? formGroupValue.paidDate : '',
+      rateSource: formGroupValue.rateSource,
+      rateId: formGroupValue.rateId
     }
     this.ApartamentFeeServ.setCopiedApartament(data)
     // this.Router.navigate(["/apartament/new"], ) // {skipLocationChange: true}
@@ -498,5 +521,21 @@ export class ApartamentFeeCreateComponent implements OnInit {
       }
     }
     this.modalRef = this.modalService.open(ModalUpdateFeeTemplateComponent, config)
+  }
+
+  setCurrentDayRate (data: GetExchangeRateApiResponse) {
+    this.formGroup.patchValue({
+      rateSource: 2,
+      rateId: data.id
+    })
+    console.log(this.formGroup.value)
+  }
+
+  selectTransfer (data: LoadMoneyTransferApiResponse) {
+    this.formGroup.patchValue({
+      rateSource: 1,
+      rateId: data.id
+    })
+    console.log(this.formGroup.value)
   }
 }

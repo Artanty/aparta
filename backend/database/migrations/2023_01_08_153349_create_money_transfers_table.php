@@ -21,12 +21,15 @@ class CreateMoneyTransfersTable extends Migration
 
             $table->integer('currancy1');
             $table->double('sum1', 8, 2);
+            $table->float('currancy1Value')->nullable();
 
             $table->integer('currancy2')->nullable();
             $table->double('sum2', 8, 2)->nullable();
+            $table->float('currancy2Value')->nullable();
 
             $table->integer('currancy3')->nullable();
             $table->double('sum3', 8, 2)->nullable();
+            $table->float('currancy3Value')->nullable();
 
             $table->integer('currancy4')->nullable();
             $table->double('sum4', 8, 2)->nullable();

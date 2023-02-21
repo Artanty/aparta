@@ -19,6 +19,16 @@ class ExchangeRateController extends Controller
 
         return $exchangeRates;
     }
+    public function getExchangeRates(Request $request) // get apart fess group by year and organizations
+    {
+
+        $exchangeRates = ExchangeRate::select('*')
+        ->where('date', '>=', $request->dateFrom)
+        ->where('date', '<=', $request->dateTo)
+        ->get();
+
+        return $exchangeRates;
+    }
 
     /**
      * Show the form for creating a new resource.

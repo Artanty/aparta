@@ -1,0 +1,47 @@
+.moneyTransferTable{
+  & .sum{
+    display: flex;
+    justify-content: space-between;
+    max-width: 80px;
+  }
+  @media (max-width: 500px) {
+    th{
+      display: none;
+    }
+    tbody > tr{
+      display: block;
+      &:nth-child(even){
+        background-color: #4167f017;
+      }
+    }
+    td{
+      display: inline-block;
+      border: none;
+      width: 30%;
+      &.td_date{
+        width:50%;
+      }
+      &.td_actions{
+        text-align: right;
+        width:50%;
+      }
+    }
+  }
+}
+.widget.moneyTransferTable{
+  & tbody > tr:hover{
+    background-color: #d5d5d5;
+    cursor: pointer;
+  }
+  & tr.selectedTransfer {
+    background-color: #E4A11B;
+  }
+}
+
+.innerSourceCurrancy__select{
+  width: 144px;
+  display: inline-block;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+

@@ -44,17 +44,15 @@ class MoneyTransferController extends Controller
         $moneyTransfer->name = $request->name;
         $moneyTransfer->description = $request->description;
 
-        $moneyTransfer->sum1 = $request->sum1;
-        $moneyTransfer->currancy1 = $request->currancy1;
+        $moneyTransfer->sourceSum = $request->sourceSum;
+        $moneyTransfer->sourceCurrancy = $request->sourceCurrancy;
 
-        $moneyTransfer->sum2 = $request->sum2;
-        $moneyTransfer->currancy2 = $request->currancy2;
+        $moneyTransfer->middleTransfers = $request->middleTransfers;
 
-        $moneyTransfer->sum3 = $request->sum3;
-        $moneyTransfer->currancy3 = $request->currancy3;
+        $moneyTransfer->destinationSum = $request->destinationSum;
+        $moneyTransfer->destinationCurrancy = $request->destinationCurrancy;
 
-        $moneyTransfer->sum4 = $request->sum4;
-        $moneyTransfer->currancy4 = $request->currancy4;
+        $moneyTransfer->rate = $request->rate;
 
         $moneyTransfer->date = $request->date;
         $moneyTransfer->apartament_id = $request->apartament_id;
@@ -100,17 +98,15 @@ class MoneyTransferController extends Controller
         $moneyTransfer->name = $request->name;
         $moneyTransfer->description = $request->description;
 
-        $moneyTransfer->sum1 = $request->sum1;
-        $moneyTransfer->currancy1 = $request->currancy1;
+        $moneyTransfer->sourceSum = $request->sourceSum;
+        $moneyTransfer->sourceCurrancy = $request->sourceCurrancy;
 
-        $moneyTransfer->sum2 = $request->sum2;
-        $moneyTransfer->currancy2 = $request->currancy2;
+        $moneyTransfer->middleTransfers = $request->middleTransfers;
 
-        $moneyTransfer->sum3 = $request->sum3;
-        $moneyTransfer->currancy3 = $request->currancy3;
+        $moneyTransfer->destinationSum = $request->destinationSum;
+        $moneyTransfer->destinationCurrancy = $request->destinationCurrancy;
 
-        $moneyTransfer->sum4 = $request->sum4;
-        $moneyTransfer->currancy4 = $request->currancy4;
+        $moneyTransfer->rate = $request->rate;
 
         $moneyTransfer->date = $request->date;
         $moneyTransfer->apartament_id = $request->apartament_id;

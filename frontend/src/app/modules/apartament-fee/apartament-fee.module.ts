@@ -6,6 +6,7 @@ import { ApartamentFeeCreateComponent } from './apartament-fee-create/apartament
 import { ApartamentFeeListComponent } from './apartament-fee-list/apartament-fee-list.component';
 import { ModalCreateFeeTemplateComponent } from './apartament-fee-create/modal-create-fee-template/modal-create-fee-template.component';
 import { ModalUpdateFeeTemplateComponent } from './apartament-fee-create/modal-update-fee-template/modal-update-fee-template.component';
+import { WidgetMoneyTransferComponent } from './apartament-fee-create/widget-money-transfer/widget-money-transfer.component';
 
 @NgModule({
   declarations: [
@@ -13,7 +14,9 @@ import { ModalUpdateFeeTemplateComponent } from './apartament-fee-create/modal-u
     ApartamentFeeCreateComponent,
     ApartamentFeeListComponent,
     ModalCreateFeeTemplateComponent,
-    ModalUpdateFeeTemplateComponent
+    ModalUpdateFeeTemplateComponent,
+
+    WidgetMoneyTransferComponent
   ],
   imports: [
     SharedModule,

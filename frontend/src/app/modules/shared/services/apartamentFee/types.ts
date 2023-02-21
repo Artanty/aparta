@@ -18,6 +18,8 @@ export type GetFeesApiResponseItem = {
   "created_at": string
   "updated_at": string
   "apartament"?: Apartament
+  rateId: number | null
+  rateSource: number | null
 }
 
 export type ApartamentFeeCreateApiRequest = {
@@ -31,6 +33,8 @@ export type ApartamentFeeCreateApiRequest = {
   "template_id": number | null
   "apartament_id": number | string
   "paidDate": string
+  rateId: number | null
+  rateSource: number | null
 }
 
 export type ApartamentFeeCreateApiResponse = {
@@ -53,6 +57,8 @@ export type ApartamentFeeCreateApiResponse = {
   "created_at": string
   "id": number
   "apartament"?: Apartament
+  rateId: number | null
+  rateSource: number | null
 }
 
 type Apartament = {

@@ -1,11 +1,26 @@
-<table class="table align-middle mb-0 bg-white moneyTransferTable">
+<div class="mb-2">
+  Курс
+  <!-- <ng-container *ngIf="sourceCurrancy; else sourceCurrancySelect">
+    {{ getCurrancyShortName(sourceCurrancy) }}
+  </ng-container> -->
+  <select [ngModel]="innerSourceCurrancy" class="form-select innerSourceCurrancy__select">
+    <option *ngFor="let option of currancyOptions" [value]="option.id">{{ option.name }}</option>
+  </select>
+
+  > {{ getCurrancyShortName(destinationCurrancy) }} на
+  {{ selectedTransfer?.date | date:'dd.MM.yy' }}:
+  <span>
+    {{ selectedTransfer?.rate || 'нет данных' }}
+  </span>
+</div>
+
+<table class="table align-middle mb-0 bg-white widget moneyTransferTable">
   <thead class="bg-light">
     <tr>
       <th>Дата</th>
       <th>Из</th>
       <th>В</th>
       <th>Курс</th>
-      <th></th>
     </tr>
   </thead>
   <tbody *ngIf="tableLoading" class="tbodyLoading">
@@ -18,7 +33,8 @@
     </tr>
   </tbody>
   <tbody *ngIf="!tableLoading">
-    <tr *ngFor="let item of items">
+    <tr *ngFor="let item of items" (click)="selectTransfer(item)"
+    [class.selectedTransfer]="item.id === selectedTransfer?.id">
       <td class="td_date">
         {{ item.date | date:'dd.MM.YYYY' }}
       </td>
@@ -42,17 +58,8 @@
           </div>
         </div>
       </td>
-      <td>{{ item.rate }}</td>
-      <td class="td_actions">
-        <a [routerLink]="['update', item.id]" class="link me-2" [routerLinkActive]="['routerLinkIsActive']">
-          <i class="fas fa-pen fa-lg me-2" style="color:#797979"></i>
-        </a>
-        <a (click)="createCopy(item)" class="link me-2" [routerLinkActive]="['routerLinkIsActive']">
-          <i class="far fa-copy fa-lg me-2" style="color:#797979"></i>
-        </a>
-        <a class="alink ms-1" (click)="deleteItem(item.id)">
-          <i class="far fa-times-circle fa-lg" style="color:#797979"></i>
-        </a>
+      <td class="td_date">
+        {{ item.rate }}
       </td>
     </tr>
   </tbody>

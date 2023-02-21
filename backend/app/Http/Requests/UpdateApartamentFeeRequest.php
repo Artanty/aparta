@@ -31,8 +31,9 @@ class UpdateApartamentFeeRequest extends FormRequest
             'currancy' => 'numeric|nullable',
             'month' => 'required|numeric',
             'year' => 'required|numeric',
-            'paid' => 'required|boolean'
-            // 'creator_id' => 'required|numeric'
+            'paid' => 'required|boolean',
+            'rateSource' => 'numeric|nullable',
+            'rateId' => 'numeric|nullable'
         ];
     }
 }

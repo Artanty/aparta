@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MessageService } from '../../shared/services/message/message.service';
-import { MoneyTransferService } from '../money-transfer.service';
+import { LoadMoneyTransferApiResponse, MoneyTransferService } from '../../shared/services/moneyTransfer/money-transfer.service';
 
 @Component({
   selector: 'app-money-transfer-list',
@@ -22,9 +22,17 @@ export class MoneyTransferListComponent implements OnInit {
   loadItems () {
     this.tableLoading = true
     this.MoneyTransferServ.load().subscribe({
-      next: (res: any) => {
+      next: (res: LoadMoneyTransferApiResponse[]) => {
         this.tableLoading = false
-        this.items = res
+        this.items = res.sort((a: any, b: any) => {
+          if (a.date > b.date) {
+            return -1
+          }
+          if (a.date < b.date) {
+            return 1
+          }
+          return 0
+        })
       },
       error: (err: any) => {
         this.tableLoading = false
@@ -44,6 +52,34 @@ export class MoneyTransferListComponent implements OnInit {
       error: (err: any) => {
         this.MessageServ.sendMessage('error', 'Ошибка!', err.error.message)
         this.tableLoading = false
+      }
+    })
+  }
+
+  createCopy(formGroupValue: any) {
+    this.tableLoading = true
+    let data = {
+      name: formGroupValue.name,
+      description: formGroupValue.description,
+      sourceSum: formGroupValue.sourceSum,
+      sourceCurrancy: formGroupValue.sourceCurrancy,
+      middleTransfers: formGroupValue.middleTransfers,
+      destinationSum: formGroupValue.destinationSum,
+      destinationCurrancy: formGroupValue.destinationCurrancy,
+      rate: formGroupValue.rate,
+      date: formGroupValue.date,
+      apartament_id: formGroupValue.apartament_id,
+    }
+    this.MoneyTransferServ.create(data).subscribe({
+      next: (res: any) => {
+        this.MessageServ.sendMessage('success', 'Успешно сохранено!', 'Перевод добавлен')
+        this.tableLoading = false
+        this.loadItems()
+      },
+      error: (err: any) => {
+        console.log(err)
+        this.tableLoading = false
+        this.MessageServ.sendMessage('error', 'Ошибка!', err.error.message)
       }
     })
   }

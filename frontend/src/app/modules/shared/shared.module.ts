@@ -36,6 +36,9 @@ import { NgxMaskModule, IConfig } from 'ngx-mask';
 import { HumanMonthPipe } from './pipes/human-month.pipe';
 import { GetCurrancyPipe } from './pipes/get-currancy.pipe';
 
+
+import { WidgetExchangeRateComponent } from './features/widget-exchange-rate/widget-exchange-rate.component';
+
 // const maskConfig: Partial<IConfig> = {
 //   validation: true,
 // };
@@ -49,6 +52,7 @@ export const options: Partial<null|IConfig> | (() => Partial<IConfig>) = null;
     ModalComponent,
     HumanMonthPipe,
     GetCurrancyPipe,
+    WidgetExchangeRateComponent,
   ],
   imports: [
     CommonModule,
@@ -100,7 +104,8 @@ export const options: Partial<null|IConfig> | (() => Partial<IConfig>) = null;
     ReactiveFormsModule,
     InputComponent,
     MessageListComponent,
-    GetCurrancyPipe
+    GetCurrancyPipe,
+    WidgetExchangeRateComponent,
     ]
 })
 export class SharedModule {}

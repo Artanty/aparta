@@ -1,0 +1,40 @@
+<!-- source: {{ sourceCurrancy }}<br>
+destination {{ destinationCurrancy }}<br>
+643 - RUB<br>
+840 - USD<br>
+978 - EUR<br>
+941 - RSD<br> -->
+<div class="mb-2">
+  Курс
+  <ng-container *ngIf="sourceCurrancy; else sourceCurrancySelect">
+    {{ getCurrancyShortName(sourceCurrancy) }}
+  </ng-container>
+  <ng-template #sourceCurrancySelect>
+    <select [ngModel]="innerSourceCurrancy" class="form-select innerSourceCurrancy__select">
+      <option *ngFor="let option of currancyOptions" [value]="option.id">{{ option.name }}</option>
+    </select>
+  </ng-template>
+
+  > {{ getCurrancyShortName(destinationCurrancy) }} на {{ date | date:'dd.MM.yy' }}:
+  <span>
+    {{ getCurrentDayExchangeRate (date) || 'нет данных' }}
+  </span>
+</div>
+<!-- {{ date | date:'MMMM' }} -->
+<ul class="currancyCalendar">
+  <li class="days" *ngFor="let day of days"> {{ day }} </li>
+  <li *ngFor="let dayDate of dates"
+    class="currancyCalendar__day"
+    [class.isset]="isset(dayDate)"
+
+    (click)="selectDay(dayDate)">
+    <div class="currancyCalendar__day__dayDate">
+      {{ dayDate | date:'d' }}
+    </div>
+    <div class="currancyCalendar__day__currancy">
+      {{ getCurrentDayExchangeRate (dayDate) || '-' }}
+    </div>
+
+  </li>
+</ul>
+

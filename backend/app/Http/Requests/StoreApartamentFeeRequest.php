@@ -31,7 +31,9 @@ class StoreApartamentFeeRequest extends FormRequest
             'currancy' => 'numeric|nullable',
             'month' => 'numeric',
             'year' => 'numeric',
-            'paid' => 'boolean'
+            'paid' => 'boolean',
+            'rateSource' => 'numeric|nullable',
+            'rateId' => 'numeric|nullable'
         ];
     }
 }

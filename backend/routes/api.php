@@ -41,3 +41,4 @@ Route::resource('organizationTariff', 'OrganizationTariffController');
 Route::resource('moneyTransfer', 'MoneyTransferController');
 Route::resource('exchangeRate', 'ExchangeRateController');
 Route::post('exchangeRate/createBatch', 'ExchangeRateController@createBatch');
+Route::post('getExchangeRates', 'ExchangeRateController@getExchangeRates');

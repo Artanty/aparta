@@ -32,6 +32,8 @@ class CreateApartamentFeesTable extends Migration
             $table->smallInteger('payVariant')->nullable();
             $table->bigInteger('creator_id')->unsigned();
 
+            $table->integer('rateSource')->nullable();
+            $table->integer('rateId')->nullable();
             $table->timestamps();
         });
     }

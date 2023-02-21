@@ -1,4 +1,5 @@
-import { ExchangeRateService } from './exchange-rate.service';
+import { ExchangeRateService } from './../shared/services/exchangeRate/exchange-rate.service';
+
 import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common'
 import { ApilayerApiResponse } from './exchange-rate-list/mock';

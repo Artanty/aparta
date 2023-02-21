@@ -5,7 +5,7 @@ import { MessageService } from '../../shared/services/message/message.service';
 import { currancyCodes } from './../../shared/currancyCodes';
 import { Observable } from 'rxjs';
 import { ApartamentService } from '../../shared/services/apartament/apartament.service';
-import { ExchangeRateService } from '../exchange-rate.service';
+import { ExchangeRateService } from '../../shared/services/exchangeRate/exchange-rate.service';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 
 

@@ -59,6 +59,8 @@ class ApartamentFeeController extends Controller
         $apartamentFee->organizationTariff_id = $request->organizationTariff_id;
         $apartamentFee->apartament_id = $request->apartament_id;
         $apartamentFee->template_id = $request->template_id;
+        $apartamentFee->rateSource = $request->rateSource;
+        $apartamentFee->rateId = $request->rateId;
         $apartamentFee->creator_id = auth()->guard('api')->user()->id;
         $apartamentFee->save();
 
@@ -116,7 +118,8 @@ class ApartamentFeeController extends Controller
         $apartamentFee->organizationTariff_id = $request->organizationTariff_id;
         $apartamentFee->apartament_id = $request->apartament_id;
         $apartamentFee->template_id = $request->template_id;
-
+        $apartamentFee->rateSource = $request->rateSource;
+        $apartamentFee->rateId = $request->rateId;
         $apartamentFee->save();
 
         if ($request->apartament_id) {

@@ -1,5 +1,5 @@
 import { AuthService } from './../../../shared/services/auth/auth.service';
-import { ExchangeRateService } from './../../exchange-rate.service';
+import { ExchangeRateService } from '../../../shared/services/exchangeRate/exchange-rate.service';
 import { Component, Output, EventEmitter, OnInit, Input, SimpleChanges, OnChanges } from '@angular/core';
 import { currancyCodes } from '../../../shared/currancyCodes';
 import { GetExchangeRateApiResponse, CreateExchangeRateApiRequest } from '../../types';
@@ -15,6 +15,7 @@ const DAY_MS = 60 * 60 * 24 * 1000;
   templateUrl: './ready-dates-calendar.component.html',
   styleUrls: ['./ready-dates-calendar.component.scss']
 })
+
 export class ReadyDatesCalendarComponent implements OnInit, OnChanges {
   @Input() itemsArr: GetExchangeRateApiResponse[] = []
   selectedCurrancyItemsArr: GetExchangeRateApiResponse[] = []
@@ -162,7 +163,7 @@ export class ReadyDatesCalendarComponent implements OnInit, OnChanges {
               "date": date,
               "currancyFrom": currancyFromCode,
               "currancyTo": currancyToCode,
-              "currancyFromValue": Number(parseFloat(qValue).toFixed(3)),
+              "currancyFromValue": Number(parseFloat(qValue).toFixed(4)),
               _dateCurFromCurTo: Number(date.replace(/-/g,'') + String(currancyFromCode) + String(currancyToCode)),
               source: 2
             }
