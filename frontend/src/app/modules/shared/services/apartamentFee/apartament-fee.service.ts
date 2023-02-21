@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, finalize, Observable, of, tap } from 'rxjs';
 import { orderBy } from '../../helpers';
-import { ApartamentFeeCreateApiRequest, ApartamentFeeCreateApiResponse, GetFeesApiResponseItem } from './types';
+import { ApartamentFeeCreateApiRequest, ApartamentFeeCreateApiResponse, GetFeesApiResponseItem, UpdateFeeApiReqest } from './types';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +14,7 @@ export class ApartamentFeeService {
   private loadingSubj$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true)
   loading$: Observable<boolean> = this.loadingSubj$.asObservable()
 
-  private copiedApartamentSubj: BehaviorSubject<any> = new BehaviorSubject<any>(null)
+  private copiedApartamentSubj: BehaviorSubject<ApartamentFeeCreateApiRequest | null> = new BehaviorSubject<ApartamentFeeCreateApiRequest | null>(null)
   copiedApartamentSubj$: Observable<any> = this.copiedApartamentSubj.asObservable()
 
   apartamentFeesLoaded: boolean = false
@@ -24,10 +24,10 @@ export class ApartamentFeeService {
     private http: HttpClient
   ) { }
 
-  setCopiedApartament (data: any) {
+  setCopiedApartament (data: ApartamentFeeCreateApiRequest | null) {
     this.copiedApartamentSubj.next(data)
   }
-  getCopiedApartament (): any {
+  getCopiedApartament (): ApartamentFeeCreateApiRequest | null{
     return this.copiedApartamentSubj.getValue()
   }
 
@@ -94,7 +94,7 @@ export class ApartamentFeeService {
     )
   }
 
-  update(data: any) {
+  update(data: UpdateFeeApiReqest) {
     return this.http.put(`apartamentFee/${data.id}`, data).pipe(
       tap({
         next: (res: any) => {

@@ -100,11 +100,7 @@ export class FeeTemplateCreateComponent implements OnInit {
       description: formGroupValue.description,
       sum: formGroupValue.sum,
       currancy: formGroupValue.currancy,
-      month: Number(formGroupValue.month),
-      year: formGroupValue.year,
-      organization_id: formGroupValue.organization_id,
-      organizationTariff_id: formGroupValue.organizationTariff_id,
-      payVariant: formGroupValue.payVariant
+      paidDate: formGroupValue.paidDate
     }
     // console.log(data)
     this.FeeTemplateServ.create(data).subscribe({
@@ -129,11 +125,7 @@ export class FeeTemplateCreateComponent implements OnInit {
         description: formGroupValue.description,
         sum: formGroupValue.sum,
         currancy: formGroupValue.currancy,
-        month: Number(formGroupValue.month),
-        year: formGroupValue.year,
-        organization_id: formGroupValue.organization_id,
-        organizationTariff_id: formGroupValue.organizationTariff_id,
-        payVariant: formGroupValue.payVariant
+        paidDate: formGroupValue.paidDate
     }
     this.FeeTemplateServ.update(data).subscribe({
       next: (res: any) => {

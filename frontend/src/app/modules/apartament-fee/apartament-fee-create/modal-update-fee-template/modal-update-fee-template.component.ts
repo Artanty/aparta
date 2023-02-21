@@ -1,9 +1,9 @@
 import { ApartamentService } from './../../../shared/services/apartament/apartament.service';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MdbModalRef } from 'mdb-angular-ui-kit/modal';
 import { currancyCodes } from 'src/app/modules/shared/currancyCodes';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common'
 import { MessageService } from '../../../shared/services/message/message.service';
 import { FeeTemplateService } from '../../../shared/services/feeTemplate/fee-template.service';
@@ -12,8 +12,6 @@ import { HttpClient } from '@angular/common/http';
 import { OrganizationService } from '../../../shared/services/organization/organization.service';
 import { Observable, tap } from 'rxjs';
 import { OrganizationTariffService } from '../../../shared/services/organizationTariff/organization-tariff.service';
-import { ApartamentFeeService } from '../../../shared/services/apartamentFee/apartament-fee.service';
-import { payVariants } from 'src/app/modules/shared/payVariants';
 import { GetFeesApiResponseItem } from 'src/app/modules/shared/services/apartamentFee/types';
 import { FeeTemplateApiResponseItem, FeeTemplateUpdateApiRequest } from 'src/app/modules/shared/services/feeTemplate/types';
 
@@ -34,7 +32,8 @@ export class ModalUpdateFeeTemplateComponent implements OnInit {
     sum: new FormControl(null),
     currancy: new FormControl(null),
     apartament_id: new FormControl(null),
-    id: new FormControl(null)
+    id: new FormControl(null),
+    paidDate: new FormControl(null)
   })
   templateFormGroup: FormGroup = new FormGroup({
     name: new FormControl(null, [Validators.required]),
@@ -42,7 +41,8 @@ export class ModalUpdateFeeTemplateComponent implements OnInit {
     sum: new FormControl({ value: null, disabled: true }),
     currancy: new FormControl(null),
     apartament_id: new FormControl(null),
-    apartament_name: new FormControl(null)
+    apartament_name: new FormControl(null),
+    paidDate: new FormControl(null)
   })
   ev (ev: any) {
     ev.preventDefault()
@@ -82,15 +82,16 @@ export class ModalUpdateFeeTemplateComponent implements OnInit {
   ngOnInit(): void {
     this.currancyOptions = this.getCurrancyOptions()
     this.ApartamentServ.getApartaments().subscribe()
-    console.log(this.fee)
+
     if (this.fee) {
       this.formGroup.patchValue({
+        id: Number(this.fee.template_id),
         name: this.fee.name,
         description: this.fee.description,
         sum: this.fee.sum,
         currancy: this.fee.currancy,
         apartament_id: this.fee.apartament_id,
-        id: this.fee.template_id
+        paidDate: this.fee.paidDate
       })
     }
     if (this.template) {
@@ -99,7 +100,8 @@ export class ModalUpdateFeeTemplateComponent implements OnInit {
         description: this.template.description,
         sum: this.template.sum,
         currancy: this.template.currancy,
-        apartament_id: this.template.apartament_id
+        apartament_id: this.template.apartament_id,
+        paidDate: this.template.paidDate
       })
     }
   }
@@ -108,18 +110,19 @@ export class ModalUpdateFeeTemplateComponent implements OnInit {
     this.loading = true
     const formGroupValue = this.formGroup.value
     let data: FeeTemplateUpdateApiRequest = {
+      id: Number(formGroupValue.id),
       name: formGroupValue.name,
       apartament_id: formGroupValue.apartament_id,
       description: formGroupValue.description,
       sum: formGroupValue.sum,
       currancy: formGroupValue.currancy,
-      id: formGroupValue.id
+      paidDate: formGroupValue.paidDate,
     }
     this.FeeTemplateServ.update(data).subscribe({
       next: (res: FeeTemplateApiResponseItem) => {
         this.MessageServ.sendMessage('success', 'Успешно сохранено!', 'Шаблон обновлен')
         // this.Location.back()
-        this.modalRef.close()
+        this.modalRef.close(this.formGroup.value)
       },
       error: (err: any) => {
         this.loading = false

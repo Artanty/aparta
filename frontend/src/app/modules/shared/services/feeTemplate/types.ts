@@ -6,6 +6,7 @@ export type FeeTemplateApiResponseItem = {
   "sum": number
   "month": number
   "year": number
+  paidDate: string
   "organizationTariff_id": number
   "organization_id": number
   "apartament_id": number
@@ -22,4 +23,5 @@ export type FeeTemplateUpdateApiRequest = {
   "sum": number
   "currancy": number
   "id": number
+  paidDate: string
 }

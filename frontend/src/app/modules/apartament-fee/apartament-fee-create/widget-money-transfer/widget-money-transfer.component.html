@@ -13,54 +13,56 @@
     {{ selectedTransfer?.rate || 'нет данных' }}
   </span>
 </div>
+<div class="ofx">
+  <table class="table align-middle mb-0 bg-white widget moneyTransferTable">
+    <thead class="bg-light">
+      <tr>
+        <th>Дата</th>
+        <th>Из</th>
+        <th>В</th>
+        <th>Курс</th>
+      </tr>
+    </thead>
+    <tbody *ngIf="tableLoading" class="tbodyLoading">
+      <tr>
+        <td colspan="3">
+          <div class="spinner-border spinner" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+    <tbody *ngIf="!tableLoading">
+      <tr *ngFor="let item of items" (click)="selectTransfer(item)"
+      [class.selectedTransfer]="item.id === selectedTransfer?.id">
+        <td class="td_date">
+          {{ item.date | date:'dd.MM.YYYY' }}
+        </td>
+        <td>
+          <div class="sum">
+            <div class="sum__number">
+              {{ item.sourceSum }}
+            </div>
+            <div class="sum__currancy">
+              {{ item | getCurrancy:'sourceCurrancy' }}
+            </div>
+          </div>
+        </td>
+        <td>
+          <div class="sum">
+            <div class="sum__number">
+              {{ item.destinationSum }}
+            </div>
+            <div class="sum__currancy">
+              {{ item | getCurrancy:'destinationCurrancy' }}
+            </div>
+          </div>
+        </td>
+        <td class="td_date">
+          {{ item.rate }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
-<table class="table align-middle mb-0 bg-white widget moneyTransferTable">
-  <thead class="bg-light">
-    <tr>
-      <th>Дата</th>
-      <th>Из</th>
-      <th>В</th>
-      <th>Курс</th>
-    </tr>
-  </thead>
-  <tbody *ngIf="tableLoading" class="tbodyLoading">
-    <tr>
-      <td colspan="3">
-        <div class="spinner-border spinner" role="status">
-          <span class="visually-hidden">Loading...</span>
-        </div>
-      </td>
-    </tr>
-  </tbody>
-  <tbody *ngIf="!tableLoading">
-    <tr *ngFor="let item of items" (click)="selectTransfer(item)"
-    [class.selectedTransfer]="item.id === selectedTransfer?.id">
-      <td class="td_date">
-        {{ item.date | date:'dd.MM.YYYY' }}
-      </td>
-      <td>
-        <div class="sum">
-          <div class="sum__number">
-            {{ item.sourceSum }}
-          </div>
-          <div class="sum__currancy">
-            {{ item | getCurrancy:'sourceCurrancy' }}
-          </div>
-        </div>
-      </td>
-      <td>
-        <div class="sum">
-          <div class="sum__number">
-            {{ item.destinationSum }}
-          </div>
-          <div class="sum__currancy">
-            {{ item | getCurrancy:'destinationCurrancy' }}
-          </div>
-        </div>
-      </td>
-      <td class="td_date">
-        {{ item.rate }}
-      </td>
-    </tr>
-  </tbody>
-</table>

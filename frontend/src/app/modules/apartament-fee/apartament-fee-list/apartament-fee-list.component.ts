@@ -194,6 +194,8 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
           template_id: res.template_id,
           apartament_id: res.apartament_id,
           paidDate: res.paidDate,
+          rateSource: res.rateSource,
+          rateId: res.rateId
         }
         data.sum = res.sum
         this.ApartamentFeeServ.setCopiedApartament(data)

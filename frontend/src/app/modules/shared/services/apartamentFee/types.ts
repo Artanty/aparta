@@ -3,17 +3,13 @@ export type GetFeesApiResponseItem = {
   "name": string
   "description": null | string,
   "currancy": number
-  "sum": string | number
-  "commission": any
+  "sum": number
   "month": number
   "year": number
   "paid": any
   "paidDate": null | string
-  "organization_id": number
-  "organizationTariff_id": number
   "template_id": number
   "apartament_id": number | string
-  "payVariant": number
   "creator_id": number
   "created_at": string
   "updated_at": string
@@ -24,32 +20,28 @@ export type GetFeesApiResponseItem = {
 
 export type ApartamentFeeCreateApiRequest = {
   "name": string
-  "description": string
-  "sum": string
+  "description": null | string,
+  "sum": number
   "currancy": null | number
   "month": number
   "year": number
   "paid": boolean
   "template_id": number | null
   "apartament_id": number | string
-  "paidDate": string
+  "paidDate": null | string
   rateId: number | null
   rateSource: number | null
 }
 
 export type ApartamentFeeCreateApiResponse = {
   "name": string
-  "description": string
-  "sum": string
-  "commission": any
+  "description": null | string,
+  "sum": number
   "currancy": any
   "month": number
   "year": number
   "paid": true,
-  "paidDate": string
-  "payVariant": any
-  "organization_id": any
-  "organizationTariff_id": any
+  "paidDate": null | string
   "apartament_id": number | string
   "template_id": any
   "creator_id": number
@@ -76,4 +68,20 @@ type Apartament = {
   "creator_id": number
   "created_at": string
   "updated_at": string
+}
+
+export type UpdateFeeApiReqest = {
+  "id": number
+  "name": string
+  "description": null | string,
+  "currancy": number
+  "sum": number
+  "month": number
+  "year": number
+  "paid": any
+  "paidDate": null | string
+  "template_id": number
+  "apartament_id": number | string
+  rateId: number | null
+  rateSource: number | null
 }

@@ -28,7 +28,8 @@
     }
   }
 }
-.widget.moneyTransferTable{
+.widget.moneyTransferTable {
+
   & tbody > tr:hover{
     background-color: #d5d5d5;
     cursor: pointer;
@@ -44,4 +45,7 @@
   margin-left: 10px;
   margin-right: 10px;
 }
-
+.ofx{
+  overflow: auto;
+  display: block;
+}
