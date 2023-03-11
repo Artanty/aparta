@@ -4,6 +4,11 @@ import { Observable, of } from 'rxjs';
 import { ApilayerApiResponse } from 'src/app/modules/exchange-rate/exchange-rate-list/mock';
 import { CreateExchangeRateApiRequest, GetExchangeRateApiResponse } from 'src/app/modules/exchange-rate/types';
 
+export type GetExchangeRatesByDateAndCurrancyApiRequest = {
+  dateFrom: string
+  dateTo: string
+  currancyTo: number
+}
 
 @Injectable({
   providedIn: 'root'
@@ -18,9 +23,15 @@ export class ExchangeRateService {
   load(): Observable<GetExchangeRateApiResponse[]> {
     return this.http.get<GetExchangeRateApiResponse[]>(`exchangeRate`)
   }
+
   getExchangeRatesByDate(data: any): Observable<GetExchangeRateApiResponse[]> {
     return this.http.post<GetExchangeRateApiResponse[]>(`getExchangeRates`, data)
   }
+
+  getExchangeRatesByDateAndCurrancy(data: GetExchangeRatesByDateAndCurrancyApiRequest): Observable<GetExchangeRateApiResponse[]> {
+    return this.http.post<GetExchangeRateApiResponse[]>(`getExchangeRates`, data)
+  }
+
   getExchangeRate (id: number): Observable<GetExchangeRateApiResponse> {
     return this.http.get<GetExchangeRateApiResponse>(`exchangeRate/${id}`)
   }

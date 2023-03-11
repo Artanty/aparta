@@ -62,18 +62,6 @@
           ></i>
         </span>
       </th>
-      <th>
-        <div class="select__wrapper">
-          <div class="select__closeBtn">
-            <i class="fas fa-times" (click)="filterFormGroupResetControl('year')"></i>
-          </div>
-          <select class="form-control form-select" [formControl]="year">
-            <option *ngFor="let item of yearOptions"
-            [value]="item.name">{{ item.name }}</option>
-          </select>
-          <label [class.form-floating-label]="year.value" class="form-label select-label " style="margin-left: 0px;">Год</label>
-        </div>
-      </th>
       <th *ngIf="!apartament_id">
         Квартира
       </th>
@@ -127,10 +115,11 @@
         </ng-template>
         <ng-template [ngIf]="currancy !== item.currancy">
           <div class="flexRowBetweenCenter">
-            {{ item | getCurrancy:'currancy':'sum':currancy | number:'.0-2' }}
+            <!-- {{ item | getCurrancy:'currancy':'sum':currancy | number:'.0-2' }} -->
+            {{ item | currancyValue:currancy:moneyTransfers:exchangeRates | number:'.0-2' }}
             <div>
-              <span class="currancyTd__initialCurrancy"
-              >({{ item.sum }} {{ item | getCurrancy:'currancy' }})</span>
+              <!-- <span class="currancyTd__initialCurrancy"
+              >({{ item.sum }} {{ item | getCurrancy:'currancy' }})</span> -->
             </div>
 
           </div>
@@ -139,9 +128,6 @@
       </td>
       <td>
         {{ item.month | humanMonth }}
-      </td>
-      <td>
-        {{ item.year }}
       </td>
       <td *ngIf="!apartament_id">
         {{ item.apartament?.name }}

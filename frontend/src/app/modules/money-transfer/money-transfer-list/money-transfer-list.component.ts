@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MessageService } from '../../shared/services/message/message.service';
 import { LoadMoneyTransferApiResponse, MoneyTransferService } from '../../shared/services/moneyTransfer/money-transfer.service';
+import { CreateMoneyTransferApiRequest, CreateMoneyTransferApiResponse } from '../../shared/services/moneyTransfer/types';
+import { Router } from '@angular/router'
 
 @Component({
   selector: 'app-money-transfer-list',
@@ -12,7 +14,8 @@ export class MoneyTransferListComponent implements OnInit {
   items: any[] = []
   constructor(
     private MoneyTransferServ: MoneyTransferService,
-    private MessageServ: MessageService
+    private MessageServ: MessageService,
+    private Router: Router
   ) { }
 
   ngOnInit(): void {
@@ -58,7 +61,7 @@ export class MoneyTransferListComponent implements OnInit {
 
   createCopy(formGroupValue: any) {
     this.tableLoading = true
-    let data = {
+    const data: CreateMoneyTransferApiRequest = {
       name: formGroupValue.name,
       description: formGroupValue.description,
       sourceSum: formGroupValue.sourceSum,
@@ -71,13 +74,13 @@ export class MoneyTransferListComponent implements OnInit {
       apartament_id: formGroupValue.apartament_id,
     }
     this.MoneyTransferServ.create(data).subscribe({
-      next: (res: any) => {
+      next: (res: CreateMoneyTransferApiResponse) => {
         this.MessageServ.sendMessage('success', 'Успешно сохранено!', 'Перевод добавлен')
         this.tableLoading = false
         this.loadItems()
+        this.Router.navigate(['moneyTransfer/update', res.id])
       },
       error: (err: any) => {
-        console.log(err)
         this.tableLoading = false
         this.MessageServ.sendMessage('error', 'Ошибка!', err.error.message)
       }

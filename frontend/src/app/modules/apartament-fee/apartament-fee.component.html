@@ -1,6 +1,16 @@
 <div class="container">
   <div class="d-flex justify-content-between align-items-center py-3" style="margin-top: 58px;">
     <h1 class="mb-3">Счета</h1>
+    <div class="select__wrapper">
+      <div class="select__closeBtn">
+        <!-- <i class="fas fa-times" (click)="filterFormGroupResetControl('year')"></i> -->
+      </div>
+      <select class="form-control form-select" [formControl]="year">
+        <option *ngFor="let item of yearOptions"
+        [value]="item">{{ item }}</option>
+      </select>
+      <label [class.form-floating-label]="year.value" class="form-label select-label " style="margin-left: 0px;">Год</label>
+    </div>
     <div class="apartament">
       <select [formControl]="apartament" class="form-select">
         <option value="null" disabled>Квартира</option>
@@ -33,6 +43,7 @@
         <div class="card-body p-0">
           <app-apartament-fee-list
           [_currancy]="currancy.value"
+          [_year]="year.value"
           (amountOut)="setAmount($event)"></app-apartament-fee-list>
         </div>
       </div>

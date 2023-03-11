@@ -22,6 +22,8 @@ export class ApartamentFeeComponent implements OnInit {
   currancyOptions: any[] = []
   apartament: FormControl = new FormControl()
   apartamentOptions$: Observable<any[]>
+  year: FormControl = new FormControl(new Date().getFullYear())
+  yearOptions: number[] = []
   constructor(
     private http: HttpClient,
     private ActivatedRoute: ActivatedRoute,
@@ -29,6 +31,9 @@ export class ApartamentFeeComponent implements OnInit {
     private ApartamentServ: ApartamentService,
     private Router: Router
   ) {
+    for(let i = new Date().getFullYear(); i >= 2018; i--) {
+      this.yearOptions.push(i)
+    }
     this.ApartamentServ.getApartaments().subscribe()
     this.currancyOptions = this.getCurrancyOptions()
     this.currancy.valueChanges.subscribe((res: any) => this.saveCurrancy(res))

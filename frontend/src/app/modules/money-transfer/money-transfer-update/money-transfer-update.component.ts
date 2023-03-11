@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common'
 import { MessageService } from '../../shared/services/message/message.service';
 import { currancyCodes } from './../../shared/currancyCodes';
-
+import { Router } from '@angular/router'
 import { Observable } from 'rxjs';
 import { ApartamentService } from '../../shared/services/apartament/apartament.service';
 import { MoneyTransferService } from '../../shared/services/moneyTransfer/money-transfer.service';
@@ -35,10 +35,6 @@ export class MoneyTransferUpdateComponent implements OnInit {
       date: new FormControl(new Date().toISOString().slice(0, 10)),
       apartament_id: new FormControl(3)
     })
-    formGroup2: FormGroup = new FormGroup({
-      sourceCurrancy: new FormControl(null),
-      destinationCurrancy: new FormControl(null)
-    })
     pasteResultToFC: string = ''
     quantityFC: string = ''
     activeGetSumNumber: number | null = null
@@ -53,6 +49,7 @@ export class MoneyTransferUpdateComponent implements OnInit {
       private MessageServ: MessageService,
       private ActivatedRoute: ActivatedRoute,
       private Location: Location,
+      private Router: Router
     ) {
       try {
         const moneyTransfer_id = Number(this.ActivatedRoute.snapshot.paramMap.get('moneyTransfer_id'))
@@ -71,7 +68,7 @@ export class MoneyTransferUpdateComponent implements OnInit {
       this.currancyOptions = this.getCurrancyOptions()
     }
 
-    setCurrentDayValue (data: GetExchangeRateApiResponse) {
+    setCurrentDayValue (data: GetExchangeRateApiResponse) { // todo?
       this.currentDayValueNoCommision = data.currancyFromValue
       const currancyValue = this.getValueWithCommision(data.currancyFromValue)
       this.currentDayValue = currancyValue
@@ -244,5 +241,23 @@ export class MoneyTransferUpdateComponent implements OnInit {
       }
     }
 
+    setSourceSum (sum: any | number) {
+      this.formGroup.get('sourceSum')?.setValue(sum)
+    }
 
+    deleteMoneyTransfer () {
+      const id: number = Number(this.formGroup.get('id')?.value)
+      this.loading = true
+      this.MoneyTransferServ.delete(id).subscribe({
+        next: (res: any) => {
+          this.MessageServ.sendMessage('success', 'Успешно!', 'Перевод удален')
+          this.loading = false
+          this.Router.navigate(['moneyTransfer'])
+        },
+        error: (err: any) => {
+          this.MessageServ.sendMessage('error', 'Ошибка!', err.error.message)
+          this.loading = false
+        }
+      })
+    }
   }

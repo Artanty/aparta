@@ -23,31 +23,6 @@
   }
 }
 
-.form-floating-label{
-  top: -2px!important;
-  transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
-  transition: transform 0.1s ease-in-out;
-  background-color: #fff;
-}
-
-
-.sortWrap {
-  display: inline-block;
-    height: 23px;
-    position: relative;
-    margin-left: 4px;
-    & > *.active{
-      color:red;
-    }
-  & .sortUp{
-    position: absolute;
-    top: 0;
-  }
-  & .sortDown{
-    position: absolute;
-    bottom:0;
-  }
-}
 .thSort{
   margin-right: 5px;
 }

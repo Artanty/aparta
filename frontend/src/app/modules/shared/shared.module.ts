@@ -38,6 +38,8 @@ import { GetCurrancyPipe } from './pipes/get-currancy.pipe';
 
 
 import { WidgetExchangeRateComponent } from './features/widget-exchange-rate/widget-exchange-rate.component';
+import { CurrancyValuePipe } from './pipes/currancy-value.pipe';
+import { ProportionBlockComponent } from './features/proportion-block/proportion-block.component';
 
 // const maskConfig: Partial<IConfig> = {
 //   validation: true,
@@ -53,6 +55,8 @@ export const options: Partial<null|IConfig> | (() => Partial<IConfig>) = null;
     HumanMonthPipe,
     GetCurrancyPipe,
     WidgetExchangeRateComponent,
+    CurrancyValuePipe,
+    ProportionBlockComponent,
   ],
   imports: [
     CommonModule,
@@ -105,7 +109,9 @@ export const options: Partial<null|IConfig> | (() => Partial<IConfig>) = null;
     InputComponent,
     MessageListComponent,
     GetCurrancyPipe,
+    CurrancyValuePipe,
     WidgetExchangeRateComponent,
+    ProportionBlockComponent
     ]
 })
 export class SharedModule {}

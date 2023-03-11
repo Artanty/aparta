@@ -13,12 +13,15 @@
 
   <label mdbLabel class="form-label" for="id">{{label}}</label>
   <mdb-error
-      *ngIf="!noValid && control?.invalid && (control?.dirty || control?.touched)"
-      >Обязательное поле</mdb-error
+    *ngIf="!noValid && control?.invalid && (control?.dirty || control?.touched)"
     >
-    <mdb-success
-      *ngIf="!noValid && control?.valid && (control?.dirty || control?.touched)"
-      >
-      <i class="fas fa-check-circle"></i></mdb-success
+      <span *ngIf="control?.errors?.['required']">Обязательное поле</span>
+      <span *ngIf="control?.errors?.['pattern']">Неверный формат</span>
+    </mdb-error
+  >
+  <mdb-success
+    *ngIf="!noValid && control?.valid && (control?.dirty || control?.touched)"
     >
+    <i class="fas fa-check-circle"></i></mdb-success
+  >
 </mdb-form-control>

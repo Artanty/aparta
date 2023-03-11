@@ -109,6 +109,7 @@ export class WidgetMoneyTransferComponent implements OnInit, OnChanges {
         return undefined
       }
     }
+
     private getCurrancyOptions () {
       if (Array.isArray(currancyCodes)) {
         return currancyCodes.slice(0, 4).map((el: {

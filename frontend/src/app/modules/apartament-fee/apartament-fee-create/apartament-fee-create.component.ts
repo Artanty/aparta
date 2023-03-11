@@ -18,8 +18,8 @@ import { GetExchangeRateApiResponse } from '../../exchange-rate/types';
 import { LoadMoneyTransferApiResponse } from '../../shared/services/moneyTransfer/money-transfer.service';
 
 export enum EExchangeRateSource {
-  MONEY_TRANSFER_LIST = '1',
-  EXCHANGE_RATE_LIST = '2'
+  MONEY_TRANSFER_LIST = 1,
+  EXCHANGE_RATE_LIST = 2
 }
 @Component({
   selector: 'app-apartament-fee-create',

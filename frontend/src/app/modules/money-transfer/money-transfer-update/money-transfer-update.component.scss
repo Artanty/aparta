@@ -18,3 +18,14 @@
     border-color: #dfdfdf;
   }
 }
+
+button.loading{
+  position: relative;
+  & .spinner-border{
+    position: absolute;
+    width: 1rem;
+    height: 1rem;
+    left: calc(50% - 0.5rem);
+  }
+
+}

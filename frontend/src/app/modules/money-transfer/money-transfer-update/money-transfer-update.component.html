@@ -2,19 +2,33 @@
   <div class="d-flex justify-content-between align-items-center py-3" style="margin-top: 58px;">
     <h1>{{ getControl(formGroup, 'id').value ? 'Изменение перевода' : 'Добавление перевода' }}</h1>
     <div class="topButtons">
-      <button (click)="back()" type="button" class="btn btn-outline-secondary me-3">
+      <button (click)="back()" type="button" class="btn btn-outline-secondary btn-rounded me-3">
         <i class="fas fa-caret-left d-inline d-md-none"></i>
         <span class="d-none d-md-inline">Назад</span>
       </button>
       <button *ngIf="getControl(formGroup, 'id').value"
-      (click)="update()" type="button" class="btn btn-outline-primary me-3">
-        <i class="far fa-save d-inline d-md-none"></i>
-        <span class="d-none d-md-inline">Сохранить</span>
+      (click)="deleteMoneyTransfer()" type="button" class="btn btn-outline-danger btn-rounded me-3" [class.loading]="loading">
+      <i class="fas fa-trash d-inline d-md-none"></i>
+        <span class="d-none d-md-inline">Удалить</span>
+        <div class="spinner-border spinner" role="status" *ngIf="loading">
+          <span class="visually-hidden">Loading...</span>
+        </div>
       </button>
-      <button *ngIf="!getControl(formGroup, 'id').value"
-      (click)="create()" type="button" class="btn btn-outline-primary me-3">
+      <button *ngIf="getControl(formGroup, 'id').value" [disabled]="loading" [class.loading]="loading"
+      (click)="update()" type="button" class="btn btn-outline-primary btn-rounded me-3">
         <i class="far fa-save d-inline d-md-none"></i>
         <span class="d-none d-md-inline">Сохранить</span>
+        <div class="spinner-border spinner" role="status" *ngIf="loading">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </button>
+      <button *ngIf="!getControl(formGroup, 'id').value" [disabled]="loading" [class.loading]="loading"
+      (click)="create()" type="button" class="btn btn-outline-primary btn-rounded me-3">
+        <i class="far fa-save d-inline d-md-none"></i>
+        <span class="d-none d-md-inline">Сохранить</span>
+        <div class="spinner-border spinner" role="status" *ngIf="loading">
+          <span class="visually-hidden">Loading...</span>
+        </div>
       </button>
     </div>
   </div>
@@ -75,6 +89,18 @@
           </div>
         </div>
       </div>
+      <div class="card mt-4">
+        <div class="card-header"><b>Пропорция:</b>  вычислить часть исходной суммы от полной конечной и исходной суммы</div>
+        <div class="card-body p-3">
+          <app-proportion-block [labels]="[
+          'Полная конечная сумма',
+          'Частичная конечная сумма',
+          'Полная исходная сумма',
+          'Частичная исходная сумма'
+          ]"
+          (valueAway)="setSourceSum($event)"></app-proportion-block>
+        </div>
+      </div>
     </div>
     <div class="col-12 col-md-5 col-lg-5 mb-4">
       <div class="card">
@@ -83,8 +109,7 @@
                         this.getControl(this.formGroup, 'destinationSum')?.value"
             (click)="calculateRate()"
             type="button"
-            class="btn btn-outline-primary ">
-            <i class="far fa-calendar-check fa-lg me-3"></i>
+            class="btn btn-outline-primary btn-rounded mb-3">
             <span>Вычислить курс</span>
           </button>
 
@@ -95,6 +120,18 @@
             (currentDayValue)="setCurrentDayValue($event)"
           ></app-widget-exchange-rate>
         </div>
+      </div>
+      <div class="mt-4">
+        Если часть денег первода сразу снята в другой валюте, пример:
+        <br>
+        положил 80 000 руб<br>
+        переведено как ~900 евро<br>
+        снял 700 евро и 200 евро в сконвертировал и снял в динарах.<br>
+        1. Создаем сначала отдельный перевод динаров.<br>
+        2. В блока "Пропорция" вводим полную конечную (900) и исходную (80 000) суммы, частичную конечную сумму (200), нажимаем "Вычислить".<br>
+        3. Округляем если нужно и возвращаем результат в поле "Исходная сумма" наверху.<br>
+        4. Смотрим на чеке, сколько выдали динаров за 200 евро и вставляем это значение в "Конечная сумма".<br>
+        5. Вписываем в промежуточный перевод "200 евро" и заполняем поле "Курс" нажатием на кнопку "Вычислить курс"
       </div>
     </div>
   </div>

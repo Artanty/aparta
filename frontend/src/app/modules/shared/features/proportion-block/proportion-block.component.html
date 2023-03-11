@@ -1,0 +1,55 @@
+<div class="row gx-3 gy-4">
+  <div class="col-6">
+    <app-input [control]="getControl(formGroup, 'a')" [label]="labels[0]"></app-input>
+  </div>
+  <div class="col-6">
+    <app-input [control]="getControl(formGroup, 'c')" [label]="labels[1]"></app-input>
+  </div>
+  <div class="col-6">
+    <app-input [control]="getControl(formGroup, 'b')" [label]="labels[2]"></app-input>
+  </div>
+  <div [class.col-4]="formGroup.status !== 'INVALID' && getControl(formGroup, 'd').value"
+    [class.col-6]="formGroup.status === 'INVALID' || !getControl(formGroup, 'd').value"
+  >
+    <app-input [control]="getControl(formGroup, 'd')" [label]="labels[3]"></app-input>
+  </div>
+  <div class="col-md-2" style="text-align: right;"
+  *ngIf="formGroup.status !== 'INVALID' && getControl(formGroup, 'd').value">
+    <button
+      (click)="sendValueAway()"
+      type="button"
+      class="btn btn-outline-primary btn-rounded">
+      <i class="fas fa-level-up-alt fa-lg"></i>
+    </button>
+  </div>
+  <div class="col-12 d-flex justify-content-between">
+    <button
+      [disabled]="formGroup.status === 'INVALID'"
+      (click)="calculate()"
+      type="button"
+      class="btn btn-outline-primary btn-rounded">
+      <span>Вычислить</span>
+    </button>
+    <div class="d-inline-flex ms-3 align-items-center" *ngIf="formGroup.status !== 'INVALID' && getControl(formGroup, 'd').value">
+      <span>Округлить:</span>
+      <button
+        (click)="math('floor')"
+        type="button"
+        class="btn btn-outline-primary btn-rounded ms-3">
+        <i class="fas fa-long-arrow-alt-down fa-lg"></i>
+      </button>
+      <button
+        (click)="math('ceil')"
+        type="button"
+        class="btn btn-outline-primary btn-rounded ms-3">
+        <i class="fas fa-long-arrow-alt-up fa-lg"></i>
+      </button>
+      <button
+        (click)="math('round')"
+        type="button"
+        class="btn btn-outline-primary btn-rounded ms-3">
+        <span>До целого</span>
+      </button>
+    </div>
+  </div>
+</div>

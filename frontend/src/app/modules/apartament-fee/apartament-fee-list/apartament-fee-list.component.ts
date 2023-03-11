@@ -1,3 +1,5 @@
+import { LoadMoneyTransferApiResponse, MoneyTransferService } from './../../shared/services/moneyTransfer/money-transfer.service';
+import { ExchangeRateService, GetExchangeRatesByDateAndCurrancyApiRequest } from './../../shared/services/exchangeRate/exchange-rate.service';
 import { Component, ElementRef, OnDestroy, OnInit, Output, ViewChild, EventEmitter, Input } from '@angular/core';
 import { combineLatest, combineLatestWith, concat, filter, finalize, map, Observable, of, skipWhile, startWith, Subscription, tap, withLatestFrom } from 'rxjs';
 import { ApartamentFeeService } from '../../shared/services/apartamentFee/apartament-fee.service';
@@ -8,6 +10,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { GetCurrancyPipe } from '../../shared/pipes/get-currancy.pipe';
 import { GetFeesApiResponseItem } from '../../shared/services/apartamentFee/types';
 import { MdbPopoverDirective } from 'mdb-angular-ui-kit/popover';
+import { GetExchangeRateApiResponse } from '../../exchange-rate/types';
 
 
 @Component({
@@ -23,6 +26,15 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.filterFormGroup.updateValueAndValidity()
     }, 0)
+    this.getExchangeRatesByDateAndCurrancy()
+  }
+  year: number = new Date().getFullYear()
+  @Input() set _year(year: number) {
+    if (year !== null) {
+      this.year = +year
+      this.getItemsApi(+year)
+      this.getExchangeRatesByDateAndCurrancy(+year)
+    }
   }
   @Output() amountOut: EventEmitter<number> = new EventEmitter<number>()
   apartament_id: string = ''
@@ -31,11 +43,10 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
   selectedItemsSet = new Set()
   name: FormControl = new FormControl(null)
   month: FormControl = new FormControl(null)
-  year: FormControl = new FormControl(null)
+
   filterFormGroup: FormGroup = new FormGroup({
     name: this.name,
-    month: this.month,
-    year: this.year
+    month: this.month
   })
   sortFormGroup: FormGroup = new FormGroup({
     sum: new FormControl(0),
@@ -44,23 +55,25 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
     created_at: new FormControl(0)
   })
   nameOptions: any[] = []
-  yearOptions: any[] = []
   subs$?: Subscription
+  moneyTransfers: LoadMoneyTransferApiResponse[] = []
+  exchangeRates: GetExchangeRateApiResponse[] = []
 
   constructor(
     private ApartamentFeeServ: ApartamentFeeService,
     private ActivatedRoute: ActivatedRoute,
     private MessageServ: MessageService,
-    private Router: Router
+    private Router: Router,
+    private ExchangeRate: ExchangeRateService,
+    private MoneyTransferServ: MoneyTransferService
   ) {
+
     this.tableLoading$ = this.ApartamentFeeServ.loading$
     let obs$: Observable<any>
     const tapPipeSetSelectOptions = (res: GetFeesApiResponseItem[]) => {
       setTimeout(() => {
         this.nameOptions = removeDuplicatedObj(res, 'name').sort((a: GetFeesApiResponseItem, b: GetFeesApiResponseItem) => a.name.localeCompare(b.name))
-        this.yearOptions = orderBy(removeDuplicatedObj(res, 'year'), 'year', 'desc').map((el: GetFeesApiResponseItem) => ({ name: el.year, value: el.year }))
       }, 0)
-
     }
     const mapPipeFilterAndSort = (res: any) => {
       this.saveTableState()
@@ -116,11 +129,12 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
       this.amountOut.emit(amount)
       return res
     }
+
     this.ActivatedRoute.params.subscribe((res: any) => {
       if (res.apartament_id) {
-        this.apartament_id = res.apartament_id !== 'all' ? res.apartament_id : ''
+        this.apartament_id = res.apartament_id
+        this.getItemsApi()
         this.filterFormGroup.reset()
-        this.ApartamentFeeServ.getFees(res.apartament_id !== 'all' ? +this.apartament_id : 'all', true).subscribe()
       }
     })
     obs$ = this.ApartamentFeeServ.fees$
@@ -149,12 +163,29 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    //
+    this.loadMoneyTransfers()
   }
 
   ngOnDestroy (): void {
     // console.log('destroyed')
     this.subs$?.unsubscribe()
+  }
+
+  getYearDates (year: number) {
+    return {
+      dateFrom: this.isoDateWithoutTimeZone(new Date(year, 0, 1)).slice(0, 10),
+      dateTo: this.isoDateWithoutTimeZone(new Date(year, 11, 31)).slice(0, 10)
+    }
+  }
+
+  getItemsApi (year?: number) {
+    if (this.year !== year) {
+      if (!year) {
+        year = this.year
+      }
+      const apartament_id = this.apartament_id !== 'all' ? +this.apartament_id : 'all'
+      this.ApartamentFeeServ.getFees(apartament_id, true, year).subscribe()
+    }
   }
 
   tableSort(column: string){
@@ -180,6 +211,7 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
       this.selectedItemsSet.add(id)
     }
   }
+
   copyApartamentFee (id: number) {
     this.ApartamentFeeServ.getFee(id).subscribe({
       next: (res: GetFeesApiResponseItem) => {
@@ -213,6 +245,7 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
     }
     this.deleteConfirmOpened = data
   }
+
   deleteConfirm (confirm: boolean, id: number) {
     if (confirm) {
       this.deleteConfirmOpened?.hide()
@@ -247,9 +280,11 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
     ).subscribe()
 
   }
+
   filterFormGroupResetControl(controlName: string) {
     this.filterFormGroup.controls[controlName]?.reset()
   }
+
   saveTableState() {
     const data = {
       sort: this.sortFormGroup.value,
@@ -257,6 +292,7 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
     }
     localStorage.setItem('apartamentFeeList', JSON.stringify(data))
   }
+
   loadTableState(){
     const state = localStorage.getItem('apartamentFeeList')
     if (state) {
@@ -267,5 +303,37 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
       this.filterFormGroup.updateValueAndValidity()
       this.sortFormGroup.updateValueAndValidity()
     }
+  }
+
+  isoDateWithoutTimeZone(date: Date): string {
+    if (date == null) return date;
+    var timestamp = date.getTime() - date.getTimezoneOffset() * 60000;
+    var correctDate = new Date(timestamp);
+    correctDate.setUTCHours(0, 0, 0, 0); // uncomment this if you want to remove the time
+    return correctDate.toISOString();
+  }
+
+  getExchangeRatesByDateAndCurrancy (year?: number) {
+    if (this.year !== year) {
+      if (!year) {
+        year = this.year
+      }
+      const dates = this.getYearDates(year)
+      const data: GetExchangeRatesByDateAndCurrancyApiRequest = { currancyTo: +this.currancy, ...dates }
+      this.ExchangeRate.getExchangeRatesByDateAndCurrancy(data).subscribe((res: GetExchangeRateApiResponse[]) => {
+        this.exchangeRates = res
+      })
+    }
+  }
+
+  loadMoneyTransfers() {
+    this.MoneyTransferServ.load().subscribe({
+      next: (res: LoadMoneyTransferApiResponse[]) => {
+        this.moneyTransfers = res
+      },
+      error: (err: any) => {
+        this.MessageServ.sendMessage('error', 'Ошибка!', err.error.message)
+      }
+    })
   }
 }

@@ -132,9 +132,17 @@ class ApartamentController extends Controller
         return $model;
     }
 
+    // public function getApartamentFees(GetApartamentFeesRequest $request)
+    // {
+    //     $apartamentFees = Apartament::findOrFail($request->route('id'))->fees()
+    //     ->get();
+    //     return response()->json($apartamentFees);
+    // }
+
     public function getApartamentFees(GetApartamentFeesRequest $request)
     {
         $apartamentFees = Apartament::findOrFail($request->route('id'))->fees()
+        ->where('year', '=', $request->input('year'))
         ->get();
         return response()->json($apartamentFees);
     }

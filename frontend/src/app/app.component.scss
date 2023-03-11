@@ -81,6 +81,7 @@
 }
 ::ng-deep body{
   // background-color: #c0d9fe;
+  background-color: #f5f6ff;
 }
 
 ::ng-deep .popoverHiddenTrigger{
@@ -96,9 +97,6 @@
 ::ng-deep .tbodyLoading{
   text-align: center;
   height: 200px;
-}
-::ng-deep .spinner{
-  color:#5069ee;
 }
 
 ::ng-deep .select{
@@ -165,4 +163,36 @@
 ::ng-deep button.active{
   color: #fff!important;
   background-color: #093d94!important;
+}
+
+
+::ng-deep .form-floating-label{
+  top: -2px!important;
+  transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+  transition: transform 0.1s ease-in-out;
+  background-color: #fff;
+}
+
+
+::ng-deep .sortWrap {
+  display: inline-block;
+    height: 23px;
+    position: relative;
+    margin-left: 4px;
+    & > *.active{
+      color:red;
+    }
+  & .sortUp{
+    position: absolute;
+    top: 0;
+  }
+  & .sortDown{
+    position: absolute;
+    bottom:0;
+  }
+}
+::ng-deep .btn:disabled{
+  border: 2px solid;
+  border-width: 0.125rem;
+  border-color: #b1b1b1;
 }

@@ -3,7 +3,12 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, finalize, Observable, of, tap } from 'rxjs';
 import { orderBy } from '../../helpers';
 import { ApartamentFeeCreateApiRequest, ApartamentFeeCreateApiResponse, GetFeesApiResponseItem, UpdateFeeApiReqest } from './types';
-
+export type GetFeesApiRequest = {
+  apartament_id: number | string,
+  force: boolean
+  dateFrom: string | null
+  dateTo: string | null
+} // not used
 @Injectable({
   providedIn: 'root'
 })
@@ -39,7 +44,8 @@ export class ApartamentFeeService {
     this.loadingSubj$.next(val)
   }
 
-  getFees(a_id: number | string, force?: boolean): Observable<GetFeesApiResponseItem[]>{
+  // dateFrom: string | null = null, dateTo: string | null = null
+  getFees(a_id: number | string, force: boolean = false, year: number): Observable<GetFeesApiResponseItem[]>{
     this.setLoading(true)
     let obs$: Observable<any>
     const storeItems = this.feesSubj.getValue()
@@ -50,9 +56,10 @@ export class ApartamentFeeService {
       obs$ = of(JSON.parse(storageItems))
     } else {
       if (a_id === 'all') {
-        obs$ = this.http.get<GetFeesApiResponseItem[]>(`apartamentFee`)
+        obs$ = this.http.get<GetFeesApiResponseItem[]>(`apartamentFee/?year=${year}`)
       } else {
-        obs$ = this.http.get<GetFeesApiResponseItem[]>(`apartament/getApartamentFees/${a_id}`)
+        // ?dateFrom=${dateFrom}&dateTo=${dateTo}
+        obs$ = this.http.get<GetFeesApiResponseItem[]>(`apartament/getApartamentFees/${a_id}?year=${year}`)
       }
     }
     return obs$.pipe(
