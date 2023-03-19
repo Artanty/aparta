@@ -1,8 +1,10 @@
+import { AuthService } from './../auth/auth.service';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { delay, Observable, of } from 'rxjs';
 import { ApilayerApiResponse } from 'src/app/modules/exchange-rate/exchange-rate-list/mock';
 import { CreateExchangeRateApiRequest, GetExchangeRateApiResponse } from 'src/app/modules/exchange-rate/types';
+import { exchangeRates } from './mock';
 
 export type GetExchangeRatesByDateAndCurrancyApiRequest = {
   dateFrom: string
@@ -16,12 +18,15 @@ export type GetExchangeRatesByDateAndCurrancyApiRequest = {
 export class ExchangeRateService {
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private AuthServ: AuthService
 
   ) { }
 
   load(): Observable<GetExchangeRateApiResponse[]> {
     return this.http.get<GetExchangeRateApiResponse[]>(`exchangeRate`)
+    this.AuthServ.loadUser().subscribe()
+    return of(exchangeRates).pipe(delay(500))
   }
 
   getExchangeRatesByDate(data: any): Observable<GetExchangeRateApiResponse[]> {

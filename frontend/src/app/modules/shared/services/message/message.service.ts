@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-type messageType = 'success' | 'error'
+type messageType = 'success' | 'error' | 'warning'
 type messageLength = {
   [key in messageType]: number
 }
@@ -13,7 +13,8 @@ export class MessageService {
 
   messageLength: messageLength = {
     success: 3,
-    error: 5
+    error: 5,
+    warning: 4
   }
 
   constructor() { }

@@ -1,12 +1,35 @@
-ul { margin: 0; padding: 0; list-style: none;}
+.calendarDate{
+  width: 125px;
+  text-align: center;
+}
+ul.calendar {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  margin-bottom: 12px;
+}
 li {
   display: inline-block;
-  border: 1px solid #ccc;
-  width: calc(100%/7 - 2px);
+  border: 1px solid #e5e5e5;
+  width: calc(14.2857142857% - 2px);
   text-align: center;
   cursor: pointer;
+  border-radius: 25px;
+  margin: 1px;
 }
 li.days {font-weight: bold;}
-li.grey {color: #ccc}
-li.isset { background-color: red;}
-li:hover {background-color: #ccc;}
+li.grey {
+  color: #ccc;
+}
+li.isset {
+  background-color: #5569b0f5;
+  color:#fff;
+}
+li:hover { background-color: #1f4cca30; }
+
+.loadingDiv{
+  height: 240px;
+  width: 100%;
+  text-align: center;
+  line-height: 14;
+}

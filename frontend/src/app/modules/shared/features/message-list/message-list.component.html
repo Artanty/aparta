@@ -4,6 +4,7 @@
   class="toast toast-danger"
   [class.toast-danger]="message.type === 'error'"
   [class.toast-success]="message.type === 'success'"
+  [class.toast-warning]="message.type === 'warning'"
   role="alert" aria-live="assertive" aria-atomic="true">
     <div class="toast-header">
       <strong class="me-auto">{{ message.header }}</strong>

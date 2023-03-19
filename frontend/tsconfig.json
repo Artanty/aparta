@@ -22,7 +22,18 @@
     "lib": [
       "es2020",
       "dom"
-    ]
+    ],
+    "paths": {
+      "@components/*": ["src/app/modules/shared/components/*"],
+      "@features/*": ["src/app/modules/shared/features/*"],
+      "@guards/*": ["src/app/modules/shared/guards/*"],
+      "@interceptors/*": ["src/app/modules/shared/interceptors/*"],
+      "@pipes/*": ["src/app/modules/shared/pipes/*"],
+      "@directives/*": ["src/app/modules/shared/directives/*"],
+      "@shared/*": ["src/app/modules/shared/*"],
+      "@services/*": ["src/app/modules/shared/services/*"],
+      "@app/*": ["src/app/*"]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

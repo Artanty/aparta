@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, filter, map, Observable, tap } from 'rxjs';
 import { ApartamentFeeService } from 'src/app/modules/shared/services/apartamentFee/apartament-fee.service';
 import { ApartamentUserService } from 'src/app/modules/apartament-user/apartament-user.service';
 import { ApartamentService } from '../apartament/apartament.service';
@@ -62,19 +62,20 @@ export class AuthService {
     return this.userBs.getValue()
   }
 
-  getAccess ({ users = [] } : { users?: number[] }): boolean {
-    let result = false
-    const currentUser = this.getUser()
-    if (currentUser) {
-      if (users && Array.isArray(users) && users.length) {
-        users.forEach((el: number) => {
-          if (el === currentUser.id) {
-            result = true
-          }
-        })
-      }
-    }
-    return result
+  listenUser (): Observable<User | null> {
+    return this.user$
+  }
+
+  getAccess ({ users = [] } : { users?: number[] }): Observable<boolean> {
+    return this.listenUser().pipe(
+      filter(Boolean),
+      map((user: User) => {
+        if (user && (users && Array.isArray(users) && users.length)) {
+          return users.includes(user.id)
+        }
+        return false
+      })
+    )
   }
 
   setToken(token: string) {

@@ -12,7 +12,7 @@ import { map, Observable, of, take, startWith, combineLatestWith } from 'rxjs';
 import { FeeTemplateService } from '../../shared/services/feeTemplate/fee-template.service';
 import { ApartamentService } from '../../shared/services/apartament/apartament.service';
 import { FeeTemplateApiResponseItem, FeeTemplateUpdateApiRequest } from '../../shared/services/feeTemplate/types';
-import { ApartamentFeeCreateApiRequest, GetFeesApiResponseItem, UpdateFeeApiReqest } from '../../shared/services/apartamentFee/types';
+import { ApartamentFeeCreateApiRequest, ApartamentFeeCreateApiResponse, GetFeesApiResponseItem, UpdateFeeApiReqest } from '../../shared/services/apartamentFee/types';
 import { ModalUpdateFeeTemplateComponent } from './modal-update-fee-template/modal-update-fee-template.component';
 import { GetExchangeRateApiResponse } from '../../exchange-rate/types';
 import { LoadMoneyTransferApiResponse } from '../../shared/services/moneyTransfer/money-transfer.service';
@@ -79,7 +79,6 @@ export class ApartamentFeeCreateComponent implements OnInit {
     this.templateOptions$ = this.FeeTemplateServ.feeTemplates$.pipe(
       combineLatestWith(this.formGroup.get('apartament_id')?.valueChanges.pipe(startWith(Number(this.ActivatedRoute.snapshot.paramMap.get('apartament_id')))) || of(this.formGroup.get('apartament_id')?.value)),
       map((res: [FeeTemplateApiResponseItem[], string]) => {
-        console.log(res)
         const id: number = +res[1]
         const prop = 'apartament_id'
         if (Array.isArray(res[0]) && id) {
@@ -140,7 +139,6 @@ export class ApartamentFeeCreateComponent implements OnInit {
       this.loadCurrancy()
     }
     this.formGroup.valueChanges.pipe().subscribe((res: any) => {
-      console.log(res)
       this.allowUpdateTemplate = null
       if (res.template_id) {
         if (this.initialTemplateObj) {
@@ -193,6 +191,7 @@ export class ApartamentFeeCreateComponent implements OnInit {
 
   setCopiedApartament () {
     const copied = this.ApartamentFeeServ.getCopiedApartament()
+    console.log(copied)
     if (copied) {
       this.formGroup.patchValue({
         name: copied.name,
@@ -202,13 +201,14 @@ export class ApartamentFeeCreateComponent implements OnInit {
         month: Number(copied.month),
         year: copied.year,
         paid: Boolean(copied.paid),
-        template_id: Boolean(copied.template_id),
+        template_id: copied.template_id,
         apartament_id: copied.apartament_id,
         paidDate: this.isPaid ? copied.paidDate : ''
       })
       this.formGroup.patchValue({
         sum: copied.sum
       })
+      console.log(this.formGroup.value)
     }
     setTimeout(() => this.ApartamentFeeServ.setCopiedApartament(null), 0)
   }
@@ -363,7 +363,7 @@ export class ApartamentFeeCreateComponent implements OnInit {
   createAgain() {
     this.loading = true
     const formGroupValue = this.formGroup.value
-    let data = {
+    let data: ApartamentFeeCreateApiRequest = {
       name: formGroupValue.name,
       description: formGroupValue.description,
       sum: formGroupValue.sum,
@@ -378,14 +378,17 @@ export class ApartamentFeeCreateComponent implements OnInit {
       rateId: formGroupValue.rateId
     }
     this.ApartamentFeeServ.create(data).subscribe({
-      next: (res: any) => {
+      next: (res: ApartamentFeeCreateApiResponse) => {
         this.MessageServ.sendMessage('success', 'Успешно сохранено!', 'Счет добавлен')
+        this.ApartamentFeeServ.setCopiedApartament(data)
+        this.Router.navigate(['apartamentFee', 'new'])
+        this.loading = false
       },
       error: (err: any) => {
+        this.loading = false
         this.MessageServ.sendMessage('error', 'Ошибка!', err.error.message)
       }
     })
-    this.redirectTo()
   }
 
   update() {

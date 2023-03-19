@@ -5,11 +5,19 @@ li {
   width: calc(100%/7 - 2px);
   text-align: center;
   cursor: pointer;
+
+  display: inline-block;
+  border: 1px solid #e5e5e5;
+  // width: calc(14.2857142857% - 2px);
+  text-align: center;
+  cursor: pointer;
+  border-radius: 25px;
+  margin: 1px;
 }
 li.days {font-weight: bold;}
 li.grey {color: #ccc}
 li.isset { background-color: #54b4d3;}
-li:hover {background-color: #ccc;}
+li:hover { background-color: #1f4cca30; }
 
 .currancyCalendar{
   &__day{
@@ -19,6 +27,7 @@ li:hover {background-color: #ccc;}
       text-align: right;
       padding: 3px;
       line-height: 1;
+      margin-right:5px;
     }
     &__currancy{
       font-size: 14px;

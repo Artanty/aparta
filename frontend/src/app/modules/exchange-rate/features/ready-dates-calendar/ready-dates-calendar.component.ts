@@ -1,12 +1,13 @@
-import { AuthService } from './../../../shared/services/auth/auth.service';
-import { ExchangeRateService } from '../../../shared/services/exchangeRate/exchange-rate.service';
+import { AuthService } from '@services/auth/auth.service';
+import { ExchangeRateService } from '@services/exchangeRate/exchange-rate.service';
 import { Component, Output, EventEmitter, OnInit, Input, SimpleChanges, OnChanges } from '@angular/core';
-import { currancyCodes } from '../../../shared/currancyCodes';
-import { GetExchangeRateApiResponse, CreateExchangeRateApiRequest } from '../../types';
-import { ApilayerApiResponse, QuoteItem } from '../../exchange-rate-list/mock';
-import { Quote } from '@angular/compiler';
+import { currancyCodes } from '@shared/currancyCodes';
+import { GetExchangeRateApiResponse, CreateExchangeRateApiRequest } from '@app/modules/exchange-rate/types';
+import { ApilayerApiResponse } from '@app/modules/exchange-rate/exchange-rate-list/mock';
 import { FormGroup, FormControl } from '@angular/forms';
-
+import { MessageService } from '@services/message/message.service';
+import { isoDateWithoutTimeZone } from '@shared/helpers';
+import { Observable, tap } from 'rxjs';
 
 const DAY_MS = 60 * 60 * 24 * 1000;
 
@@ -18,11 +19,12 @@ const DAY_MS = 60 * 60 * 24 * 1000;
 
 export class ReadyDatesCalendarComponent implements OnInit, OnChanges {
   @Input() itemsArr: GetExchangeRateApiResponse[] = []
+  calendarLoading: boolean = false
   selectedCurrancyItemsArr: GetExchangeRateApiResponse[] = []
   currancyCodes = currancyCodes
   selectedCurrancy: string = ''
   dates: Array<Date>;
-  days = ['Пн', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  days = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
   date = new Date();
   @Output() selected = new EventEmitter();
   @Output() triggerRefresh = new EventEmitter()
@@ -30,29 +32,22 @@ export class ReadyDatesCalendarComponent implements OnInit, OnChanges {
     dateFrom: new FormControl(),
     dateTo: new FormControl()
   })
-  latestDate: string = new Date().toISOString().slice(0, -14)
+  latestDate: string = isoDateWithoutTimeZone(new Date())
 
   constructor(
     private ExchangeRateServ: ExchangeRateService,
-    private AuthServ: AuthService
+    private AuthServ: AuthService,
+    private MessageServ: MessageService
   ) {
     this.dates = this.getCalendarDays(this.date);
   }
 
   ngOnInit(): void {
-    // console.log(this.isoDateWithoutTimeZone(new Date()))
     this.formGroup.patchValue({
-      dateFrom: new Date(this.latestDate).toISOString().slice(0, -14),
-      dateTo: this.isoDateWithoutTimeZone(new Date()).slice(0, -14)
+      dateFrom: this.latestDate,
+      dateTo: isoDateWithoutTimeZone(new Date())
     })
-  }
-
-  isoDateWithoutTimeZone(date: Date): string {
-    if (date == null) return date;
-    var timestamp = date.getTime() - date.getTimezoneOffset() * 60000;
-    var correctDate = new Date(timestamp);
-    correctDate.setUTCHours(0, 0, 0, 0); // uncomment this if you want to remove the time
-    return correctDate.toISOString();
+    this.getAccess()
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -65,8 +60,8 @@ export class ReadyDatesCalendarComponent implements OnInit, OnChanges {
     }
   }
 
-  getLatestExchangeRateDate (items: any) {
-    this.latestDate = items.sort((a: any, b: any) => {
+  getLatestExchangeRateDate (items: GetExchangeRateApiResponse[]) {
+    this.latestDate = items.sort((a: GetExchangeRateApiResponse, b: GetExchangeRateApiResponse) => {
       if (a.date > b.date) {
         return -1
       }
@@ -75,17 +70,20 @@ export class ReadyDatesCalendarComponent implements OnInit, OnChanges {
       }
       return 0
     })?.[0]?.date
-    if (this.latestDate) {
-      console.log(this.isoDateWithoutTimeZone(this.addDays(this.latestDate, 1)).slice(0, -14))
-      // const nextDay = new Date(this.addDays(this.latestDate, 1)).toISOString().slice(0, -14)
-      this.formGroup.patchValue({
-        dateFrom: this.isoDateWithoutTimeZone(this.addDays(this.latestDate, 1)).slice(0, -14),
-        dateTo: new Date().toISOString().slice(0, -14)
-      })
+    if (!this.latestDate) {
+      this.latestDate = isoDateWithoutTimeZone(new Date('2022-07-31'))
     }
+    let dateFrom = isoDateWithoutTimeZone(new Date())
+    if (isoDateWithoutTimeZone(new Date(this.latestDate)) !== isoDateWithoutTimeZone(new Date())) {
+      dateFrom = isoDateWithoutTimeZone(this.addDays(this.latestDate, 1))
+    }
+    this.formGroup.patchValue({
+      dateFrom: dateFrom,
+      dateTo: isoDateWithoutTimeZone(new Date())
+    })
   }
 
-  addDays(date: string, days: number): Date {
+  addDays (date: string, days: number): Date {
     var result = new Date(date);
     result.setDate(result.getDate() + days);
     return result;
@@ -124,10 +122,9 @@ export class ReadyDatesCalendarComponent implements OnInit, OnChanges {
     return Array.from({ length }, (_, i) => start + i)
   }
 
-  // COMPONENT
   setCurrancyFrom (currancyShortName: string) {
     this.selectedCurrancy = currancyShortName
-    const found = currancyCodes.find((el: {
+    const foundCurrancyCode = currancyCodes.find((el: {
       "shortName": string
       "code": number
       "name": string
@@ -135,18 +132,20 @@ export class ReadyDatesCalendarComponent implements OnInit, OnChanges {
     }) => {
       return el.shortName === currancyShortName
     })
-    if (found) {
+    if (foundCurrancyCode) {
       this.selectedCurrancyItemsArr = this.itemsArr.filter((el: GetExchangeRateApiResponse) => {
-        return found.code === el.currancyFrom
+        return foundCurrancyCode.code === el.currancyFrom
       })
+      this.getLatestExchangeRateDate(this.selectedCurrancyItemsArr)
     }
   }
 
   isset(date: Date) {
-    return this.selectedCurrancyItemsArr.find((el: any) => el.date === this.isoDateWithoutTimeZone(date).slice(0, -14))
+    return this.selectedCurrancyItemsArr.find((el: any) => el.date === isoDateWithoutTimeZone(date))
   }
 
   getCourses() {
+    this.calendarLoading = true
     const data = {
       dateFrom: this.formGroup.get('dateFrom')?.value,
       dateTo: this.formGroup.get('dateTo')?.value,
@@ -171,16 +170,28 @@ export class ReadyDatesCalendarComponent implements OnInit, OnChanges {
           })
         })
         if (createObjs.length) {
+          this.MessageServ.sendMessage('success', 'Курсы валют получены', `Добавлено ${createObjs.length} курсов валют получены из внешнего источника`)
           this.batchCreate(createObjs)
+        } else {
+          this.MessageServ.sendMessage('warning', 'Внимание!', 'Список полученных курсов валют пуст')
         }
+      },
+      error: (err: any) => {
+        this.calendarLoading = false
+        this.MessageServ.sendMessage('error', 'Ошибка!', err.error.message)
       }
     })
   }
 
   batchCreate (data: CreateExchangeRateApiRequest[]) {
     this.ExchangeRateServ.exchangeRateCreateBatch(data).subscribe({
-      next: (res: any) => {
+      next: (res: CreateExchangeRateApiRequest[]) => {
         this.triggerRefresh.emit(true)
+        this.calendarLoading = false
+      },
+      error: (err: any) => {
+        this.calendarLoading = false
+        this.MessageServ.sendMessage('error', 'Ошибка!', err.error.message)
       }
     })
   }
@@ -203,7 +214,7 @@ export class ReadyDatesCalendarComponent implements OnInit, OnChanges {
     return formControl
   }
 
-  getAccess (): boolean {
+  getAccess (): Observable<boolean>{
     return this.AuthServ.getAccess({ users: [1] })
   }
 }

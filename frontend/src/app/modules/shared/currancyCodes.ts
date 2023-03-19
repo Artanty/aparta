@@ -1,3 +1,9 @@
+export type CurrancyCode = {
+  "shortName": string
+  "code": number
+  "name": string
+  sign?: string
+}
 export const currancyCodes = [
   {
     "shortName": "RUB",

@@ -6,6 +6,7 @@ import { GetExchangeRateApiResponse, CreateExchangeRateApiRequest } from '../../
 import { Quote } from '@angular/compiler';
 import { FormGroup, FormControl } from '@angular/forms';
 import { ApilayerApiResponse } from 'src/app/modules/exchange-rate/exchange-rate-list/mock';
+import { Observable } from 'rxjs';
 
 const DAY_MS = 60 * 60 * 24 * 1000;
 export type Currancy = {
@@ -162,7 +163,7 @@ export class WidgetExchangeRateComponent implements OnInit, OnChanges {
           this.selectedCurrancyExchangeRates = this.exchangeRates.filter((el: GetExchangeRateApiResponse) => {
             return found.code === el.currancyFrom
           })
-          console.log(this.selectedCurrancyExchangeRates)
+          // console.log(this.selectedCurrancyExchangeRates)
         }
       }
     }
@@ -175,10 +176,6 @@ export class WidgetExchangeRateComponent implements OnInit, OnChanges {
       let formControl: FormControl = new FormControl(null)
       formControl = (formGroup.get(formControlId) as FormControl) || new FormControl(null)
       return formControl
-    }
-
-    getAccess (): boolean {
-      return this.AuthServ.getAccess({ users: [1] })
     }
 
     getCurrentDayExchangeRate (date: Date): number | null {

@@ -1,16 +1,22 @@
-<app-ready-dates-calendar [itemsArr]="items" (triggerRefresh)="loadItems()"></app-ready-dates-calendar>
+<app-ready-dates-calendar [itemsArr]="items" (triggerRefresh)="loadItems()" *ngIf="!tableLoading"></app-ready-dates-calendar>
+<div class="loadingDiv" *ngIf="tableLoading">
+  <div class="spinner-border spinner" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>
+
 <table class="table align-middle mb-0 bg-white moneyTransferTable">
   <thead class="bg-light">
     <tr>
       <th>Дата</th>
       <th>Исходная валюта</th>
-      <th>Валюта 2</th>
+      <th>Конечная валюта</th>
       <th></th>
     </tr>
   </thead>
   <tbody *ngIf="tableLoading" class="tbodyLoading">
     <tr>
-      <td colspan="3">
+      <td colspan="4">
         <div class="spinner-border spinner" role="status">
           <span class="visually-hidden">Loading...</span>
         </div>

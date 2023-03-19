@@ -36,3 +36,10 @@ export function isNonNull<T>(value: T): value is NonNullable<T> {
   return value != null;
 }
 
+export function isoDateWithoutTimeZone (date: Date): string {
+  if (date == null) return date;
+  var timestamp = date.getTime() - date.getTimezoneOffset() * 60000;
+  var correctDate = new Date(timestamp);
+  correctDate.setUTCHours(0, 0, 0, 0); // uncomment this if you want to remove the time
+  return correctDate.toISOString().slice(0, 10)
+}

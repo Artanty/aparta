@@ -13,6 +13,15 @@
     background-color: #fdd8de;
   }
 }
+.toast-warning{
+  background-color: #f9fdd8;
+  color: #790619;
+  border-color: #f9fdd8;
+  & .toast-header{
+    color: #790619;
+    background-color: #f9fdd8;
+  }
+}
 .toast-success {
   background-color: #c7f5d9;
   color: #0b4121;

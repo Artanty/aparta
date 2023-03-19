@@ -1,34 +1,45 @@
-<div class="row" *ngIf="getAccess()">
-  <div class="col-4">
+<div class="row" *ngIf="(getAccess() | async) === true">
+
+  <div class="col-4 col-md-3">
     <input mdbInput
     class="form-control"
      [formControl]="getControl(formGroup, 'dateFrom')" type="date" id="start" name="trip-start">
   </div>
-  <div class="col-4">
+  <div class="col-4 col-md-3">
     <input mdbInput
     class="form-control"
      [formControl]="getControl(formGroup, 'dateTo')" type="date" id="end" name="trip-start">
   </div>
-  <div class="col-4">
-    <button type="button" class="btn btn-outline-primary mb-2  me-2"
-    (click)="getCourses()">getCourses()</button>
+  <div class="col-4 col-md-6">
+    <button type="button" class="btn btn-outline-primary mb-2 btn-rounded me-2 "
+    (click)="getCourses()">
+    <i class="fas fa-cloud-download-alt fa-lg d-inline d-md-none"></i>
+    <span class="d-none d-md-inline">Получить курсы валют</span>
+  </button>
+
   </div>
 </div>
 <div>
   <ng-container *ngFor="let currancy of currancyCodes; let i = index">
     <button *ngIf="i < 4" (click)="setCurrancyFrom(currancy.shortName)"
-    type="button" class="btn btn-outline-primary mb-2 mt-2 me-2 "
+    type="button" class="btn btn-outline-primary btn-rounded mb-2 me-2 "
     [class.active]="currancy.shortName === selectedCurrancy"
     >
-      <span class="d-none d-md-inline">{{ currancy.shortName }}</span>
+      <span class="">{{ currancy.shortName }}</span>
     </button>
   </ng-container>
 </div>
 
-<button (click)="setMonth(-1)">&lt;</button>
-{{ date | date }}
-<button (click)="setMonth(+1)">&gt;</button>
-<ul>
+<div class="d-flex align-items-center mb-2">
+  <button (click)="setMonth(-1)" class="btn btn-outline-primary btn-rounded me-2 py-1">
+    <i class="fas fa-caret-left"></i>
+  </button>
+  <div class="calendarDate">{{ date | date }}</div>
+  <button (click)="setMonth(+1)" class="btn btn-outline-primary btn-rounded ms-2 py-1">
+    <i class="fas fa-caret-right"></i>
+  </button>
+</div>
+<ul class="calendar" *ngIf="!calendarLoading">
   <li class="days" *ngFor="let day of days"> {{day}} </li>
   <li *ngFor="let date of dates"
     [class.isset]="isset(date)"
@@ -37,3 +48,8 @@
     {{ date | date:'d' }}
   </li>
 </ul>
+<div class="loadingDiv" *ngIf="calendarLoading">
+  <div class="spinner-border spinner" role="status" >
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>

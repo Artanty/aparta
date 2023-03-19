@@ -22,7 +22,7 @@ export type ApartamentFeeCreateApiRequest = {
   "name": string
   "description": null | string,
   "sum": number
-  "currancy": null | number
+  "currancy": number
   "month": number
   "year": number
   "paid": boolean

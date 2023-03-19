@@ -13,15 +13,17 @@ export class AuthInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(this.addAuthToken(request)).pipe(
       tap(() => {
-        const user = this.AuthServ.getUser()
-        if (!user && !this.isLoadingUser) {
-          this.isLoadingUser = true
-          this.AuthServ.loadUser().pipe(
-            take(1),
-            finalize(() => {
-              this.isLoadingUser = false
-            })
-          ).subscribe()
+        if (request.url !== 'getUser') {
+          const user = this.AuthServ.getUser()
+          if (!user && !this.isLoadingUser) {
+            this.isLoadingUser = true
+            this.AuthServ.loadUser().pipe(
+              take(1),
+              finalize(() => {
+                this.isLoadingUser = false
+              })
+            ).subscribe()
+          }
         }
       })
     )

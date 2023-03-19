@@ -22,20 +22,20 @@
   </tbody>
   <tbody *ngIf="!(tableLoading$ | async)">
     <tr *ngFor="let item of items">
-      <td>
+      <td [routerLink]="['apartamentFee', item.id]" class="cursor" [routerLinkActive]="['routerLinkIsActive']">
         <div class="d-flex align-items-center">
           <img
               src="{{ item.avatar }}"
               alt=""
               class="avatar rounded-circle"
               />
-          <div class="ms-3">
+          <div class="ms-3" [routerLink]="['apartamentFee', item.id]" class="cursor" [routerLinkActive]="['routerLinkIsActive']">
             <p class="fw-bold mb-1">{{ item.name }}</p>
             <p class="text-muted mb-0">{{ item.address }}</p>
           </div>
         </div>
       </td>
-      <td>
+      <td [routerLink]="['apartamentFee', item.id]" class="cursor" [routerLinkActive]="['routerLinkIsActive']">
         <p class="fw-normal mb-1">{{ item.country }}</p>
         <p class="text-muted mb-0">{{ item.place }}</p>
       </td>

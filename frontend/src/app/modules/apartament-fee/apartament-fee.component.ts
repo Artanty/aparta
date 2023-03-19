@@ -58,6 +58,7 @@ export class ApartamentFeeComponent implements OnInit {
   }
 
   setAmount(data: any) {
+    // console.log(data)
     this.amount = data
   }
 

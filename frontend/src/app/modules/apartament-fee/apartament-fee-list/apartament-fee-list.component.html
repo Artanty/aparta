@@ -110,6 +110,7 @@
         {{ item.name }}
       </td>
       <td class="currancyTd">
+        {{ currancy === item.currancy ? 'same' : 'diff' }}
         <ng-template [ngIf]="currancy === item.currancy">
           {{ item.sum }}
         </ng-template>
