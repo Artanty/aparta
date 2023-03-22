@@ -15,7 +15,7 @@ import { ApartamentService } from '../shared/services/apartament/apartament.serv
   styleUrls: ['./apartament-fee.component.scss']
 })
 export class ApartamentFeeComponent implements OnInit {
-
+  Number = Number
   apartament_id: string = ''
   amount: number = 0
   currancy: FormControl = new FormControl(941)

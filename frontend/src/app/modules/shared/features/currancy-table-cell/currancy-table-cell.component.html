@@ -1,0 +1,55 @@
+<div class="currancyTd flexRowBetweenCenter">
+
+  <span>{{ data?.valueTo | number:'.0-2' }}</span>
+
+  <span *ngIf="data?.currancyTo !== data?.currancyFrom">
+    <ng-template
+      [ngTemplateOutlet]="statusIcon"
+      [ngTemplateOutletContext]="{ $implicit: {
+        data: data
+      } }"
+    >
+    </ng-template>
+  </span>
+  <span class="currancyTd__initialCurrancy" *ngIf="data?.currancyTo !== data?.currancyFrom"
+    >({{ (data?.valueFrom | number:'.0-2') + ' ' + (data?.currancyFrom | currencyOnly )}})</span>
+</div>
+
+<ng-template #statusIcon let-data>
+  <div class="currancyTd__statusIcon"
+  (mouseenter)="statusIconHoverBlockVisible = true"
+  (mouseleave)="statusIconHoverBlockVisible = false"
+  >
+    <span *ngIf="data.data?.status === ECurrencyPipeStatus.WARNING">
+      <i class="fas fa-exclamation-circle warning"></i>
+    </span>
+    <span *ngIf="data.data?.status === ECurrencyPipeStatus.DANGER">
+      <i class="fas fa-exclamation-triangle danger"></i>
+    </span>
+    <span *ngIf="data.data?.status === ECurrencyPipeStatus.SUCCESS">
+      <i class="fas fa-check-circle success"></i>
+    </span>
+    <!-- *ngIf="statusIconHoverBlockVisible" -->
+    <div class="currancyTd__statusIcon__hoverBlock" *ngIf="statusIconHoverBlockVisible"
+    [class.show]="statusIconHoverBlockVisible"
+    [class.hide]="!statusIconHoverBlockVisible">
+      <ng-template [ngIf]="data.data.resultSource === ECurrencyPipeResultSource.CURRENCY_MATCHED">
+        <span class="currancyTd__statusIcon__hoverBlock__title">Нет конвертации.</span>
+        <div class="currancyTd__statusIcon__hoverBlock__description">{{ data.data.description }}</div>
+      </ng-template>
+      <ng-template [ngIf]="data.data.resultSource === ECurrencyPipeResultSource.NO_VALUE">
+        <span class="currancyTd__statusIcon__hoverBlock__title">Нет исходной валюты.</span>
+        <div class="currancyTd__statusIcon__hoverBlock__description">{{ data.data.description }}</div>
+      </ng-template>
+      <ng-template [ngIf]="data.data.resultSource === EExchangeRateSource.MONEY_TRANSFER_LIST">
+        <span class="currancyTd__statusIcon__hoverBlock__title">Из переводов.</span>
+        <div class="currancyTd__statusIcon__hoverBlock__description">{{ data.data.description }}</div>
+      </ng-template>
+      <ng-template [ngIf]="data.data.resultSource === EExchangeRateSource.EXCHANGE_RATE_LIST">
+        <span class="currancyTd__statusIcon__hoverBlock__title">Из курсов валют.</span>
+        <div class="currancyTd__statusIcon__hoverBlock__description">{{ data.data.description }}</div>
+      </ng-template>
+    </div>
+  </div>
+
+</ng-template>

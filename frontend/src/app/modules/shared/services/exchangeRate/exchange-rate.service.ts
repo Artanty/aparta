@@ -1,10 +1,11 @@
 import { AuthService } from './../auth/auth.service';
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, isDevMode } from '@angular/core';
 import { delay, Observable, of } from 'rxjs';
 import { ApilayerApiResponse } from 'src/app/modules/exchange-rate/exchange-rate-list/mock';
 import { CreateExchangeRateApiRequest, GetExchangeRateApiResponse } from 'src/app/modules/exchange-rate/types';
-import { exchangeRates } from './mock';
+import { exchangeRatesApiResponseMock } from './mock';
+import { isMock } from '@shared/helpers';
 
 export type GetExchangeRatesByDateAndCurrancyApiRequest = {
   dateFrom: string
@@ -26,7 +27,7 @@ export class ExchangeRateService {
   load(): Observable<GetExchangeRateApiResponse[]> {
     return this.http.get<GetExchangeRateApiResponse[]>(`exchangeRate`)
     this.AuthServ.loadUser().subscribe()
-    return of(exchangeRates).pipe(delay(500))
+    return of(exchangeRatesApiResponseMock).pipe(delay(500))
   }
 
   getExchangeRatesByDate(data: any): Observable<GetExchangeRateApiResponse[]> {
@@ -34,7 +35,11 @@ export class ExchangeRateService {
   }
 
   getExchangeRatesByDateAndCurrancy(data: GetExchangeRatesByDateAndCurrancyApiRequest): Observable<GetExchangeRateApiResponse[]> {
-    return this.http.post<GetExchangeRateApiResponse[]>(`getExchangeRates`, data)
+    if (isDevMode() && isMock()) {
+      return of(exchangeRatesApiResponseMock)
+    } else {
+      return this.http.post<GetExchangeRateApiResponse[]>(`getExchangeRates`, data)
+    }
   }
 
   getExchangeRate (id: number): Observable<GetExchangeRateApiResponse> {

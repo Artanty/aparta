@@ -47,6 +47,7 @@
           <a class="nav-link" [routerLink]="'apartamentUser'" [routerLinkActive]="['active']">Пользователи</a>
         </li> -->
       </ul>
+      <button *ngIf="isDevMode" (click)="toggleMock()">tglMck</button>
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
         <li class="nav-item active">
           <a class="nav-link alink" (click)="logout()">{{ isLoggedIn ? 'Выход' : 'Вход' }}</a>

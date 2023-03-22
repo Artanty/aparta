@@ -36,10 +36,65 @@ export function isNonNull<T>(value: T): value is NonNullable<T> {
   return value != null;
 }
 
-export function isoDateWithoutTimeZone (date: Date): string {
-  if (date == null) return date;
-  var timestamp = date.getTime() - date.getTimezoneOffset() * 60000;
-  var correctDate = new Date(timestamp);
-  correctDate.setUTCHours(0, 0, 0, 0); // uncomment this if you want to remove the time
-  return correctDate.toISOString().slice(0, 10)
+export function isoDateWithoutTimeZone(date: Date, format: string = 'ISOString'): string {
+    if (date == null) return date;
+    var timestamp = date.getTime() - date.getTimezoneOffset() * 60000;
+    var correctDate = new Date(timestamp);
+    correctDate.setUTCHours(0, 0, 0, 0); // uncomment this if you want to remove the time
+    return format === 'ISOString' ? correctDate.toISOString() : correctDate.getTime().toString()
+  }
+
+export function isMock(): boolean {
+  let localStorageItem: string | null | boolean = localStorage.getItem('mock')
+  if (localStorageItem) {
+    localStorageItem = Boolean(Number(localStorageItem))
+  }
+  return !!localStorageItem
 }
+
+export function setMock(value: boolean): void {
+  return localStorage.setItem('mock', String(Number(value)))
+}
+
+// millisecondsToDays(ms: number): number {
+//   return Math.floor(ms / (24*60*60*1000))
+// }
+
+// explainRate (fee: ApartamentFeeCreateApiRequest, rate: UnitedType<LoadMoneyTransferApiResponse & GetExchangeRateApiResponse>, source: TExchangeRateSource) {
+  //   if (source === EExchangeRateSource.MONEY_TRANSFER_LIST) {
+  //     const currentRate: LoadMoneyTransferApiResponse = rate
+  //     console.log('Тип курса: перевод')
+  //     console.log('Курс из ' + this.getCurrencyCodeName(currentRate.sourceCurrancy) + ' в ' + this.getCurrencyCodeName(currentRate.destinationCurrancy))
+  //     console.log('1 ' + this.getCurrencyCodeName(currentRate.sourceCurrancy) + ' = ' + this.getValueOfUnit(currentRate.rate) + ' ' + this.getCurrencyCodeName(currentRate.destinationCurrancy))
+  //     console.log('1 ' + this.getCurrencyCodeName(currentRate.destinationCurrancy) + ' = ' + this.getValueOfUnitRevert(currentRate.rate) + ' ' + this.getCurrencyCodeName(currentRate.sourceCurrancy))
+  //     console.log(fee.sum + ' ' + this.getCurrencyCodeName(fee.currancy) + ' будет ' + (this.getValueOfUnitRevert(currentRate.rate) * fee.sum) + ' ' + this.getCurrencyCodeName(currentRate.sourceCurrancy))
+  //   }
+  // }
+
+  // getValueOfUnit = (rate: number): number => Number(parseFloat(String(rate)).toFixed(4))
+
+
+  // throttle (fn: Function) {
+  //   let memory: Set<number> = new Set()
+  //   return function (executionId: number, ...args: any[]) {
+  //     if (memory.has(executionId)) {
+  //       return
+  //     } else {
+  //       if (Array.isArray(args[0])) {
+  //         if (args[0].length) {
+  //           memory.add(executionId)
+  //           fn(...args)
+  //         }
+  //       } else {
+  //         memory.add(executionId)
+  //         fn(...args)
+  //       }
+  //     }
+  //   }
+  // }
+  // c1 = this.throttle(this.consoleLog.bind(this))
+
+
+  export const daysToMilliseconds = (days: number): number => {
+    return days * 24 * 60 * 60 * 1000;
+  }

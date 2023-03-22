@@ -1,4 +1,5 @@
-import { LoadMoneyTransferApiResponse, MoneyTransferService } from './../../shared/services/moneyTransfer/money-transfer.service';
+import { LoadMoneyTransferApiResponse } from '@shared/services/moneyTransfer/types';
+import { MoneyTransferService } from '@shared/services/moneyTransfer/money-transfer.service'
 import { ExchangeRateService, GetExchangeRatesByDateAndCurrancyApiRequest } from './../../shared/services/exchangeRate/exchange-rate.service';
 import { Component, ElementRef, OnDestroy, OnInit, Output, ViewChild, EventEmitter, Input } from '@angular/core';
 import { combineLatest, combineLatestWith, concat, filter, finalize, map, Observable, of, skipWhile, startWith, Subscription, tap, withLatestFrom } from 'rxjs';

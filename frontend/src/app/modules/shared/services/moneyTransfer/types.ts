@@ -27,4 +27,24 @@ export type CreateMoneyTransferApiRequest = {
   rate: number;
   date: string;
   apartament_id: number;
-};
+}
+
+export type LoadMoneyTransferApiResponse = {
+  id: number;
+  name: string | null;
+  description: string | null;
+  sourceCurrancy: number;
+  sourceSum: number;
+  currancy2: number | null;
+  sum2: number | null;
+  destinationCurrancy: number;
+  destinationSum: number;
+  date: string;
+  apartament_id: number;
+  creator_id: number;
+  created_at: string;
+  updated_at: string;
+  currancy1Value: number | null;
+  middleTransfers: any | null;
+  rate: number;
+}

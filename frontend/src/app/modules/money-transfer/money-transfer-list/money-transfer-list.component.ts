@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MessageService } from '../../shared/services/message/message.service';
-import { LoadMoneyTransferApiResponse, MoneyTransferService } from '../../shared/services/moneyTransfer/money-transfer.service';
+import { LoadMoneyTransferApiResponse } from '@shared/services/moneyTransfer/types';
+import { MoneyTransferService } from '@shared/services/moneyTransfer/money-transfer.service'
 import { CreateMoneyTransferApiRequest, CreateMoneyTransferApiResponse } from '../../shared/services/moneyTransfer/types';
 import { Router } from '@angular/router'
 

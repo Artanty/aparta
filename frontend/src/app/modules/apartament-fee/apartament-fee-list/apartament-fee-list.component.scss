@@ -9,7 +9,7 @@
   & tr td:first-child{
     max-width:45px;
   }
-  & tr td:not(:last-child){
+  & tr td:not(:last-child):not(.currancyTdWrapper){
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

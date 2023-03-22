@@ -2,7 +2,8 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange
 import { currancyCodes } from 'src/app/modules/shared/currancyCodes';
 import { Currancy } from 'src/app/modules/shared/features/widget-exchange-rate/widget-exchange-rate.component';
 import { MessageService } from '../../../shared/services/message/message.service';
-import { LoadMoneyTransferApiResponse, MoneyTransferService } from '../../../shared/services/moneyTransfer/money-transfer.service';
+import { LoadMoneyTransferApiResponse } from '../../../shared/services/moneyTransfer/types';
+import { MoneyTransferService } from '@shared/services/moneyTransfer/money-transfer.service'
 
 @Component({
   selector: 'app-widget-money-transfer',

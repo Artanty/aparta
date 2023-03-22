@@ -1,7 +1,8 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, Renderer2, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, isDevMode, OnDestroy, Renderer2, ViewChild } from '@angular/core';
 import { AuthService } from './modules/shared/services/auth/auth.service';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { filter } from 'rxjs';
+import { isMock, setMock } from '@shared/helpers';
 
 @Component({
   selector: 'app-root',
@@ -14,7 +15,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   title = 'Aparta'
   isLoggedIn: boolean = false
   allListeners: (() => void)[] = [];
-
+  isDevMode = isDevMode()
   constructor(
     private AuthServ: AuthService,
     private Router: Router,
@@ -47,5 +48,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   logout(){
     this.AuthServ.clearToken()
     this.Router.navigate(['auth'])
+  }
+
+  toggleMock() {
+    setMock(!isMock())
   }
 }

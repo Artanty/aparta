@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, isDevMode } from '@angular/core';
 import { BehaviorSubject, finalize, Observable, of, tap } from 'rxjs';
-import { orderBy } from '../../helpers';
+import { isMock, orderBy } from '../../helpers';
+import { getApartamentFeesApiResponseMock } from './mock';
 import { ApartamentFeeCreateApiRequest, ApartamentFeeCreateApiResponse, GetFeesApiResponseItem, UpdateFeeApiReqest } from './types';
 export type GetFeesApiRequest = {
   apartament_id: number | string,
@@ -59,7 +60,11 @@ export class ApartamentFeeService {
         obs$ = this.http.get<GetFeesApiResponseItem[]>(`apartamentFee/?year=${year}`)
       } else {
         // ?dateFrom=${dateFrom}&dateTo=${dateTo}
-        obs$ = this.http.get<GetFeesApiResponseItem[]>(`apartament/getApartamentFees/${a_id}?year=${year}`)
+        if (isDevMode() && isMock()) {
+          obs$ = of (getApartamentFeesApiResponseMock)
+        } else {
+          obs$ = this.http.get<GetFeesApiResponseItem[]>(`apartament/getApartamentFees/${a_id}?year=${year}`)
+        }
       }
     }
     return obs$.pipe(

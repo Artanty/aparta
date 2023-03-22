@@ -15,7 +15,7 @@ import { FeeTemplateApiResponseItem, FeeTemplateUpdateApiRequest } from '../../s
 import { ApartamentFeeCreateApiRequest, ApartamentFeeCreateApiResponse, GetFeesApiResponseItem, UpdateFeeApiReqest } from '../../shared/services/apartamentFee/types';
 import { ModalUpdateFeeTemplateComponent } from './modal-update-fee-template/modal-update-fee-template.component';
 import { GetExchangeRateApiResponse } from '../../exchange-rate/types';
-import { LoadMoneyTransferApiResponse } from '../../shared/services/moneyTransfer/money-transfer.service';
+import { LoadMoneyTransferApiResponse } from '../../shared/services/moneyTransfer/types';
 
 export enum EExchangeRateSource {
   MONEY_TRANSFER_LIST = 1,

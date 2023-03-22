@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, filter, map, Observable, tap } from 'rxjs';
+import { Injectable, isDevMode } from '@angular/core';
+import { BehaviorSubject, filter, map, Observable, of, tap } from 'rxjs';
 import { ApartamentFeeService } from 'src/app/modules/shared/services/apartamentFee/apartament-fee.service';
 import { ApartamentUserService } from 'src/app/modules/apartament-user/apartament-user.service';
 import { ApartamentService } from '../apartament/apartament.service';
@@ -8,6 +8,8 @@ import { MessageService } from '../message/message.service';
 import { OrganizationService } from '../organization/organization.service';
 import { OrganizationTariffService } from '../organizationTariff/organization-tariff.service';
 import { HttpClient } from '@angular/common/http';
+import { getUserApiResponseMock } from './mock';
+import { isMock } from '@shared/helpers';
 
 export type User = {
   "id": number
@@ -102,11 +104,21 @@ export class AuthService {
   }
 
   loadUser(): Observable<User> {
-    return this.http.post<User>(`getUser`, null).pipe(
-      tap((res: User) => {
-        this.setUser(res)
-      })
-    )
+    if (isDevMode() && isMock()) {
+      return of(getUserApiResponseMock)
+      .pipe(
+        tap((res: User) => {
+          this.setUser(res)
+        })
+      )
+    } else {
+      return this.http.post<User>(`getUser`, null)
+      .pipe(
+        tap((res: User) => {
+          this.setUser(res)
+        })
+      )
+    }
   }
 
   getUserId () {

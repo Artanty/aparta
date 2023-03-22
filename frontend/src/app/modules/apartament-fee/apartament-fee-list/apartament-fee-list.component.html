@@ -109,23 +109,8 @@
       <td class="alink" [routerLink]="['update', item.id]">
         {{ item.name }}
       </td>
-      <td class="currancyTd">
-        {{ currancy === item.currancy ? 'same' : 'diff' }}
-        <ng-template [ngIf]="currancy === item.currancy">
-          {{ item.sum }}
-        </ng-template>
-        <ng-template [ngIf]="currancy !== item.currancy">
-          <div class="flexRowBetweenCenter">
-            <!-- {{ item | getCurrancy:'currancy':'sum':currancy | number:'.0-2' }} -->
-            {{ item | currancyValue:currancy:moneyTransfers:exchangeRates | number:'.0-2' }}
-            <div>
-              <!-- <span class="currancyTd__initialCurrancy"
-              >({{ item.sum }} {{ item | getCurrancy:'currancy' }})</span> -->
-            </div>
-
-          </div>
-        </ng-template>
-
+      <td class="currancyTdWrapper">
+        <app-currancy-table-cell [data]="item | currancyValue:currancy:moneyTransfers:exchangeRates"></app-currancy-table-cell>
       </td>
       <td>
         {{ item.month | humanMonth }}

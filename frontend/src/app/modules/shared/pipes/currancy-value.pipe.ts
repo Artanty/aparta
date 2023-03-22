@@ -2,14 +2,16 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { EExchangeRateSource } from '../../apartament-fee/apartament-fee-create/apartament-fee-create.component';
 import { GetExchangeRateApiResponse } from '../../exchange-rate/types';
 import { ApartamentFeeCreateApiRequest, GetFeesApiResponseItem } from '../services/apartamentFee/types';
-import { LoadMoneyTransferApiResponse } from '../services/moneyTransfer/money-transfer.service';
+import { LoadMoneyTransferApiResponse } from '@shared/services/moneyTransfer/types';
 import { currancyCodes, CurrancyCode } from '../currancyCodes'
+import { TCurrencyPipe } from './currency-value/types';
+import { ECurrencyPipeResultSource, ECurrencyPipeStatus } from './currency-value/enums';
+import { daysToMilliseconds, isoDateWithoutTimeZone } from '@shared/helpers';
 export type TExchangeRateSource = typeof EExchangeRateSource[keyof typeof EExchangeRateSource]
 
 type UnitedType<T extends LoadMoneyTransferApiResponse | GetExchangeRateApiResponse> = T extends LoadMoneyTransferApiResponse
   ? LoadMoneyTransferApiResponse
   : GetExchangeRateApiResponse
-
 
 @Pipe({
   name: 'currancyValue'
@@ -33,161 +35,131 @@ export class CurrancyValuePipe implements PipeTransform {
    * @param exchangeRates
    * @returns
    */
+
+  transform(fee: ApartamentFeeCreateApiRequest, currancy: number, moneyTransfers: LoadMoneyTransferApiResponse[], exchangeRates: GetExchangeRateApiResponse[]): TCurrencyPipe {
+    const result: TCurrencyPipe = {
+      status: ECurrencyPipeStatus.DANGER,
+      resultSource: ECurrencyPipeResultSource.NO_VALUE,
+      currancyFrom: fee.currancy,
+      currancyTo: currancy,
+      description: '',
+      valueFrom: fee.sum,
+      valueTo: null
+    }
+    exchangeRates = exchangeRates.filter((el: GetExchangeRateApiResponse) => +el.currancyFrom === +currancy && +el.currancyTo === +fee.currancy)
+    moneyTransfers = moneyTransfers.filter((el: LoadMoneyTransferApiResponse) => +el.sourceCurrancy === +currancy && +el.destinationCurrancy === +fee.currancy)
+    if (+fee.currancy === +currancy) { // если выбрана валюта перевода
+      result.status = ECurrencyPipeStatus.SUCCESS
+      result.resultSource = ECurrencyPipeResultSource.CURRENCY_MATCHED
+      result.valueTo = fee.sum
+    } else {
+      if (fee.rateId && fee.rateSource) {
+        if (fee.rateSource === EExchangeRateSource.MONEY_TRANSFER_LIST) {
+          const moneyTransferFound = moneyTransfers.find((el: LoadMoneyTransferApiResponse) => +el.id === fee.rateId)
+          if (moneyTransferFound) {
+            result.status = ECurrencyPipeStatus.SUCCESS
+            result.resultSource = EExchangeRateSource.MONEY_TRANSFER_LIST
+            result.description = 'Перевод присвоен'
+            result.valueTo = fee.sum / moneyTransferFound.rate
+          } else {
+            result.status = ECurrencyPipeStatus.DANGER
+            result.resultSource = EExchangeRateSource.MONEY_TRANSFER_LIST
+            result.description = 'Перевод не найден'
+          }
+        } else if (fee.rateSource === EExchangeRateSource.EXCHANGE_RATE_LIST) {
+          const exchangeRatesFound = exchangeRates.find((el: GetExchangeRateApiResponse) => el.id === fee.rateId)
+          if (exchangeRatesFound) {
+            result.status = ECurrencyPipeStatus.SUCCESS
+            result.resultSource = EExchangeRateSource.EXCHANGE_RATE_LIST
+            result.description = 'Курс валюты присвоен'
+            result.valueTo = fee.sum / exchangeRatesFound.currancyFromValue
+          } else {
+            result.status = ECurrencyPipeStatus.DANGER
+            result.resultSource = EExchangeRateSource.EXCHANGE_RATE_LIST
+            result.description = 'Курс валюты не найден'
+          }
+        }
+      } else {
+        if (fee.paidDate) {
+          const transferFound = moneyTransfers.find((el: LoadMoneyTransferApiResponse) => {
+            return (el.sourceCurrancy === +currancy) &&
+            (el.destinationCurrancy === +fee.currancy) &&
+            this.isInDaysRange(fee.paidDate as string, moneyTransfers.map(el => el.date), 3, 0)
+          }) // todo
+          if (transferFound) {
+            const getValueOfUnitRevert = (rate: number): number =>  Number(parseFloat(String(((1 * 1) / + rate))).toFixed(4)) // x = (b * c)  / a
+            result.status = ECurrencyPipeStatus.SUCCESS
+            result.resultSource = EExchangeRateSource.MONEY_TRANSFER_LIST
+            result.description = 'Перевод был меньше 3-х дней назад'
+            result.valueTo = getValueOfUnitRevert(transferFound.rate) * fee.sum
+          } else {
+            if (exchangeRates.length) {
+              const rateRange = this.getClosestRange(exchangeRates, fee.paidDate) as { prev: GetExchangeRateApiResponse, next: GetExchangeRateApiResponse }
+              result.status = ECurrencyPipeStatus.WARNING
+              result.resultSource = EExchangeRateSource.EXCHANGE_RATE_LIST
+              result.description = 'Средний курс валют'
+              result.valueTo = fee.sum / this.average(Object.values(rateRange).map((el: GetExchangeRateApiResponse) => el.currancyFromValue))
+            } else {
+              if (moneyTransfers.length) {
+                const transfersRange = this.getClosestRange(moneyTransfers, fee.paidDate) as { prev: LoadMoneyTransferApiResponse, next: LoadMoneyTransferApiResponse }
+                result.status = ECurrencyPipeStatus.WARNING
+                result.resultSource = EExchangeRateSource.MONEY_TRANSFER_LIST
+                result.description = 'Средний курс переводов'
+                result.valueTo = fee.sum / this.average(Object.values(transfersRange).map((el: LoadMoneyTransferApiResponse) => el.rate))
+              } else {
+                result.status = ECurrencyPipeStatus.DANGER
+                result.resultSource = EExchangeRateSource.MONEY_TRANSFER_LIST
+                result.description = 'Нет курса'
+              }
+            }
+          }
+        } else {
+          result.status = ECurrencyPipeStatus.DANGER
+          result.description = 'Не указана сумма платежа'
+        }
+      }
+    }
+    return result
+  }
+
   getCurrencyCodeName (code: number): string {
     return currancyCodes.find((el: CurrancyCode) => el.code === code)?.shortName || ''
   }
+
   getRateSourceName (rateSource: number): string {
     return rateSource === 1 ?'Денежный перевод' : 'Курс валют'
   }
-  consoleLog = (log: string) => console.log(log)
-  throttle (fn: Function) {
-    let memory: Set<number> = new Set()
-    return function (executionId: number, ...args: any[]) {
-      if (memory.has(executionId)) {
-        return
-      } else {
-        if (Array.isArray(args[0])) {
-          if (args[0].length) {
-            memory.add(executionId)
-            fn(...args)
-          }
-        } else {
-          memory.add(executionId)
-          fn(...args)
-        }
-      }
-    }
-  }
-  c1 = this.throttle(this.consoleLog.bind(this))
 
-  getValueOfUnit = (rate: number): number => Number(parseFloat(String(rate)).toFixed(4))
-    /**
-     * x = (b * c)  / a
-     */
-  getValueOfUnitRevert = (rate: number): number =>  Number(parseFloat(String(((1 * 1) / + rate))).toFixed(4))
-  t = (date: string): number => Number(this.isoDateWithoutTimeZone(new Date(date), 'time'))
-  t2 = (date: string): string => this.isoDateWithoutTimeZone(new Date(date)).slice(0, 10)
   isInDaysRange = (date: string, data: string[], daysBefore: number, daysAfter: number): boolean => {
+    const t = (date: string): number => Number(isoDateWithoutTimeZone(new Date(date), 'time'))
     let result = data.find((el: string) => {
-      const beforeDiff: number = this.t(date) - this.t(el)
-      const afterDiff: number = this.t(el) - this.t(date)
-      return (beforeDiff > 0) && (beforeDiff <= this.daysToMilliseconds(daysBefore)) &&  // разница нижней даты счета и даты курса д б положительная и больше в днях чем dayBefore
-      (afterDiff > 0) && (afterDiff <= this.daysToMilliseconds(daysAfter)) // разница верхней даты курса и даты счета д б положительная и больше в днях чем dayAfter
+      const beforeDiff: number = t(date) - t(el)
+      const afterDiff: number = t(el) - t(date)
+      return (beforeDiff > 0) && (beforeDiff <= daysToMilliseconds(daysBefore)) &&  // разница нижней даты счета и даты курса д б положительная и больше в днях чем dayBefore
+      (afterDiff > 0) && (afterDiff <= daysToMilliseconds(daysAfter)) // разница верхней даты курса и даты счета д б положительная и больше в днях чем dayAfter
     }) ? true : false
-   console.log(result)
     return result
   }
-  transform(fee: ApartamentFeeCreateApiRequest, currancy: number, moneyTransfers: LoadMoneyTransferApiResponse[], exchangeRates: GetExchangeRateApiResponse[]): number | null {
-    const c1 = this.c1
-    const c = console.log
-    if (fee.currancy === +currancy) { // если выбрана валюта перевода
-      return fee.sum
-    }
-    c1(99, fee)
-    c1(4, 'Нужно отобразить в: ' + this.getCurrencyCodeName(currancy))
-    c1(1, moneyTransfers)
-    c1(5, 'Нужно перевод из: ' + this.getCurrencyCodeName(fee.currancy))
-    c1(2, exchangeRates)
-    c1(6, 'Источник курса валюты: ' + (fee.rateSource ? this.getRateSourceName(fee.rateSource) : 'Нет.'))
-    if (fee.rateId && fee.rateSource) {
-      if (fee.rateSource === EExchangeRateSource.MONEY_TRANSFER_LIST) {
-        const moneyTransferFound = moneyTransfers.find((el: LoadMoneyTransferApiResponse) => {
-          /**
-           * Если перевели из рублей в динары, смотрим в рублях
-           */
-          return +el.id === fee.rateId && +el.sourceCurrancy === +currancy && +el.destinationCurrancy === +fee.currancy
-        })
-        if (moneyTransferFound) {
-          c('Привязанный к записи перевод найден: ' + moneyTransferFound)
-          return fee.sum / moneyTransferFound.rate
-        }
-      } else if (fee.rateSource === EExchangeRateSource.EXCHANGE_RATE_LIST) {
-        const exchangeRatesFound = exchangeRates.find((el: GetExchangeRateApiResponse) => {
-          el.id === fee.rateId && +el.currancyFrom === +currancy && +el.currancyTo === +fee.currancy
-        })
-        if (exchangeRatesFound) {
-          console.log('Привязанный к записи курс валюты найден: ' + exchangeRatesFound)
-          return fee.sum / exchangeRatesFound.currancyFromValue
+  average = (nums: number[]) => {
+    return nums.reduce((a, b) => (a + b)) / nums.length;
+  }
+  getClosestRange (variants: any[], currentDate: string, variantsProp: string = 'date'): { prev: any, next: any } {
+    return variants.reduce((acc: any, curr: any) => {
+      if (!acc.prev) {
+        acc.prev = curr
+      } else {
+        if ((new Date(currentDate as string) >= new Date(curr[variantsProp])) && (new Date(currentDate as string) <= new Date(curr[variantsProp]))) {
+          acc.prev = curr
         }
       }
-    } else {
-      if (fee.paidDate) {
-        c1(7, 'Нет привязанного к платежу курса, есть дата платежа, ищем перевод из '
-        + this.getCurrencyCodeName(currancy) + ' в ' + this.getCurrencyCodeName(fee.currancy) +
-        ' c ' + this.t2(fee.paidDate) + ' по ' + this.addDays(this.t2(fee.paidDate), -3) + '...')
-        const transferFound = moneyTransfers.find((el: LoadMoneyTransferApiResponse) => {
-          return (el.sourceCurrancy === +currancy) &&
-          (el.destinationCurrancy === +fee.currancy) &&
-          this.isInDaysRange(fee.paidDate as string, moneyTransfers.map(el => el.date), 3, 0)
-        })
-        if (transferFound) {
-          c1(98, 'Перевод найден')
-          console.log(transferFound)
-          // c('сумма в ' + this.getCurrencyCodeName(fee.currancy) + ': ' + fee.sum)
-          // console.log(fee.sum + ' ' + this.getCurrencyCodeName(fee.currancy) + ' будет ' + (this.getValueOfUnitRevert(transferFound.rate) * fee.sum) + ' ' + this.getCurrencyCodeName(transferFound.sourceCurrancy))
-          // this.explainRate(fee, transferFound, EExchangeRateSource.MONEY_TRANSFER_LIST)
-          // c('Курс - 1 ' + this.getCurrencyCodeName(transferFound.) + ' = ' + fee.sum + ' ' + this.getCurrencyCodeName(currancy))
-         return this.getValueOfUnitRevert(transferFound.rate) * fee.sum
-        } else {
-          console.log('Перевод не найден, ищем среднее значение среди курсов валют')
-          /**
-           * Взять две ближайшие к платежу даты снизу и сверху из курсов валют
-           */
+      if (!acc.next) {
+        acc.next = curr
+      } else {
+        if ((new Date(currentDate as string) <= new Date(curr[variantsProp])) && (new Date(currentDate as string) >= new Date(curr[variantsProp]))) {
+          acc.next = curr
         }
       }
-    }
-    return null
-  }
-
-
-  //
-  explainRate (fee: ApartamentFeeCreateApiRequest, rate: UnitedType<LoadMoneyTransferApiResponse & GetExchangeRateApiResponse>, source: TExchangeRateSource) {
-
-
-    // const countReverted = ()
-    if (source === EExchangeRateSource.MONEY_TRANSFER_LIST) {
-      const currentRate: LoadMoneyTransferApiResponse = rate
-      // const currentRateValue =
-      console.log('Тип курса: перевод')
-      console.log('Курс из ' + this.getCurrencyCodeName(currentRate.sourceCurrancy) + ' в ' + this.getCurrencyCodeName(currentRate.destinationCurrancy))
-      console.log('1 ' + this.getCurrencyCodeName(currentRate.sourceCurrancy) + ' = ' + this.getValueOfUnit(currentRate.rate) + ' ' + this.getCurrencyCodeName(currentRate.destinationCurrancy))
-      console.log('1 ' + this.getCurrencyCodeName(currentRate.destinationCurrancy) + ' = ' + this.getValueOfUnitRevert(currentRate.rate) + ' ' + this.getCurrencyCodeName(currentRate.sourceCurrancy))
-      console.log(fee.sum + ' ' + this.getCurrencyCodeName(fee.currancy) + ' будет ' + (this.getValueOfUnitRevert(currentRate.rate) * fee.sum) + ' ' + this.getCurrencyCodeName(currentRate.sourceCurrancy))
-    }
-    console.log(rate)
-    console.log(source)
-  }
-
-  // return +el.id === Number(fee.rateId) && el.currancyFrom === currancy && el.currancyTo === fee.currancy
-  isoDateWithoutTimeZone(date: Date, format: string = 'ISOString'): string {
-    if (date == null) return date;
-    var timestamp = date.getTime() - date.getTimezoneOffset() * 60000;
-    var correctDate = new Date(timestamp);
-    correctDate.setUTCHours(0, 0, 0, 0); // uncomment this if you want to remove the time
-    return format === 'ISOString' ? correctDate.toISOString() : correctDate.getTime().toString()
-  }
-
-  daysToMilliseconds(days: number): number {
-    return days * 24 * 60 * 60 * 1000;
-  }
-  millisecondsToDays(ms: number): number {
-    return Math.floor(ms / (24*60*60*1000))
-  }
-  addDays(date: string, days: number): string {
-    var result = new Date(date);
-    if ((result.getDate() < Math.abs(days)) && (days < 0) && (new Date(date).getMonth() === 0)) {
-      // январь -> декабрь
-      result.setMonth(11)
-      result.setFullYear(result.getFullYear() - 1)
-    } else if ((31 - result.getDate() < (Math.abs(days))) && (days > 0) && (new Date(date).getMonth() === 11)) {
-      // декабрь -> январь
-      result.setMonth(0)
-      result.setFullYear(result.getFullYear() + 1)
-    }
-    result.setDate(result.getDate() + days);
-    return this.isoDateWithoutTimeZone(result).slice(0, 10)
-  }
-  getOneUnitValue (currancy1Quantity: number, currancy2Quantity: number) {
-    return currancy2Quantity / currancy1Quantity
+      return acc
+    }, { prev: null, next: null })
   }
 }

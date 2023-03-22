@@ -42,7 +42,7 @@
       <div class="card">
         <div class="card-body p-0">
           <app-apartament-fee-list
-          [_currancy]="currancy.value"
+          [_currancy]="currancy.value ? Number(currancy.value) : currancy.value"
           [_year]="year.value"
           (amountOut)="setAmount($event)"></app-apartament-fee-list>
         </div>

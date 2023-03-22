@@ -1,23 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { CreateMoneyTransferApiRequest, CreateMoneyTransferApiResponse } from './types';
-export type LoadMoneyTransferApiResponse = {
-  "id": number
-  "name": null,
-  "description": string
-  "sourceCurrancy": number
-  "sourceSum": number
-  "destinationCurrancy": number
-  "destinationSum": number
-  "date": string
-  "apartament_id": number
-  "creator_id": number
-  "created_at": string
-  "updated_at": string
-  "middleTransfers": null,
-  "rate": number
-}
+import { Injectable, isDevMode } from '@angular/core';
+import { isMock } from '@shared/helpers';
+import { Observable, of } from 'rxjs';
+import { moneyTransferGetApiResponseMock } from './mock';
+import { CreateMoneyTransferApiRequest, CreateMoneyTransferApiResponse, LoadMoneyTransferApiResponse } from './types';
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +16,11 @@ export class MoneyTransferService {
   ) { }
 
   load(): Observable<LoadMoneyTransferApiResponse[]> {
-    return this.http.get<LoadMoneyTransferApiResponse[]>(`moneyTransfer`)
+    if (isDevMode() && isMock()) {
+      return of(moneyTransferGetApiResponseMock)
+    } else {
+      return this.http.get<LoadMoneyTransferApiResponse[]>(`moneyTransfer`)
+    }
   }
 
   getMoneyTransfer (id: number) {
