@@ -411,7 +411,7 @@ export class ApartamentFeeCreateComponent implements OnInit {
     }
     this.ApartamentFeeServ.update(data).subscribe({
       next: (res: any) => {
-        this.MessageServ.sendMessage('success', 'Успешно сохранено!', 'Счет добавлен')
+        this.MessageServ.sendMessage('success', 'Успешно сохранено!', 'Счет сохранен')
         if (!res.template_id) {
           this.createTemplateOpenModal(res)
         } else {

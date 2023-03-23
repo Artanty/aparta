@@ -74,6 +74,7 @@ export function setMock(value: boolean): void {
   // getValueOfUnit = (rate: number): number => Number(parseFloat(String(rate)).toFixed(4))
 
 
+
   export function throttle (func: Function, ms: number) {
 
     let isThrottled: boolean = false
