@@ -18,7 +18,14 @@
       </select>
     </div>
     <div class="amount">
-      {{ amount | number:'.0-2' }}
+      <div class="amount__values">
+        <span>{{ amount | number:'.0-2' }}</span>
+        <div class="amount__values__dangers" *ngIf="dangers.length">
+          <i class="fas fa-exclamation-triangle"></i>
+          {{ dangers.length }}
+        </div>
+      </div>
+
       <select [formControl]="currancy" class="form-select amount__select">
         <option *ngFor="let option of currancyOptions" [value]="option.id"
         >{{ option.name }}</option>
@@ -43,7 +50,7 @@
         <div class="card-body p-0">
           <app-apartament-fee-list
           [_currancy]="currancy.value ? Number(currancy.value) : currancy.value"
-          [_year]="year.value"
+          [_year]="year.value ? Number(year.value) : year.value"
           (amountOut)="setAmount($event)"></app-apartament-fee-list>
         </div>
       </div>

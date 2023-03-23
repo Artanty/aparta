@@ -74,25 +74,34 @@ export function setMock(value: boolean): void {
   // getValueOfUnit = (rate: number): number => Number(parseFloat(String(rate)).toFixed(4))
 
 
-  // throttle (fn: Function) {
-  //   let memory: Set<number> = new Set()
-  //   return function (executionId: number, ...args: any[]) {
-  //     if (memory.has(executionId)) {
-  //       return
-  //     } else {
-  //       if (Array.isArray(args[0])) {
-  //         if (args[0].length) {
-  //           memory.add(executionId)
-  //           fn(...args)
-  //         }
-  //       } else {
-  //         memory.add(executionId)
-  //         fn(...args)
-  //       }
-  //     }
-  //   }
-  // }
-  // c1 = this.throttle(this.consoleLog.bind(this))
+  export function throttle (func: Function, ms: number) {
+
+    let isThrottled: boolean = false
+    let savedArgs: any
+    let savedThis: any
+
+    function wrapper(this: any, ...args: any) {
+
+      if (isThrottled) { // (2)
+        savedArgs = args;
+        savedThis = this;
+        return;
+      }
+      isThrottled = true;
+
+      func.apply(this, args); // (1)
+
+      setTimeout(function() {
+        isThrottled = false; // (3)
+        // if (savedArgs) {
+        //   console.log(savedArgs)
+        //   wrapper.apply(savedThis, savedArgs);
+        //   savedArgs = savedThis = null;
+        // }
+      }, ms);
+    }
+    return wrapper;
+  }
 
 
   export const daysToMilliseconds = (days: number): number => {

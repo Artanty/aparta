@@ -2,16 +2,19 @@ import { LoadMoneyTransferApiResponse } from '@shared/services/moneyTransfer/typ
 import { MoneyTransferService } from '@shared/services/moneyTransfer/money-transfer.service'
 import { ExchangeRateService, GetExchangeRatesByDateAndCurrancyApiRequest } from './../../shared/services/exchangeRate/exchange-rate.service';
 import { Component, ElementRef, OnDestroy, OnInit, Output, ViewChild, EventEmitter, Input } from '@angular/core';
-import { combineLatest, combineLatestWith, concat, filter, finalize, map, Observable, of, skipWhile, startWith, Subscription, tap, withLatestFrom } from 'rxjs';
+import { combineLatest, combineLatestWith, concat, concatMap, filter, finalize, forkJoin, map, Observable, of, skipWhile, startWith, Subscription, tap, withLatestFrom } from 'rxjs';
 import { ApartamentFeeService } from '../../shared/services/apartamentFee/apartament-fee.service';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { MessageService } from '../../shared/services/message/message.service';
-import { isNonNull, orderBy, removeDuplicatedObj } from '../../shared/helpers';
+import { isNonNull, orderBy, removeDuplicatedObj, throttle } from '../../shared/helpers';
 import { FormControl, FormGroup } from '@angular/forms';
 import { GetCurrancyPipe } from '../../shared/pipes/get-currancy.pipe';
 import { GetFeesApiResponseItem } from '../../shared/services/apartamentFee/types';
 import { MdbPopoverDirective } from 'mdb-angular-ui-kit/popover';
 import { GetExchangeRateApiResponse } from '../../exchange-rate/types';
+import { CurrancyValuePipe } from '@pipes/currancy-value.pipe';
+import { CurrencyService } from '@shared/services/currency/currency.service';
+import { ECurrencyPipeStatus } from '@pipes/currency-value/enums';
 
 
 @Component({
@@ -27,17 +30,15 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.filterFormGroup.updateValueAndValidity()
     }, 0)
-    this.getExchangeRatesByDateAndCurrancy()
+    this.throttledGetItems()
   }
-  year: number = new Date().getFullYear()
+
   @Input() set _year(year: number) {
-    if (year !== null) {
-      this.year = +year
-      this.getItemsApi(+year)
-      this.getExchangeRatesByDateAndCurrancy(+year)
+    if (year) {
+      this.throttledGetItems(year)
     }
   }
-  @Output() amountOut: EventEmitter<number> = new EventEmitter<number>()
+  @Output() amountOut: EventEmitter<any> = new EventEmitter<any>()
   apartament_id: string = ''
   tableLoading$: Observable<boolean>
   items$?: Observable<any>
@@ -66,7 +67,8 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
     private MessageServ: MessageService,
     private Router: Router,
     private ExchangeRate: ExchangeRateService,
-    private MoneyTransferServ: MoneyTransferService
+    private MoneyTransferServ: MoneyTransferService,
+    private CurrencyServ: CurrencyService
   ) {
 
     this.tableLoading$ = this.ApartamentFeeServ.loading$
@@ -119,14 +121,21 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
       }
       return items
     }
+
     const mapPipeCountAmount = (res: any) => {
-      let amount = res.reduce((accumulator: any, current: any) => {
+      let amount = res.reduce((acc: any, current: any) => {
         let currentValue = current.sum
         if (current.currancy !== this.currancy) {
-          currentValue = new GetCurrancyPipe().transform(current, 'currancy', 'sum', this.currancy)
+          const pipeResult = new CurrancyValuePipe(this.CurrencyServ).transform(current, this.currancy, this.moneyTransfers, this.exchangeRates)
+          currentValue = pipeResult.valueTo
+          if (pipeResult.status === ECurrencyPipeStatus.DANGER) {
+            acc.dangers.push(pipeResult)
+          }
         }
-        return accumulator + +currentValue
-      }, 0)
+        acc.value = acc.value + +currentValue
+        return acc
+      }, { value: 0, dangers: [] })
+      console.log(amount)
       this.amountOut.emit(amount)
       return res
     }
@@ -134,7 +143,7 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
     this.ActivatedRoute.params.subscribe((res: any) => {
       if (res.apartament_id) {
         this.apartament_id = res.apartament_id
-        this.getItemsApi()
+        this.throttledGetItems()
         this.filterFormGroup.reset()
       }
     })
@@ -164,7 +173,7 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.loadMoneyTransfers()
+    //
   }
 
   ngOnDestroy (): void {
@@ -178,15 +187,34 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
       dateTo: this.isoDateWithoutTimeZone(new Date(year, 11, 31)).slice(0, 10)
     }
   }
-
-  getItemsApi (year?: number) {
-    if (this.year !== year) {
-      if (!year) {
-        year = this.year
-      }
-      const apartament_id = this.apartament_id !== 'all' ? +this.apartament_id : 'all'
-      this.ApartamentFeeServ.getFees(apartament_id, true, year).subscribe()
+  throttledGetItems = throttle(this.getRatesAndItems.bind(this), 1000)
+  getRatesAndItems (year?: number) {
+    // this.loading = true
+    if (!year) {
+      year = new Date().getFullYear()
     }
+    const ratesParams: GetExchangeRatesByDateAndCurrancyApiRequest = { currancyTo: +this.currancy, ...this.getYearDates(year) }
+    const apartament_id = this.apartament_id !== 'all' ? +this.apartament_id : 'all'
+    forkJoin(
+      {
+        exchangeRates: this.ExchangeRate.getExchangeRatesByDateAndCurrancy(ratesParams),
+        moneyTransfers: this.MoneyTransferServ.load(),
+        fees: this.ApartamentFeeServ.getFees(apartament_id, true, year as number)
+      }
+    )
+    .subscribe({
+      next: (res: {
+        exchangeRates: GetExchangeRateApiResponse[],
+        moneyTransfers: LoadMoneyTransferApiResponse[],
+        fees: GetFeesApiResponseItem[]
+      }) => {
+        this.exchangeRates = res.exchangeRates
+        this.moneyTransfers = res.moneyTransfers
+      },
+      error: (err: any) => {
+        this.MessageServ.sendMessage('error', 'Ошибка!', err.error.message)
+      }
+    })
   }
 
   tableSort(column: string){
@@ -314,27 +342,7 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
     return correctDate.toISOString();
   }
 
-  getExchangeRatesByDateAndCurrancy (year?: number) {
-    if (this.year !== year) {
-      if (!year) {
-        year = this.year
-      }
-      const dates = this.getYearDates(year)
-      const data: GetExchangeRatesByDateAndCurrancyApiRequest = { currancyTo: +this.currancy, ...dates }
-      this.ExchangeRate.getExchangeRatesByDateAndCurrancy(data).subscribe((res: GetExchangeRateApiResponse[]) => {
-        this.exchangeRates = res
-      })
-    }
-  }
-
-  loadMoneyTransfers() {
-    this.MoneyTransferServ.load().subscribe({
-      next: (res: LoadMoneyTransferApiResponse[]) => {
-        this.moneyTransfers = res
-      },
-      error: (err: any) => {
-        this.MessageServ.sendMessage('error', 'Ошибка!', err.error.message)
-      }
-    })
+  loadMoneyTransfersApi() {
+    return this.MoneyTransferServ.load()
   }
 }

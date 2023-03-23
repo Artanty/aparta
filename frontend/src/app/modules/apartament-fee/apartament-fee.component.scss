@@ -2,6 +2,21 @@
   width: 182px;
   display: flex;
   align-items: center;
+  &__values{
+    position: relative;
+    width: 63px;
+    height: 27px;
+    &__dangers{
+      position: absolute;
+      display: block;
+      width: 192px;
+      font-size: 12px;
+      & i{
+        color:#DC4C64;
+      }
+    }
+  }
+
   &__select{
     margin-left: 20px;
     border: none!important;

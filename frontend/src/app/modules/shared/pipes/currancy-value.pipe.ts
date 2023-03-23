@@ -7,6 +7,7 @@ import { currancyCodes, CurrancyCode } from '../currancyCodes'
 import { TCurrencyPipe } from './currency-value/types';
 import { ECurrencyPipeResultSource, ECurrencyPipeStatus } from './currency-value/enums';
 import { daysToMilliseconds, isoDateWithoutTimeZone } from '@shared/helpers';
+import { CurrencyService } from '@shared/services/currency/currency.service';
 export type TExchangeRateSource = typeof EExchangeRateSource[keyof typeof EExchangeRateSource]
 
 type UnitedType<T extends LoadMoneyTransferApiResponse | GetExchangeRateApiResponse> = T extends LoadMoneyTransferApiResponse
@@ -17,6 +18,12 @@ type UnitedType<T extends LoadMoneyTransferApiResponse | GetExchangeRateApiRespo
   name: 'currancyValue'
 })
 export class CurrancyValuePipe implements PipeTransform {
+
+  constructor (
+    private CurrencyServ: CurrencyService
+  ) {
+
+  }
   /**
    *
    * @param fee
@@ -36,7 +43,11 @@ export class CurrancyValuePipe implements PipeTransform {
    * @returns
    */
 
-  transform(fee: ApartamentFeeCreateApiRequest, currancy: number, moneyTransfers: LoadMoneyTransferApiResponse[], exchangeRates: GetExchangeRateApiResponse[]): TCurrencyPipe {
+  transform(fee: GetFeesApiResponseItem, currancy: number, moneyTransfers: LoadMoneyTransferApiResponse[], exchangeRates: GetExchangeRateApiResponse[]): TCurrencyPipe {
+    const stored = this.CurrencyServ.getCurrencyPipeResult(fee.id, fee.year, currancy)
+    if (stored) {
+      return stored
+    }
     const result: TCurrencyPipe = {
       status: ECurrencyPipeStatus.DANGER,
       resultSource: ECurrencyPipeResultSource.NO_VALUE,
@@ -119,6 +130,7 @@ export class CurrancyValuePipe implements PipeTransform {
         }
       }
     }
+    this.CurrencyServ.setCurrencyPipeResult(fee.id, fee.year, currancy, result)
     return result
   }
 
@@ -140,9 +152,11 @@ export class CurrancyValuePipe implements PipeTransform {
     }) ? true : false
     return result
   }
+
   average = (nums: number[]) => {
     return nums.reduce((a, b) => (a + b)) / nums.length;
   }
+
   getClosestRange (variants: any[], currentDate: string, variantsProp: string = 'date'): { prev: any, next: any } {
     return variants.reduce((acc: any, curr: any) => {
       if (!acc.prev) {

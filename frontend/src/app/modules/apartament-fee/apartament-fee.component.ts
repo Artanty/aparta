@@ -18,6 +18,7 @@ export class ApartamentFeeComponent implements OnInit {
   Number = Number
   apartament_id: string = ''
   amount: number = 0
+  dangers: any[] = []
   currancy: FormControl = new FormControl(941)
   currancyOptions: any[] = []
   apartament: FormControl = new FormControl()
@@ -50,6 +51,11 @@ export class ApartamentFeeComponent implements OnInit {
         this.Router.navigateByUrl(this.Router.url.replace(this.apartament_id, res))
       }
     })
+    this.year.valueChanges.subscribe((res: any) => {
+      if (res) {
+
+      }
+    })
   }
 
   ngOnInit(): void {
@@ -58,8 +64,8 @@ export class ApartamentFeeComponent implements OnInit {
   }
 
   setAmount(data: any) {
-    // console.log(data)
-    this.amount = data
+    this.dangers = data.dangers
+    this.amount = data.value
   }
 
   back() {
