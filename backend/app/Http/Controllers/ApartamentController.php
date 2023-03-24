@@ -141,8 +141,10 @@ class ApartamentController extends Controller
 
     public function getApartamentFees(GetApartamentFeesRequest $request)
     {
+        $from = date($request->input('year').'-01-01');
+        $to = date($request->input('year').'-12-31');
         $apartamentFees = Apartament::findOrFail($request->route('id'))->fees()
-        ->where('year', '=', $request->input('year'))
+        ->whereBetween('paidDate', [$from, $to])
         ->get();
         return response()->json($apartamentFees);
     }

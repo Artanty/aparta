@@ -169,6 +169,12 @@ export class ApartamentFeeCreateComponent implements OnInit {
   }
 
   setMonthAndYear (date: string) {
+    // const foundDirty = Object.keys(this.formGroup.controls).find((name: any) => {
+    //   return name !== 'template_id' && this.formGroup.get(name)?.dirty
+    // })
+    // if (this.apartamentFee_id && !foundDirty) {
+
+    // }
     let patchObj = {}
     if (date) {
       if (this.payDatePrevMonth) {
