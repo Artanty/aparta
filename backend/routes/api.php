@@ -45,3 +45,4 @@ Route::post('exchangeRate/createBatch', 'ExchangeRateController@createBatch');
 Route::post('getExchangeRates', 'ExchangeRateController@getExchangeRates');
 Route::post('getExchangeRatesByDateAndCurrancy', 'ExchangeRateController@getExchangeRatesByDateAndCurrancy');
 
+Route::resource('external', 'ExternalController');
