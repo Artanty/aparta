@@ -46,6 +46,15 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
   @Output() amountOut: EventEmitter<any> = new EventEmitter<any>()
   apartament_id: string = ''
   tableLoading$: Observable<boolean>
+  feesLoading: boolean = false
+  ratesLoading: boolean = false
+  transfersLoading: boolean = false
+  get tableLoading () {
+    console.log(this.feesLoading)
+    console.log(this.ratesLoading)
+    console.log(this.transfersLoading)
+    return (this.feesLoading === true) || (this.ratesLoading === true) || (this.transfersLoading === true)
+  }
   items$?: Observable<any>
   selectedItemsSet = new Set()
   name: FormControl = new FormControl(null)
@@ -196,7 +205,7 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
   throttledGetItems = this.h.throttle(this.getRatesAndItems.bind(this), 1000)
 
   getRatesAndItems (year?: number) {
-    // this.loading = true
+    this.feesLoading = true
     if (!year) {
       year = new Date().getFullYear()
     }
@@ -217,14 +226,19 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
       }) => {
         this.exchangeRates = res.exchangeRates
         this.moneyTransfers = res.moneyTransfers
+        this.feesLoading = false
+        this.loadTableState()
       },
       error: (err: any) => {
         this.MessageServ.sendMessage('error', 'Ошибка!', err.error.message)
+        this.feesLoading = false
+        this.loadTableState()
       }
     })
   }
 
   getExchangeRates (year?: number) {
+    this.ratesLoading = true
     if (!year) {
       year = new Date().getFullYear()
     }
@@ -233,36 +247,47 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
       next: (res: GetExchangeRateApiResponse[]) => {
         this.exchangeRates = res
         this.loadTableState()
+        this.ratesLoading = false
       },
       error: (err: any) => {
         this.MessageServ.sendMessage('error', 'Ошибка!', err.error.message)
+        this.ratesLoading = false
+        this.loadTableState()
       }
     })
   }
 
   getMoneyTransfers () {
+    this.transfersLoading = true
     this.MoneyTransferServ.load().subscribe({
       next: (res: LoadMoneyTransferApiResponse[]) => {
         this.moneyTransfers = res
         this.loadTableState()
+        this.transfersLoading = false
       },
       error: (err: any) => {
         this.MessageServ.sendMessage('error', 'Ошибка!', err.error.message)
+        this.transfersLoading = false
+        this.loadTableState()
       }
     })
   }
 
   getFees (year?: number) {
+    this.feesLoading = true
     if (!year) {
       year = new Date().getFullYear()
     }
     const apartament_id = this.apartament_id !== 'all' ? +this.apartament_id : 'all'
     this.ApartamentFeeServ.getFees(apartament_id, true, year as number).subscribe({
       next: (res: GetFeesApiResponseItem[]) => {
-        //
+        this.feesLoading = false
+        this.loadTableState()
       },
       error: (err: any) => {
         this.MessageServ.sendMessage('error', 'Ошибка!', err.error.message)
+        this.feesLoading = false
+        this.loadTableState()
       }
     })
   }
@@ -337,16 +362,21 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
   }
 
   delete(id: number) {
+    this.feesLoading = true
     this.ApartamentFeeServ.setLoading(true)
     this.ApartamentFeeServ.delete(id).subscribe({
       next: (res: any) => {
         this.MessageServ.sendMessage('success', 'Успешно!', 'Счет удален')
         this.ApartamentFeeServ.setLoading(false)
         this.selectedItemsSet.delete(id)
+        this.feesLoading = false
+        this.loadTableState()
       },
       error: (err: any) => {
         this.MessageServ.sendMessage('error', 'Ошибка!', err.error.message)
         this.ApartamentFeeServ.setLoading(false)
+        this.feesLoading = false
+        this.loadTableState()
       }
     })
   }
@@ -379,9 +409,12 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
       this.sortFormGroup.patchValue(JSON.parse(state).sort)
       this.filterFormGroup.patchValue(JSON.parse(state).filter)
     } else {
-      this.filterFormGroup.updateValueAndValidity()
-      this.sortFormGroup.updateValueAndValidity()
+
     }
+    setTimeout(() => {
+      this.filterFormGroup.updateValueAndValidity({ emitEvent: true })
+      this.sortFormGroup.updateValueAndValidity({ emitEvent: true })
+    },0)
   }
 
   isoDateWithoutTimeZone(date: Date): string {
@@ -390,9 +423,5 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
     var correctDate = new Date(timestamp);
     correctDate.setUTCHours(0, 0, 0, 0); // uncomment this if you want to remove the time
     return correctDate.toISOString();
-  }
-
-  loadMoneyTransfersApi() {
-    return this.MoneyTransferServ.load()
   }
 }

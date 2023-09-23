@@ -1,0 +1,11 @@
+<div class="select__wrapper">
+  <div class="select__closeBtn" *ngIf="resetable">
+    <i class="fas fa-times" (click)="reset()"></i>
+  </div>
+  <select class="form-control form-select" [formControl]="control">
+    <!-- <option value="null" disabled>{{ label }}</option> -->
+    <option *ngFor="let item of options"
+    [value]="item[optionsValueLabelProps[0]]">{{ item[optionsValueLabelProps[1]] }}</option>
+  </select>
+  <label [class.form-floating-label]="control.value" class="form-label select-label " style="margin-left: 0px;">{{ label }}</label>
+</div>

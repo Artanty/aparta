@@ -90,7 +90,7 @@
       </th>
     </tr>
   </thead>
-  <tbody *ngIf="tableLoading$ | async" class="tbodyLoading">
+  <tbody *ngIf="tableLoading" class="tbodyLoading">
     <tr>
       <td colspan="7">
         <div class="spinner-border spinner" role="status">
@@ -99,7 +99,7 @@
       </td>
     </tr>
   </tbody>
-  <tbody *ngIf="!(tableLoading$ | async)">
+  <tbody *ngIf="!tableLoading">
     <tr *ngFor="let item of (items$ | async)">
       <td scope="col">
         <div class="form-check">

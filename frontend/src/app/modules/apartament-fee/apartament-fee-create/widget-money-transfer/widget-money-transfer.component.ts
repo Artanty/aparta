@@ -48,7 +48,7 @@ export class WidgetMoneyTransferComponent implements OnInit, OnChanges {
 
     searchClosestDate () {
       this.items = this.itemsBeforeFilter.filter((el: any) => {
-        return (el.date < this.date) &&
+        return (el.date <= this.date) &&
         (+el.destinationCurrancy === +this.destinationCurrancy) &&
         (+el.sourceCurrancy === +this.innerSourceCurrancy)
       })

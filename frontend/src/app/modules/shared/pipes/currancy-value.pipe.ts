@@ -78,7 +78,7 @@ export class CurrancyValuePipe implements PipeTransform {
             result.description = 'Перевод не найден'
           }
         } else if (fee.rateSource === EExchangeRateSource.EXCHANGE_RATE_LIST) {
-          const exchangeRatesFound = exchangeRates.find((el: GetExchangeRateApiResponse) => el.id === fee.rateId)
+          const exchangeRatesFound = exchangeRates.find((el: GetExchangeRateApiResponse) => +el.id === Number(fee.rateId))
           if (exchangeRatesFound) {
             result.status = ECurrencyPipeStatus.SUCCESS
             result.resultSource = EExchangeRateSource.EXCHANGE_RATE_LIST

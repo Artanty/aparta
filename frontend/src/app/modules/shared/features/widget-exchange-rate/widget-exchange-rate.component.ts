@@ -7,6 +7,7 @@ import { Quote } from '@angular/compiler';
 import { FormGroup, FormControl } from '@angular/forms';
 import { ApilayerApiResponse } from 'src/app/modules/exchange-rate/exchange-rate-list/mock';
 import { Observable } from 'rxjs';
+import { getCurrancyOptions } from '@shared/helpers';
 
 const DAY_MS = 60 * 60 * 24 * 1000;
 export type Currancy = {
@@ -23,10 +24,10 @@ export type Currancy = {
 })
 export class WidgetExchangeRateComponent implements OnInit, OnChanges {
     @Input() sourceCurrancy?: number | null
-    @Input() destinationCurrancy?: number
+    innerSourceCurrancy: FormControl = new FormControl(643)
+    @Input() destinationCurrancy: number = 643
     @Input() exchangeRateDate?: string
-    innerSourceCurrancy: number = 643
-    currancyOptions: any[] = []
+    currancyOptions: any[] = getCurrancyOptions('shortName')
     exchangeRates: GetExchangeRateApiResponse[] = []
     selectedCurrancyExchangeRates: GetExchangeRateApiResponse[] = []
     dates: Array<Date>;
@@ -38,16 +39,22 @@ export class WidgetExchangeRateComponent implements OnInit, OnChanges {
 
     latestDate: string = new Date().toISOString().slice(0, 10)
     loading: boolean = false
+    // formGroup: FormGroup = new FormGroup({
+    //   sourceCurrancy: new FormControl(643)
+    // })
     constructor(
       private ExchangeRateServ: ExchangeRateService,
       private AuthServ: AuthService,
       private ref: ChangeDetectorRef
     ) {
       this.dates = this.getCalendarDays(this.date);
+      this.innerSourceCurrancy.valueChanges.subscribe((res: any) => {
+        this.setCurrancyFrom(res)
+      })
     }
 
     ngOnInit(): void {
-      this.currancyOptions = this.getCurrancyOptions()
+
 
     }
 
@@ -70,7 +77,7 @@ export class WidgetExchangeRateComponent implements OnInit, OnChanges {
         next: (res: GetExchangeRateApiResponse[]) => {
           this.exchangeRates = res
           this.loading = false
-          this.setCurrancyFrom(this.sourceCurrancy || this.innerSourceCurrancy)
+          this.setCurrancyFrom(this.sourceCurrancy || this.innerSourceCurrancy.value)
           this.getCurrentDayExchangeRate(this.date)
         },
         error: (err: any) => {
@@ -216,17 +223,5 @@ export class WidgetExchangeRateComponent implements OnInit, OnChanges {
 
 
 
-    private getCurrancyOptions () {
-      if (Array.isArray(currancyCodes)) {
-        return currancyCodes.slice(0, 4).map((el: {
-          shortName: string
-          code: number
-          name: string
-          sign?: string
-        }) => {
-          return { name: el.sign || el.shortName, id: el.code }
-        })
-      }
-      return []
-    }
+
   }

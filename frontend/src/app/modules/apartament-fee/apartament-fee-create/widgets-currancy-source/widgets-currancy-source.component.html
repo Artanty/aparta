@@ -1,0 +1,21 @@
+<div class="wrapper">
+  Курс
+  <!-- <ng-container *ngIf="sourceCurrancy; else sourceCurrancySelect">
+    {{ getCurrancyShortName(sourceCurrancy) }}
+  </ng-container>
+  <ng-template #sourceCurrancySelect>
+    <select [ngModel]="innerSourceCurrancy" class="form-select innerSourceCurrancy__select">
+      <option *ngFor="let option of currancyOptions" [value]="option.id">{{ option.name }}</option>
+    </select>
+  </ng-template>
+
+  > {{ getCurrancyShortName(destinationCurrancy) }} на {{ date | date:'dd.MM.yy' }}:
+  <span>
+    {{ getCurrentDayExchangeRate (date) || 'нет данных' }}
+  </span> -->
+  <div *ngIf="loading" class="cardLoading">
+    <div class="spinner-border spinner" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+</div>

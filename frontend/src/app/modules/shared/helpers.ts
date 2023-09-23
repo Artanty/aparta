@@ -1,3 +1,5 @@
+import { currancyCodes } from "./currancyCodes"
+
 export const orderBy = (data: any, key: string | Function, order: any) => {
   const formatFunc = (val: any) => {
     return typeof key === 'function' ? key(val) : val[key]
@@ -75,36 +77,80 @@ export function setMock(value: boolean): void {
 
 
 
-  export function throttle (func: Function, ms: number) {
+export function throttle (func: Function, ms: number) {
 
-    let isThrottled: boolean = false
-    let savedArgs: any
-    let savedThis: any
+  let isThrottled: boolean = false
+  let savedArgs: any
+  let savedThis: any
 
-    function wrapper(this: any, ...args: any) {
+  function wrapper(this: any, ...args: any) {
 
-      if (isThrottled) { // (2)
-        savedArgs = args;
-        savedThis = this;
-        return;
-      }
-      isThrottled = true;
-
-      func.apply(this, args); // (1)
-
-      setTimeout(function() {
-        isThrottled = false; // (3)
-        // if (savedArgs) {
-        //   console.log(savedArgs)
-        //   wrapper.apply(savedThis, savedArgs);
-        //   savedArgs = savedThis = null;
-        // }
-      }, ms);
+    if (isThrottled) { // (2)
+      savedArgs = args;
+      savedThis = this;
+      return;
     }
-    return wrapper;
+    isThrottled = true;
+
+    func.apply(this, args); // (1)
+
+    setTimeout(function() {
+      isThrottled = false; // (3)
+      // if (savedArgs) {
+      //   console.log(savedArgs)
+      //   wrapper.apply(savedThis, savedArgs);
+      //   savedArgs = savedThis = null;
+      // }
+    }, ms);
   }
+  return wrapper;
+}
 
 
-  export const daysToMilliseconds = (days: number): number => {
-    return days * 24 * 60 * 60 * 1000;
+export const daysToMilliseconds = (days: number): number => {
+  return days * 24 * 60 * 60 * 1000;
+}
+
+export const monthOptions = [
+  { id: "1", name: "Январь" },
+  { id: "2", name: "Февраль" },
+  { id: "3", name: "Март" },
+  { id: "4", name: "Апрель" },
+  { id: "5", name: "Май" },
+  { id: "6", name: "Июнь" },
+  { id: "7", name: "Июль" },
+  { id: "8", name: "Август" },
+  { id: "9", name: "Сентябрь" },
+  { id: "10", name: "Октябрь" },
+  { id: "11", name: "Ноябрь" },
+  { id: "12", name: "Декабрь" }
+]
+
+export const getYearOptions = (): { name: string, id: string }[] => {
+  const nowYear = new Date().getFullYear()
+  const yearOptions = [] as any
+  for (let i = 2019; i <= nowYear + 1; i++) {
+    yearOptions.push({ name: String(i), id: String(i) })
   }
+  return yearOptions
+}
+
+export const getCurrancyOptions = (nameProp: string = 'sign', slice: number = 4) => {
+  if (Array.isArray(currancyCodes)) {
+    return currancyCodes.slice(0, slice).map((el: {
+      shortName: string
+      code: number
+      name: string
+      sign?: string
+    }) => {
+      if (nameProp === 'shortName') {
+        return { name: el.shortName, id: el.code }
+      } else if (nameProp === 'name') {
+        return { name: el.name, id: el.code }
+      } else {
+        return { name: el.sign || el.shortName, id: el.code }
+      }
+    })
+  }
+  return []
+}

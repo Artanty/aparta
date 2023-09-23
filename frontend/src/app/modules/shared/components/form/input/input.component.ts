@@ -9,6 +9,7 @@ import { FormControl } from '@angular/forms';
 export class InputComponent implements OnInit {
   @Input() label: string = ''
   @Input() control: FormControl = new FormControl()
+  // @Input() value: any = null
   @Input() placeholder: string = '';
   @Input() readonly: boolean = false
   @Input() type: 'text'|'password'|'number' = 'text';
@@ -16,14 +17,18 @@ export class InputComponent implements OnInit {
   @Input() currancyFormat: boolean = false
   @Input() mask: string = ''
   @Input() noValid: boolean = false
-
-
   id: number
+  active: boolean = false
+  _value: any
+  @Input() set value(val: any) {
+    this._value = val
+  }
   constructor() {
     this.id = this.getRandom()
   }
 
   ngOnInit(): void {
+
   }
 
   getRandom() {

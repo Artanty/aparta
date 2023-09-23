@@ -1,12 +1,27 @@
 <div class="mb-2">
-  Курс
+
   <ng-container *ngIf="sourceCurrancy; else sourceCurrancySelect">
-    {{ getCurrancyShortName(sourceCurrancy) }}
+    {{ getCurrancyShortName(innerSourceCurrancy.value) }}
   </ng-container>
   <ng-template #sourceCurrancySelect>
-    <select [ngModel]="innerSourceCurrancy" class="form-select innerSourceCurrancy__select">
+    <!-- <select [ngModel]="innerSourceCurrancy" class="form-select innerSourceCurrancy__select">
       <option *ngFor="let option of currancyOptions" [value]="option.id">{{ option.name }}</option>
-    </select>
+    </select> -->
+    <div class="row">
+      <div class="col-12 col-md-6">
+        <app-select
+          [label]="'Из какой валюты'"
+          [control]="innerSourceCurrancy"
+          [options]="currancyOptions"
+          [resetable]="true"
+        ></app-select>
+      </div>
+      <div class="col-12 col-md-6">
+        <app-input [label]="'В какую валюту'" [readonly]="true"
+        [value]="getCurrancyShortName(destinationCurrancy)"></app-input>
+      </div>
+    </div>
+
   </ng-template>
 
   > {{ getCurrancyShortName(destinationCurrancy) }} на {{ date | date:'dd.MM.yy' }}:

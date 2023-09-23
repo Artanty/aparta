@@ -6,7 +6,10 @@ li {
   text-align: center;
   cursor: pointer;
 }
-li.days {font-size: 10px;}
+li.days {
+  font-size: 10px;
+  font-weight: 600;
+}
 li.grey {color: #ccc}
 li.isset {
   background-color: rgb(199, 245, 217);

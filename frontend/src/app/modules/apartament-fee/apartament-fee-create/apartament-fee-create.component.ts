@@ -16,21 +16,29 @@ import { ApartamentFeeCreateApiRequest, ApartamentFeeCreateApiResponse, GetFeesA
 import { ModalUpdateFeeTemplateComponent } from './modal-update-fee-template/modal-update-fee-template.component';
 import { GetExchangeRateApiResponse } from '../../exchange-rate/types';
 import { LoadMoneyTransferApiResponse } from '../../shared/services/moneyTransfer/types';
+import { getYearOptions, monthOptions } from '@shared/helpers';
 
 export enum EExchangeRateSource {
   MONEY_TRANSFER_LIST = 1,
   EXCHANGE_RATE_LIST = 2
 }
+type SettingsFormGroupValue = {
+  bindToPaidDate: boolean
+  payDatePrevMonth: boolean
+  backOnSave: boolean
+}
+
 @Component({
   selector: 'app-apartament-fee-create',
   templateUrl: './apartament-fee-create.component.html',
   styleUrls: ['./apartament-fee-create.component.scss']
 })
 export class ApartamentFeeCreateComponent implements OnInit {
+  monthOptions = monthOptions
+  getYearOptions = getYearOptions
   initialTemplateObj: FeeTemplateApiResponseItem | FeeTemplateUpdateApiRequest | null = null
   allowUpdateTemplate: null | GetFeesApiResponseItem = null
   apartamentFee_id: number = 0
-  payDatePrevMonth: boolean
   @ViewChild ('popoverTrigger') popoverTrigger: ElementRef | undefined
   modalRef: MdbModalRef<ModalCreateFeeTemplateComponent> | null = null
   loading: boolean = false
@@ -48,7 +56,12 @@ export class ApartamentFeeCreateComponent implements OnInit {
     rateSource: new FormControl(null),
     rateId: new FormControl(null)
   })
-  yearOptions: any[] = []
+  settingsformGroup: FormGroup = new FormGroup({
+    bindToPaidDate: new FormControl(null),
+    payDatePrevMonth: new FormControl(null),
+    backOnSave: new FormControl(null),
+  })
+  yearOptions: any[] = getYearOptions()
   currancyOptions: any[] = []
 
   templateOptions$: Observable<any[]>
@@ -68,10 +81,19 @@ export class ApartamentFeeCreateComponent implements OnInit {
     private FeeTemplateServ: FeeTemplateService,
     private Router: Router
   ) {
+
+    this.settingsformGroup.valueChanges.subscribe((res: SettingsFormGroupValue) => {
+      localStorage.setItem('backOnSave', String(Number(res.backOnSave)))
+      localStorage.setItem('payDatePrevMonth', String(Number(res.payDatePrevMonth)))
+      const paidDate = this.formGroup.get('paidDate')?.value
+      if (paidDate) {
+        this.setMonthAndYear(paidDate)
+      }
+    })
+
     this.formGroup2.valueChanges.subscribe((res: any) => {
       console.log(res)
     })
-    this.payDatePrevMonth = Boolean(Number(localStorage.getItem('payDatePrevMonth')))
 
     this.FeeTemplateServ.getFeeTemplates().subscribe()
     this.ApartamentServ.getApartaments().subscribe()
@@ -153,10 +175,10 @@ export class ApartamentFeeCreateComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.yearOptions = this.getYearOptions()
     this.currancyOptions = this.getCurrancyOptions()
     this.setCopiedApartament()
     this.setPaidDateDisable()
+    this.initSettings()
   }
 
   setPaidDateDisable () {
@@ -169,35 +191,30 @@ export class ApartamentFeeCreateComponent implements OnInit {
   }
 
   setMonthAndYear (date: string) {
-    // const foundDirty = Object.keys(this.formGroup.controls).find((name: any) => {
-    //   return name !== 'template_id' && this.formGroup.get(name)?.dirty
-    // })
-    // if (this.apartamentFee_id && !foundDirty) {
-
-    // }
-    let patchObj = {}
-    if (date) {
-      if (this.payDatePrevMonth) {
-        let copyOfDate = new Date(new Date(date).valueOf())
-        copyOfDate.setMonth(copyOfDate.getMonth() - 1)
-        patchObj = {
-          month: new Date(copyOfDate).getMonth() + 1,
-          year: new Date(copyOfDate).getFullYear()
+    if (this.getControl(this.settingsformGroup, 'bindToPaidDate')?.value === true) {
+      let patchObj = {}
+      if (date) {
+        if (this.getControl(this.settingsformGroup, 'payDatePrevMonth')?.value === true) {
+          let copyOfDate = new Date(new Date(date).valueOf())
+          copyOfDate.setMonth(copyOfDate.getMonth() - 1)
+          patchObj = {
+            month: new Date(copyOfDate).getMonth() + 1,
+            year: new Date(copyOfDate).getFullYear()
+          }
+          console.log(patchObj)
+        } else {
+          patchObj = {
+            month: new Date(date).getMonth() + 1,
+            year: new Date(date).getFullYear()
+          }
         }
-        console.log(patchObj)
-      } else {
-        patchObj = {
-          month: new Date(date).getMonth() + 1,
-          year: new Date(date).getFullYear()
-        }
+        this.formGroup.patchValue(patchObj, { emitEvent: false } )
       }
-      this.formGroup.patchValue(patchObj, { emitEvent: false } )
     }
   }
 
   setCopiedApartament () {
     const copied = this.ApartamentFeeServ.getCopiedApartament()
-    console.log(copied)
     if (copied) {
       this.formGroup.patchValue({
         name: copied.name,
@@ -214,15 +231,17 @@ export class ApartamentFeeCreateComponent implements OnInit {
       this.formGroup.patchValue({
         sum: copied.sum
       })
-      console.log(this.formGroup.value)
     }
     setTimeout(() => this.ApartamentFeeServ.setCopiedApartament(null), 0)
   }
 
-  setPayDatePrevMonth (data: boolean) {
-    localStorage.setItem('payDatePrevMonth', String(Number(data)))
-    const date = this.formGroup.get('paidDate')?.value
-    this.setMonthAndYear(date)
+  initSettings () {
+    const data = {
+      payDatePrevMonth: Boolean(Number(localStorage.getItem('payDatePrevMonth'))),
+      bindToPaidDate: !this.apartamentFee_id,
+      backOnSave: Boolean(Number(localStorage.getItem('backOnSave')))
+    }
+    this.settingsformGroup.patchValue(data)
   }
 
   closeTemplateConfirm (confirm: boolean, onlyEmpty: boolean = false) {
@@ -242,6 +261,7 @@ export class ApartamentFeeCreateComponent implements OnInit {
     this.modalRef = this.modalService.open(ModalCreateFeeTemplateComponent, config)
     this.modalRef.onClose.subscribe((res: null | FeeTemplateUpdateApiRequest) => {
       this.bugSetTemplateIdAfterModal()
+      this.afterAction()
     })
   }
 
@@ -274,18 +294,6 @@ export class ApartamentFeeCreateComponent implements OnInit {
         }
       }
     })
-  }
-
-  private getYearOptions() {
-    const nowYear = new Date().getFullYear()
-    return [
-      { name: nowYear - 4, id: nowYear - 4 },
-      { name: nowYear - 3, id: nowYear - 3 },
-      { name: nowYear - 2, id: nowYear - 2 },
-      { name: nowYear - 1, id: nowYear - 1 },
-      { name: nowYear, id: nowYear },
-      { name: nowYear + 1, id: nowYear + 1 }
-    ]
   }
 
   private getCurrancyOptions () {
@@ -324,6 +332,7 @@ export class ApartamentFeeCreateComponent implements OnInit {
         this.formGroup.patchValue({
           sum: res.sum
         })
+        console.log(res.year)
       },
       error: (err: any) => {
         this.MessageServ.sendMessage('error', 'Ошибка!', err.error.message)
@@ -356,7 +365,7 @@ export class ApartamentFeeCreateComponent implements OnInit {
         if (!res.template_id) {
           this.createTemplateOpenModal(res)
         } else {
-          this.Location.back()
+          this.afterAction()
         }
       },
       error: (err: any) => {
@@ -421,7 +430,7 @@ export class ApartamentFeeCreateComponent implements OnInit {
         if (!res.template_id) {
           this.createTemplateOpenModal(res)
         } else {
-          this.Location.back()
+          this.afterAction()
         }
         this.loading = false
       },
@@ -464,10 +473,6 @@ export class ApartamentFeeCreateComponent implements OnInit {
     }
     this.ApartamentFeeServ.setCopiedApartament(data)
     this.Router.navigate(['apartamentFee', 'new'])
-  }
-
-  back() {
-    this.Location.back()
   }
 
   redirectTo(uri?: string) {
@@ -533,7 +538,6 @@ export class ApartamentFeeCreateComponent implements OnInit {
         this.initialTemplateObj = res
         this.bugSetTemplateIdAfterModal()
       }
-
     })
 
   }
@@ -557,5 +561,15 @@ export class ApartamentFeeCreateComponent implements OnInit {
       rateSource: 1,
       rateId: data.id
     })
+  }
+
+  afterAction () {
+    if (this.getControl(this.settingsformGroup, 'backOnSave')?.value === true) {
+      this.back()
+    }
+  }
+
+  back() {
+    this.Location.back()
   }
 }

@@ -11,11 +11,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 // import {  } from '@angular/common';
 import localeRu from '@angular/common/locales/ru';
 
+
 registerLocaleData(localeRu, 'ru');
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     BrowserModule,

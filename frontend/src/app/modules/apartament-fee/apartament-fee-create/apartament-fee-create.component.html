@@ -43,10 +43,11 @@
             </div>
 
             <div class="col-12">
-              <select [formControl]="getControl(formGroup, 'apartament_id')" class="form-select">
-                <option value="null" disabled>Квартира</option>
-                <option *ngFor="let option of apartamentOptions$ | async" [value]="option.id">{{ option.name }}</option>
-              </select>
+              <app-select
+              [label]="'Квартира'"
+              [control]="getControl(formGroup, 'apartament_id')"
+              [options]="apartamentOptions$ | async"
+              ></app-select>
             </div>
             <div class="col-12">
               <app-input [control]="getControl(formGroup, 'description')" [label]="'Описание'"></app-input>
@@ -75,7 +76,7 @@
               </button>
               <ng-template #template>
                 <div class="flexColumnBetweenEnd">
-                  Данные шаблона будут засаны в поля формы
+                  Данные шаблона будут записаны в поля формы
                 <div class="mt-3">
                   <button class="btn btn-outline-secondary my-1 me-3" (click)="closeTemplateConfirm(false)">Отмена</button>
                   <button class="btn btn-outline-success my-1 me-3" (click)="closeTemplateConfirm(true)">Применить</button>
@@ -83,65 +84,47 @@
                 </div>
                 </div>
               </ng-template>
-              <select [formControl]="getControl(formGroup, 'template_id')" class="form-select">
-                <option value="null">Шаблон</option>
-                <option *ngFor="let option of templateOptions$ | async" [value]="option.id">{{ option.name }}</option>
-              </select>
+              <app-select
+              [label]="'Шаблон'"
+              [control]="getControl(formGroup, 'template_id')"
+              [options]="templateOptions$ | async"
+              [resetable]="true"
+              ></app-select>
             </div>
             <div class="col-12" *ngIf="allowUpdateTemplate">
               <a (click)="updateTemplateOpenModal()" class="link-secondary cursor">Обновить шаблон</a>
             </div>
-            <div class="col-12">
-              <div class="form-check form-switch">
-                <input
-                  mdbCheckbox
-                  class="form-check-input"
-                  type="checkbox"
-                  id="flexSwitchCheckChecked"
-                  [(ngModel)]="payDatePrevMonth"
-                  (ngModelChange)="setPayDatePrevMonth($event)"
-                />
-                <label class="form-check-label" for="flexSwitchCheckChecked"
-                  >Оплата за прошлый месяц</label
-                >
-              </div>
+            <div class="col-12 mt-0">
+              <hr>
             </div>
-            <div class="col-6">
-              <select [formControl]="getControl(formGroup, 'month')" class="form-select">
-                <option value="null" disabled>Месяц</option>
-                <option value="1">Январь</option>
-                <option value="2">Февраль</option>
-                <option value="3">Март</option>
-                <option value="4">Апрель</option>
-                <option value="5">Май</option>
-                <option value="6">Июнь</option>
-                <option value="7">Июль</option>
-                <option value="8">Август</option>
-                <option value="9">Сентябрь</option>
-                <option value="10">Октябрь</option>
-                <option value="11">Ноябрь</option>
-                <option value="12">Декабрь</option>
-              </select>
-            </div>
-            <div class="col-6">
-              <select [formControl]="getControl(formGroup, 'year')" class="form-select">
-                <option value="null" disabled>Год</option>
-                <option *ngFor="let option of yearOptions" [value]="option.id">{{ option.name }}</option>
-              </select>
+            <div class="col-12 mt-0">
+              <app-switch [control]="getControl(formGroup, 'paid')" [label]="'Оплачено'"></app-switch>
             </div>
             <div class="col-12">
-              <div class="form-check form-switch">
-                <input
-                  mdbCheckbox
-                  class="form-check-input"
-                  type="checkbox"
-                  id="flexSwitchCheckChecked"
-                  [formControl]="getControl(formGroup, 'paid')"
-                />
-                <label class="form-check-label" for="flexSwitchCheckChecked"
-                  >Оплачено</label
-                >
-              </div>
+              <app-switch [control]="getControl(settingsformGroup, 'bindToPaidDate')" [label]="'Привязать к дате оплаты'"></app-switch>
+            </div>
+            <div class="col-6">
+              <app-select
+              [label]="'Месяц'"
+              [control]="getControl(formGroup, 'month')"
+              [options]="monthOptions"
+              ></app-select>
+            </div>
+            <div class="col-6">
+              <app-select
+              [label]="'Год'"
+              [control]="getControl(formGroup, 'year')"
+              [options]="yearOptions"
+              ></app-select>
+            </div>
+            <div class="col-12">
+              <app-switch [control]="getControl(settingsformGroup, 'payDatePrevMonth')" [label]="'Оплата за прошлый месяц'"></app-switch>
+            </div>
+            <div class="col-12 mt-0">
+              <hr>
+            </div>
+            <div class="col-12 mt-0">
+              <app-switch [control]="getControl(settingsformGroup, 'backOnSave')" [label]="'Вернуться к списку при сохранении'"></app-switch>
             </div>
           </div>
         </div>
@@ -150,12 +133,33 @@
     <div class="col-12 col-md-12 col-lg-5">
       <div class="card">
         <div class="card-body p-3">
-          <div *ngIf="loading" class="cardLoading">
-            <div class="spinner-border spinner" role="status">
-              <span class="visually-hidden">Loading...</span>
-            </div>
-          </div>
-          <div *ngIf="!loading" class="row gx-3 gy-4">
+          <!-- <app-widgets-currancy-source
+          [sourceCurrancy]=""
+          [sourceSum]
+          [destinationCurrancy]
+          [selectedCurrancySourceItem]=""
+          ></app-widgets-currancy-source> -->
+          <mdb-tabs [fill]="true">
+            <mdb-tab title="Курс из переводов">
+              <!-- [class.d-none]="getControl(formGroup2, 'radio').value === EExchangeRateSource.MONEY_TRANSFER_LIST" -->
+              <app-widget-money-transfer
+                [destinationCurrancy]="getControl(formGroup, 'currancy').value"
+                [date]="getControl(formGroup, 'paidDate').value"
+                (selectTransferAway)="selectTransfer($event)"
+              ></app-widget-money-transfer>
+            </mdb-tab>
+            <mdb-tab title="Ежедневный курс">
+              <!-- [class.d-none]="getControl(formGroup2, 'radio').value === EExchangeRateSource.EXCHANGE_RATE_LIST" -->
+              <app-widget-exchange-rate
+              
+                [destinationCurrancy]="getControl(formGroup, 'currancy').value"
+                [exchangeRateDate]="getControl(formGroup, 'paidDate')?.value"
+                (currentDayValue)="setCurrentDayRate($event)"
+              ></app-widget-exchange-rate>
+
+            </mdb-tab>
+          </mdb-tabs>
+          <!-- <div *ngIf="!loading" class="row gx-3 gy-4">
             <div class="col-12">
               <div class="btn-group mb-2">
                 <input
@@ -194,7 +198,7 @@
                 (selectTransferAway)="selectTransfer($event)"
               ></app-widget-money-transfer>
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
