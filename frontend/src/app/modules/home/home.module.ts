@@ -5,7 +5,7 @@ import { SharedModule } from '../shared/shared.module';
 
 import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home.component';
-import { NgChartsModule } from 'ng2-charts';
+// import { NgChartsModule } from 'ng2-charts';
 
 @NgModule({
   declarations: [
@@ -14,7 +14,7 @@ import { NgChartsModule } from 'ng2-charts';
   imports: [
     CommonModule,
     HomeRoutingModule,
-    NgChartsModule,
+    // NgChartsModule,
     SharedModule
   ]
 })

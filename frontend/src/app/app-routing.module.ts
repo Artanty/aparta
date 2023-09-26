@@ -13,6 +13,7 @@ const routes: Routes = [
   { path: 'organizationTariff', loadChildren: () => import('./modules/organization-tariff/organization-tariff.module').then(m => m.OrganizationTariffModule) },
   { path: 'moneyTransfer', loadChildren: () => import('./modules/money-transfer/money-transfer.module').then(m => m.MoneyTransferModule) },
   { path: 'exchangeRate', loadChildren: () => import('./modules/exchange-rate/exchange-rate.module').then(m => m.ExchangeRateModule) },
+  { path: 'external', loadChildren: () => import('./modules/external/external.module').then(m => m.ExternalModule) },
   { path: '**', redirectTo: 'apartamentFee' }
 ]
 
