@@ -107,37 +107,6 @@
           }
         }
       }
-    },
-    "alibi-lib": {
-      "projectType": "library",
-      "root": "projects/alibi-lib",
-      "sourceRoot": "projects/alibi-lib/src",
-      "prefix": "alibi",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-angular:ng-packagr",
-          "options": {
-            "project": "projects/alibi-lib/ng-package.json"
-          },
-          "configurations": {
-            "production": {
-              "tsConfig": "projects/alibi-lib/tsconfig.lib.prod.json"
-            },
-            "development": {
-              "tsConfig": "projects/alibi-lib/tsconfig.lib.json"
-            }
-          },
-          "defaultConfiguration": "production"
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "projects/alibi-lib/src/test.ts",
-            "tsConfig": "projects/alibi-lib/tsconfig.spec.json",
-            "karmaConfig": "projects/alibi-lib/karma.conf.js"
-          }
-        }
-      }
     }
   }
 }

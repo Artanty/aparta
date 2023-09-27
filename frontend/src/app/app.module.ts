@@ -9,7 +9,7 @@ import { SharedModule } from './modules/shared/shared.module';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import localeRu from '@angular/common/locales/ru';
-import { AlibiLibModule } from 'alibi-lib';
+
 
 registerLocaleData(localeRu, 'ru');
 
@@ -22,8 +22,7 @@ registerLocaleData(localeRu, 'ru');
     AppRoutingModule,
     HttpClientModule,
     SharedModule,
-    BrowserAnimationsModule,
-    AlibiLibModule
+    BrowserAnimationsModule
   ],
   bootstrap: [AppComponent],
   providers: [
