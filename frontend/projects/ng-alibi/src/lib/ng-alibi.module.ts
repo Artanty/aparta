@@ -1,16 +1,20 @@
 import { NgModule } from '@angular/core';
 import { NgAlibiComponent } from './ng-alibi.component';
+import { TableComponent } from './components/table/table.component';
 
-
+const components = [
+  NgAlibiComponent,
+  TableComponent
+]
 
 @NgModule({
   declarations: [
-    NgAlibiComponent
+    ...components
   ],
   imports: [
   ],
   exports: [
-    NgAlibiComponent
+    ...components
   ]
 })
 export class NgAlibiModule { }

@@ -50,9 +50,9 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
   ratesLoading: boolean = false
   transfersLoading: boolean = false
   get tableLoading () {
-    console.log(this.feesLoading)
-    console.log(this.ratesLoading)
-    console.log(this.transfersLoading)
+    // console.log(this.feesLoading)
+    // console.log(this.ratesLoading)
+    // console.log(this.transfersLoading)
     return (this.feesLoading === true) || (this.ratesLoading === true) || (this.transfersLoading === true)
   }
   items$?: Observable<any>
