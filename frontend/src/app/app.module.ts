@@ -9,6 +9,8 @@ import { SharedModule } from './modules/shared/shared.module';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import localeRu from '@angular/common/locales/ru';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+
 
 
 registerLocaleData(localeRu, 'ru');
@@ -22,7 +24,8 @@ registerLocaleData(localeRu, 'ru');
     AppRoutingModule,
     HttpClientModule,
     SharedModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    FontAwesomeModule,
   ],
   bootstrap: [AppComponent],
   providers: [

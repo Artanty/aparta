@@ -50,6 +50,9 @@
       "@app/*": [
         "src/app/*"
       ],
+      "ng-alibi": [
+        "dist/ng-alibi"
+      ],
     },
     "useDefineForClassFields": false
   },

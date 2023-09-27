@@ -44,6 +44,7 @@ import { CurrancyTableCellComponent } from './features/currancy-table-cell/curra
 import { CurrencyOnlyPipe } from './pipes/currency-only.pipe';
 import { SelectComponent } from './components/form/select/select.component';
 import { SwitchComponent } from './components/form/switch/switch.component';
+import { NgAlibiModule } from 'ng-alibi';
 
 // const maskConfig: Partial<IConfig> = {
 //   validation: true,
@@ -85,7 +86,7 @@ export const options: Partial<null|IConfig> | (() => Partial<IConfig>) = null;
     MdbTabsModule,
     MdbTooltipModule,
     MdbValidationModule,
-
+    NgAlibiModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
@@ -121,7 +122,8 @@ export const options: Partial<null|IConfig> | (() => Partial<IConfig>) = null;
     ProportionBlockComponent,
     CurrancyTableCellComponent,
     SelectComponent,
-    SwitchComponent
+    SwitchComponent,
+    NgAlibiModule
     ]
 })
 export class SharedModule {}

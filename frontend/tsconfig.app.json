@@ -13,7 +13,10 @@
       "@directives/*": ["src/app/modules/shared/directives/*"],
       "@shared/*": ["src/app/modules/shared/*"],
       "@services/*": ["src/app/modules/shared/services/*"],
-      "@app/*": ["src/app/*"]
+      "@app/*": ["src/app/*"],
+      "ng-alibi": [
+        "dist/ng-alibi"
+      ],
     }
   },
   "files": [
