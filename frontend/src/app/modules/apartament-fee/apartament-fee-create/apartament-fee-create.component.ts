@@ -40,7 +40,7 @@ export class ApartamentFeeCreateComponent implements OnInit {
   allowUpdateTemplate: null | GetFeesApiResponseItem = null
   apartamentFee_id: number = 0
   @ViewChild ('popoverTrigger') popoverTrigger: ElementRef | undefined
-  modalRef: MdbModalRef<ModalCreateFeeTemplateComponent> | null = null
+  modalRef: MdbModalRef<ModalCreateFeeTemplateComponent | ModalUpdateFeeTemplateComponent> | null = null
   loading: boolean = false
   formGroup: UntypedFormGroup = new UntypedFormGroup({
     apartament_id: new UntypedFormControl(null, [Validators.required]),
@@ -533,7 +533,7 @@ export class ApartamentFeeCreateComponent implements OnInit {
       }
     }
     this.modalRef = this.modalService.open(ModalUpdateFeeTemplateComponent, config)
-    this.modalRef.onClose.subscribe((res: null | FeeTemplateUpdateApiRequest) => {
+    this.modalRef?.onClose.subscribe((res: null | FeeTemplateUpdateApiRequest) => {
       if (res !== null) {
         this.initialTemplateObj = res
         this.bugSetTemplateIdAfterModal()

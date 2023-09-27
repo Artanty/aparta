@@ -1,19 +1,12 @@
 import { ApartamentService } from './../../../shared/services/apartament/apartament.service';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MdbModalRef } from 'mdb-angular-ui-kit/modal';
 import { currancyCodes } from 'src/app/modules/shared/currancyCodes';
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
-import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common'
 import { MessageService } from '../../../shared/services/message/message.service';
 import { FeeTemplateService } from '../../../shared/services/feeTemplate/fee-template.service';
-import { HttpClient } from '@angular/common/http';
-
-import { OrganizationService } from '../../../shared/services/organization/organization.service';
 import { Observable } from 'rxjs';
-import { OrganizationTariffService } from '../../../shared/services/organizationTariff/organization-tariff.service';
-import { ApartamentFeeService } from '../../../shared/services/apartamentFee/apartament-fee.service';
-import { payVariants } from 'src/app/modules/shared/payVariants';
 
 
 @Component({
@@ -39,14 +32,9 @@ export class ModalCreateFeeTemplateComponent implements OnInit {
   modalInputdata: any = null
   constructor(
     public modalRef: MdbModalRef<ModalCreateFeeTemplateComponent>,
-
-    private http: HttpClient,
-    private ActivatedRoute: ActivatedRoute,
     private Location: Location,
     private MessageServ: MessageService,
     private FeeTemplateServ: FeeTemplateService,
-    private OrganizationServ: OrganizationService,
-    private OrganizationTariffServ: OrganizationTariffService,
     private ApartamentServ: ApartamentService
     ) {
       this.apartamentOptions$ = this.ApartamentServ.apartaments$

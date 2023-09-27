@@ -3,15 +3,10 @@ import { Component, OnInit } from '@angular/core';
 import { MdbModalRef } from 'mdb-angular-ui-kit/modal';
 import { currancyCodes } from 'src/app/modules/shared/currancyCodes';
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common'
 import { MessageService } from '../../../shared/services/message/message.service';
 import { FeeTemplateService } from '../../../shared/services/feeTemplate/fee-template.service';
-import { HttpClient } from '@angular/common/http';
-
-import { OrganizationService } from '../../../shared/services/organization/organization.service';
 import { Observable, tap } from 'rxjs';
-import { OrganizationTariffService } from '../../../shared/services/organizationTariff/organization-tariff.service';
 import { GetFeesApiResponseItem } from 'src/app/modules/shared/services/apartamentFee/types';
 import { FeeTemplateApiResponseItem, FeeTemplateUpdateApiRequest } from 'src/app/modules/shared/services/feeTemplate/types';
 
@@ -55,14 +50,9 @@ export class ModalUpdateFeeTemplateComponent implements OnInit {
   template: FeeTemplateApiResponseItem | null = null
   constructor(
     public modalRef: MdbModalRef<ModalUpdateFeeTemplateComponent>,
-
-    private http: HttpClient,
-    private ActivatedRoute: ActivatedRoute,
     private Location: Location,
     private MessageServ: MessageService,
     private FeeTemplateServ: FeeTemplateService,
-    private OrganizationServ: OrganizationService,
-    private OrganizationTariffServ: OrganizationTariffService,
     private ApartamentServ: ApartamentService
     ) {
       this.apartamentOptions$ = this.ApartamentServ.apartaments$.pipe(
