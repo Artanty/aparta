@@ -1,5 +1,4 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { E } from 'chart.js/dist/chunks/helpers.core';
 import { currancyCodes } from './../../shared/currancyCodes';
 import { exchangeRates } from './../../shared/exchangeRates';
 

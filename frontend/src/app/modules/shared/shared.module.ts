@@ -32,7 +32,7 @@ import { MessageListComponent } from './features/message-list/message-list.compo
 import { ModalComponent } from './features/modal/modal.component';
 
 
-import { NgxMaskModule, IConfig } from 'ngx-mask';
+import { IConfig, provideEnvironmentNgxMask } from 'ngx-mask';
 import { HumanMonthPipe } from './pipes/human-month.pipe';
 import { GetCurrancyPipe } from './pipes/get-currancy.pipe';
 
@@ -85,18 +85,17 @@ export const options: Partial<null|IConfig> | (() => Partial<IConfig>) = null;
     MdbTabsModule,
     MdbTooltipModule,
     MdbValidationModule,
-    NgxMaskModule.forRoot(),
+
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: BaseUrlInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ExternalApiInterceptor, multi: true },
-
+    provideEnvironmentNgxMask()
   ],
   exports: [
     CommonModule,
     FormsModule,
-    NgxMaskModule,
     MdbAccordionModule,
     MdbCarouselModule,
     MdbCheckboxModule,
