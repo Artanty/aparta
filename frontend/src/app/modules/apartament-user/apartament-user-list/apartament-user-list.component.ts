@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { EMPTY, Observable, Subscription } from 'rxjs';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { MessageService } from '../../shared/services/message/message.service';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { ApartamentService } from '../../shared/services/apartament/apartament.service';
 
 @Component({
@@ -16,7 +16,7 @@ export class ApartamentUserListComponent implements OnInit {
     tableLoading$: Observable<boolean>
     items$: Observable<any> = EMPTY
     // apartament_id: number = 0
-    apartament_id: FormControl = new FormControl()
+    apartament_id: UntypedFormControl = new UntypedFormControl()
     apartamentOptions$: Observable<any[]>
 
     constructor(

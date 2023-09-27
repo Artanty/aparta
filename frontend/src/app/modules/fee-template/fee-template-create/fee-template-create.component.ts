@@ -1,7 +1,7 @@
 import { ApartamentService } from './../../shared/services/apartament/apartament.service';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common'
 import { MessageService } from '../../shared/services/message/message.service';
@@ -21,14 +21,14 @@ export class FeeTemplateCreateComponent implements OnInit {
   feeTemplate_id: number = 0
   loading: boolean = false
 
-  formGroup: FormGroup = new FormGroup({
-    name: new FormControl(null, [Validators.required]),
-    sum: new FormControl(null),
-    currancy: new FormControl(null),
-    apartament_id: new FormControl(null, [Validators.required]),
-    month: new FormControl(null),
-    year: new FormControl(null),
-    description: new FormControl(null)
+  formGroup: UntypedFormGroup = new UntypedFormGroup({
+    name: new UntypedFormControl(null, [Validators.required]),
+    sum: new UntypedFormControl(null),
+    currancy: new UntypedFormControl(null),
+    apartament_id: new UntypedFormControl(null, [Validators.required]),
+    month: new UntypedFormControl(null),
+    year: new UntypedFormControl(null),
+    description: new UntypedFormControl(null)
   })
   yearOptions: any[] = []
   currancyOptions: any[] = []
@@ -196,9 +196,9 @@ export class FeeTemplateCreateComponent implements OnInit {
     }
   }
 
-  getControl(formGroup: FormGroup, formControlId: string): FormControl {
-    let formControl: FormControl = new FormControl(null)
-    formControl = (formGroup.get(formControlId) as FormControl) || new FormControl(null)
+  getControl(formGroup: UntypedFormGroup, formControlId: string): UntypedFormControl {
+    let formControl: UntypedFormControl = new UntypedFormControl(null)
+    formControl = (formGroup.get(formControlId) as UntypedFormControl) || new UntypedFormControl(null)
     return formControl
   }
 }

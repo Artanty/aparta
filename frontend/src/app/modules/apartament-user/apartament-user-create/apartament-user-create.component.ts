@@ -1,7 +1,7 @@
 import { ApartamentService } from './../../shared/services/apartament/apartament.service';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, FormGroup, Validators } from '@angular/forms';
 import { Router, NavigationEnd, ActivatedRoute, RouterModule } from '@angular/router';
 import { Location } from '@angular/common'
 import { MessageService } from '../../shared/services/message/message.service';
@@ -19,7 +19,7 @@ import { ApartamentUserService } from '../apartament-user.service';
   styleUrls: ['./apartament-user-create.component.scss']
 })
 export class ApartamentUserCreateComponent implements OnInit {
-  userFind_email: FormControl = new FormControl('test@gmail.com', [Validators.required])
+  userFind_email: UntypedFormControl = new UntypedFormControl('test@gmail.com', [Validators.required])
   userFind_loading: boolean = false
   userFind_visible: boolean = true
   userFind_inited: boolean = false

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-select',
@@ -7,7 +7,7 @@ import { FormControl } from '@angular/forms';
   styleUrls: ['./select.component.scss']
 })
 export class SelectComponent implements OnInit {
-  @Input() control: FormControl = new FormControl()
+  @Input() control: UntypedFormControl = new UntypedFormControl()
   @Input() options: any = []
   @Input() optionsValueLabelProps: [string, string] = ['id', 'name']
   @Input() label: string = ''

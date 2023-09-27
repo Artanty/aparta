@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-input',
@@ -8,7 +8,7 @@ import { FormControl } from '@angular/forms';
 })
 export class InputComponent implements OnInit {
   @Input() label: string = ''
-  @Input() control: FormControl = new FormControl()
+  @Input() control: UntypedFormControl = new UntypedFormControl()
   // @Input() value: any = null
   @Input() placeholder: string = '';
   @Input() readonly: boolean = false

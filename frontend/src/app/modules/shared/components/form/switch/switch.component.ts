@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-switch',
@@ -7,7 +7,7 @@ import { FormControl } from '@angular/forms';
   styleUrls: ['./switch.component.scss']
 })
 export class SwitchComponent implements OnInit {
-  @Input() control: FormControl = new FormControl()
+  @Input() control: UntypedFormControl = new UntypedFormControl()
   @Input() label: string = ''
   id: string = Date.now() + '_' + Math.floor(Math.random() * 1000)
   constructor() { }

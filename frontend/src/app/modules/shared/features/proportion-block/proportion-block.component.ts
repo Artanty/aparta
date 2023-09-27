@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-proportion-block',
@@ -9,16 +9,16 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 export class ProportionBlockComponent {
   @Input() labels: string[] = ['A', 'B', 'C', 'D']
   @Output() valueAway: EventEmitter<number> = new EventEmitter<number>()
-  formGroup: FormGroup = new FormGroup({
-    a: new FormControl(null, [Validators.required, Validators.pattern(/^[\d ]*$/)]),
-    b: new FormControl(null, [Validators.required, Validators.pattern(/^[\d ]*$/)]),
-    c: new FormControl(null, [Validators.required, Validators.pattern(/^[\d ]*$/)]),
-    d: new FormControl(null)
+  formGroup: UntypedFormGroup = new UntypedFormGroup({
+    a: new UntypedFormControl(null, [Validators.required, Validators.pattern(/^[\d ]*$/)]),
+    b: new UntypedFormControl(null, [Validators.required, Validators.pattern(/^[\d ]*$/)]),
+    c: new UntypedFormControl(null, [Validators.required, Validators.pattern(/^[\d ]*$/)]),
+    d: new UntypedFormControl(null)
   })
   constructor() { }
 
   calculate () {
-    const getControl = (input: string): FormControl => this.getControl(this.formGroup, input)
+    const getControl = (input: string): UntypedFormControl => this.getControl(this.formGroup, input)
     const getControlValue = (input: string): string => getControl(input).value || ''
     const removeSpaces = (val: string): string => val.replace(/\s/g, '')
     const num = (inputName: string): number => +removeSpaces(getControlValue(inputName))
@@ -37,8 +37,8 @@ export class ProportionBlockComponent {
     }
   }
 
-  getControl(formGroup: FormGroup, formControlId: string): FormControl {
-    return (formGroup.get(formControlId) as FormControl) || new FormControl(null)
+  getControl(formGroup: UntypedFormGroup, formControlId: string): UntypedFormControl {
+    return (formGroup.get(formControlId) as UntypedFormControl) || new UntypedFormControl(null)
   }
 
   sendValueAway () {

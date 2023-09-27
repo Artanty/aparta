@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { map } from 'rxjs';
-import { ControlContainer, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ControlContainer, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MessageService } from '../../shared/services/message/message.service';
 import { Location } from '@angular/common'
 import { GetApartamentsApiResponse } from '../apartament-list/apartament-list.component';
@@ -20,14 +20,14 @@ export class ApartamentUpdateComponent implements OnInit {
   loading: boolean = true
   apartament_id?: number
 
-  name: FormControl = new FormControl(null, [Validators.required])
-  address: FormControl = new FormControl(null, [Validators.required])
-  country: FormControl = new FormControl(null)
-  place: FormControl = new FormControl(null)
-  rentType: FormControl = new FormControl(null)
-  rooms: FormControl = new FormControl(null)
+  name: UntypedFormControl = new UntypedFormControl(null, [Validators.required])
+  address: UntypedFormControl = new UntypedFormControl(null, [Validators.required])
+  country: UntypedFormControl = new UntypedFormControl(null)
+  place: UntypedFormControl = new UntypedFormControl(null)
+  rentType: UntypedFormControl = new UntypedFormControl(null)
+  rooms: UntypedFormControl = new UntypedFormControl(null)
 
-  formGroup: FormGroup = new FormGroup({
+  formGroup: UntypedFormGroup = new UntypedFormGroup({
     name: this.name,
     address: this.address,
     country: this.country,

@@ -4,7 +4,7 @@ import { Component, Output, EventEmitter, OnInit, Input, SimpleChanges, OnChange
 import { currancyCodes } from '@shared/currancyCodes';
 import { GetExchangeRateApiResponse, CreateExchangeRateApiRequest } from '@app/modules/exchange-rate/types';
 import { ApilayerApiResponse } from '@app/modules/exchange-rate/exchange-rate-list/mock';
-import { FormGroup, FormControl } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 import { MessageService } from '@services/message/message.service';
 import { isoDateWithoutTimeZone } from '@shared/helpers';
 import { Observable, tap } from 'rxjs';
@@ -28,9 +28,9 @@ export class ReadyDatesCalendarComponent implements OnInit, OnChanges {
   date = new Date();
   @Output() selected = new EventEmitter();
   @Output() triggerRefresh = new EventEmitter()
-  formGroup: FormGroup = new FormGroup({
-    dateFrom: new FormControl(),
-    dateTo: new FormControl()
+  formGroup: UntypedFormGroup = new UntypedFormGroup({
+    dateFrom: new UntypedFormControl(),
+    dateTo: new UntypedFormControl()
   })
   latestDate: string = isoDateWithoutTimeZone(new Date())
 
@@ -208,9 +208,9 @@ export class ReadyDatesCalendarComponent implements OnInit, OnChanges {
     })?.code || 0
   }
 
-  getControl(formGroup: FormGroup, formControlId: string): FormControl {
-    let formControl: FormControl = new FormControl(null)
-    formControl = (formGroup.get(formControlId) as FormControl) || new FormControl(null)
+  getControl(formGroup: UntypedFormGroup, formControlId: string): UntypedFormControl {
+    let formControl: UntypedFormControl = new UntypedFormControl(null)
+    formControl = (formGroup.get(formControlId) as UntypedFormControl) || new UntypedFormControl(null)
     return formControl
   }
 

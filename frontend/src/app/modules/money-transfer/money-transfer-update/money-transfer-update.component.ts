@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common'
 import { MessageService } from '../../shared/services/message/message.service';
@@ -23,17 +23,17 @@ export class MoneyTransferUpdateComponent implements OnInit {
     currentDayValue: number | null = null
     currentDayValueNoCommision: number | null = null
     loading: boolean = false
-    formGroup: FormGroup = new FormGroup({
-      id: new FormControl(null),
-      description: new FormControl(643),
-      sourceSum: new FormControl(null),
-      sourceCurrancy: new FormControl(null),
-      middleTransfers: new FormControl(null),
-      destinationSum: new FormControl(null),
-      destinationCurrancy: new FormControl(null),
-      rate: new FormControl(null),
-      date: new FormControl(new Date().toISOString().slice(0, 10)),
-      apartament_id: new FormControl(3)
+    formGroup: UntypedFormGroup = new UntypedFormGroup({
+      id: new UntypedFormControl(null),
+      description: new UntypedFormControl(643),
+      sourceSum: new UntypedFormControl(null),
+      sourceCurrancy: new UntypedFormControl(null),
+      middleTransfers: new UntypedFormControl(null),
+      destinationSum: new UntypedFormControl(null),
+      destinationCurrancy: new UntypedFormControl(null),
+      rate: new UntypedFormControl(null),
+      date: new UntypedFormControl(new Date().toISOString().slice(0, 10)),
+      apartament_id: new UntypedFormControl(3)
     })
     pasteResultToFC: string = ''
     quantityFC: string = ''
@@ -227,8 +227,8 @@ export class MoneyTransferUpdateComponent implements OnInit {
       })
     }
 
-    getControl(formGroup: FormGroup, formControlId: string): FormControl {
-      return (formGroup.get(formControlId) as FormControl) || new FormControl(null)
+    getControl(formGroup: UntypedFormGroup, formControlId: string): UntypedFormControl {
+      return (formGroup.get(formControlId) as UntypedFormControl) || new UntypedFormControl(null)
     }
 
     getCurrancyShortName (currancyCode: number | string | undefined): string | undefined {

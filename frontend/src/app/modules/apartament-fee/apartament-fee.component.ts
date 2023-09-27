@@ -4,7 +4,7 @@ import { environment } from 'src/environments/environment';
 import { Router, NavigationEnd, ActivatedRoute, ActivationEnd } from '@angular/router';
 import { Location } from '@angular/common'
 import { currancyCodes } from './../shared/currancyCodes';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { filter, Observable, tap } from 'rxjs';
 import { ApartamentService } from '../shared/services/apartament/apartament.service';
 
@@ -19,11 +19,11 @@ export class ApartamentFeeComponent implements OnInit {
   apartament_id: string = ''
   amount: number = 0
   dangers: any[] = []
-  currancy: FormControl = new FormControl(941)
+  currancy: UntypedFormControl = new UntypedFormControl(941)
   currancyOptions: any[] = []
-  apartament: FormControl = new FormControl()
+  apartament: UntypedFormControl = new UntypedFormControl()
   apartamentOptions$: Observable<any[]>
-  year: FormControl = new FormControl(new Date().getFullYear())
+  year: UntypedFormControl = new UntypedFormControl(new Date().getFullYear())
   yearOptions: number[] = []
   constructor(
     private http: HttpClient,

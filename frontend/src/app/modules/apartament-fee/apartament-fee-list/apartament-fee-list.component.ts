@@ -8,7 +8,7 @@ import { ApartamentFeeService } from '../../shared/services/apartamentFee/aparta
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { MessageService } from '../../shared/services/message/message.service';
 import { isNonNull, orderBy, removeDuplicatedObj, throttle } from '../../shared/helpers';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { GetCurrancyPipe } from '../../shared/pipes/get-currancy.pipe';
 import { GetFeesApiResponseItem } from '../../shared/services/apartamentFee/types';
 import { MdbPopoverDirective } from 'mdb-angular-ui-kit/popover';
@@ -57,18 +57,18 @@ export class ApartamentFeeListComponent implements OnInit, OnDestroy {
   }
   items$?: Observable<any>
   selectedItemsSet = new Set()
-  name: FormControl = new FormControl(null)
-  month: FormControl = new FormControl(null)
+  name: UntypedFormControl = new UntypedFormControl(null)
+  month: UntypedFormControl = new UntypedFormControl(null)
 
-  filterFormGroup: FormGroup = new FormGroup({
+  filterFormGroup: UntypedFormGroup = new UntypedFormGroup({
     name: this.name,
     month: this.month
   })
-  sortFormGroup: FormGroup = new FormGroup({
-    sum: new FormControl(0),
-    month: new FormControl(0),
-    paidDate: new FormControl(1),
-    created_at: new FormControl(0)
+  sortFormGroup: UntypedFormGroup = new UntypedFormGroup({
+    sum: new UntypedFormControl(0),
+    month: new UntypedFormControl(0),
+    paidDate: new UntypedFormControl(1),
+    created_at: new UntypedFormControl(0)
   })
   nameOptions: any[] = []
   subs$?: Subscription

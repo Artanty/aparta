@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { Location } from '@angular/common'
 import { MessageService } from '../../shared/services/message/message.service';
 import { currancyCodes } from './../../shared/currancyCodes';
@@ -20,11 +20,11 @@ export class ExchangeRateCreateComponent implements OnInit {
     currancyOptions: any[] = []
     exchangeRate_id: number = 0
 
-    formGroup: FormGroup = new FormGroup({
-      date: new FormControl(new Date().toISOString().slice(0, -14)),
-      currancyFrom: new FormControl(null),
-      currancyTo: new FormControl(null),
-      currancyFromValue: new FormControl(null),
+    formGroup: UntypedFormGroup = new UntypedFormGroup({
+      date: new UntypedFormControl(new Date().toISOString().slice(0, -14)),
+      currancyFrom: new UntypedFormControl(null),
+      currancyTo: new UntypedFormControl(null),
+      currancyFromValue: new UntypedFormControl(null),
     })
 
     constructor(
@@ -126,9 +126,9 @@ export class ExchangeRateCreateComponent implements OnInit {
       })
     }
 
-    getControl(formGroup: FormGroup, formControlId: string): FormControl {
-      let formControl: FormControl = new FormControl(null)
-      formControl = (formGroup.get(formControlId) as FormControl) || new FormControl(null)
+    getControl(formGroup: UntypedFormGroup, formControlId: string): UntypedFormControl {
+      let formControl: UntypedFormControl = new UntypedFormControl(null)
+      formControl = (formGroup.get(formControlId) as UntypedFormControl) || new UntypedFormControl(null)
       return formControl
     }
   }

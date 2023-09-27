@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
 import { AuthService, UserLoginApiResponse } from '../shared/services/auth/auth.service';
-import { FormControl, Validators, FormGroup } from '@angular/forms';
+import { UntypedFormControl, Validators, UntypedFormGroup } from '@angular/forms';
 import { MessageService } from '../shared/services/message/message.service';
 
 @Component({
@@ -24,23 +24,23 @@ export class AuthComponent implements OnInit {
   loading: boolean = false
 
   // login_name: FormControl = new FormControl(null, [Validators.required])
-  login_email: FormControl = new FormControl(null, [Validators.required])
-  login_password: FormControl = new FormControl(null, [Validators.required])
+  login_email: UntypedFormControl = new UntypedFormControl(null, [Validators.required])
+  login_password: UntypedFormControl = new UntypedFormControl(null, [Validators.required])
   // login_password_confirmation: FormControl = new FormControl(null, [Validators.required])
 
-  register_name: FormControl = new FormControl(null, [Validators.required])
-  register_email: FormControl = new FormControl(null, [Validators.required])
-  register_password: FormControl = new FormControl(null, [Validators.required])
-  register_password_confirmation: FormControl = new FormControl(null, [Validators.required])
+  register_name: UntypedFormControl = new UntypedFormControl(null, [Validators.required])
+  register_email: UntypedFormControl = new UntypedFormControl(null, [Validators.required])
+  register_password: UntypedFormControl = new UntypedFormControl(null, [Validators.required])
+  register_password_confirmation: UntypedFormControl = new UntypedFormControl(null, [Validators.required])
 
-  loginFormGroup: FormGroup = new FormGroup({
+  loginFormGroup: UntypedFormGroup = new UntypedFormGroup({
     // name: this.login_name,
     email: this.login_email,
     password: this.login_password,
     // password_confirmation: this.login_password_confirmation
   })
 
-  registerFormGroup: FormGroup = new FormGroup({
+  registerFormGroup: UntypedFormGroup = new UntypedFormGroup({
     name: this.register_name,
     email: this.register_email,
     password: this.register_password,

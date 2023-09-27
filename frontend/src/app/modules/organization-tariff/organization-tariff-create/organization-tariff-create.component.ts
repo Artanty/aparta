@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common'
 import { MessageService } from '../../shared/services/message/message.service';
@@ -18,15 +18,15 @@ import { OrganizationTariffService } from '../../shared/services/organizationTar
 export class OrganizationTariffCreateComponent implements OnInit {
 
   loading: boolean = false
-  name: FormControl = new FormControl(null, [Validators.required])
-  description: FormControl = new FormControl(null)
-  price: FormControl = new FormControl(null)
-  measure: FormControl = new FormControl(null)
-  fee_frequency: FormControl = new FormControl(null)
-  fee_deadline: FormControl = new FormControl(null)
-  organization_id: FormControl = new FormControl('_label')
+  name: UntypedFormControl = new UntypedFormControl(null, [Validators.required])
+  description: UntypedFormControl = new UntypedFormControl(null)
+  price: UntypedFormControl = new UntypedFormControl(null)
+  measure: UntypedFormControl = new UntypedFormControl(null)
+  fee_frequency: UntypedFormControl = new UntypedFormControl(null)
+  fee_deadline: UntypedFormControl = new UntypedFormControl(null)
+  organization_id: UntypedFormControl = new UntypedFormControl('_label')
 
-  formGroup: FormGroup = new FormGroup({
+  formGroup: UntypedFormGroup = new UntypedFormGroup({
     name: this.name,
     description: this.description,
     price: this.price,

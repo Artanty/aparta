@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common'
 import { MessageService } from '../../shared/services/message/message.service';
@@ -42,24 +42,24 @@ export class ApartamentFeeCreateComponent implements OnInit {
   @ViewChild ('popoverTrigger') popoverTrigger: ElementRef | undefined
   modalRef: MdbModalRef<ModalCreateFeeTemplateComponent> | null = null
   loading: boolean = false
-  formGroup: FormGroup = new FormGroup({
-    apartament_id: new FormControl(null, [Validators.required]),
-    name: new FormControl(null, [Validators.required]),
-    description: new FormControl(null),
-    sum: new FormControl(null),
-    currancy: new FormControl(null),
-    month: new FormControl(null),
-    year: new FormControl(null),
-    paid: new FormControl(true),
-    paidDate: new FormControl(null),
-    template_id: new FormControl(null),
-    rateSource: new FormControl(null),
-    rateId: new FormControl(null)
+  formGroup: UntypedFormGroup = new UntypedFormGroup({
+    apartament_id: new UntypedFormControl(null, [Validators.required]),
+    name: new UntypedFormControl(null, [Validators.required]),
+    description: new UntypedFormControl(null),
+    sum: new UntypedFormControl(null),
+    currancy: new UntypedFormControl(null),
+    month: new UntypedFormControl(null),
+    year: new UntypedFormControl(null),
+    paid: new UntypedFormControl(true),
+    paidDate: new UntypedFormControl(null),
+    template_id: new UntypedFormControl(null),
+    rateSource: new UntypedFormControl(null),
+    rateId: new UntypedFormControl(null)
   })
-  settingsformGroup: FormGroup = new FormGroup({
-    bindToPaidDate: new FormControl(null),
-    payDatePrevMonth: new FormControl(null),
-    backOnSave: new FormControl(null),
+  settingsformGroup: UntypedFormGroup = new UntypedFormGroup({
+    bindToPaidDate: new UntypedFormControl(null),
+    payDatePrevMonth: new UntypedFormControl(null),
+    backOnSave: new UntypedFormControl(null),
   })
   yearOptions: any[] = getYearOptions()
   currancyOptions: any[] = []
@@ -67,8 +67,8 @@ export class ApartamentFeeCreateComponent implements OnInit {
   templateOptions$: Observable<any[]>
   apartamentOptions$: Observable<any[]>
   EExchangeRateSource = EExchangeRateSource
-  formGroup2: FormGroup = new FormGroup({
-    radio: new FormControl(EExchangeRateSource.MONEY_TRANSFER_LIST)
+  formGroup2: UntypedFormGroup = new UntypedFormGroup({
+    radio: new UntypedFormControl(EExchangeRateSource.MONEY_TRANSFER_LIST)
   })
   constructor(
     private modalService: MdbModalService,
@@ -499,9 +499,9 @@ export class ApartamentFeeCreateComponent implements OnInit {
     }
   }
 
-  getControl(formGroup: FormGroup, formControlId: string): FormControl {
-    let formControl: FormControl = new FormControl(null)
-    formControl = (formGroup.get(formControlId) as FormControl) || new FormControl(null)
+  getControl(formGroup: UntypedFormGroup, formControlId: string): UntypedFormControl {
+    let formControl: UntypedFormControl = new UntypedFormControl(null)
+    formControl = (formGroup.get(formControlId) as UntypedFormControl) || new UntypedFormControl(null)
     return formControl
   }
 

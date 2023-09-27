@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common'
 import { MessageService } from '../../shared/services/message/message.service';
@@ -17,10 +17,10 @@ import { Observable } from 'rxjs';
 export class OrganizationCreateComponent implements OnInit {
 
   loading: boolean = false
-  name: FormControl = new FormControl(null, [Validators.required])
-  description: FormControl = new FormControl(null)
-  currancy: FormControl = new FormControl('_label')
-  formGroup: FormGroup = new FormGroup({
+  name: UntypedFormControl = new UntypedFormControl(null, [Validators.required])
+  description: UntypedFormControl = new UntypedFormControl(null)
+  currancy: UntypedFormControl = new UntypedFormControl('_label')
+  formGroup: UntypedFormGroup = new UntypedFormGroup({
     name: this.name,
     description: this.description,
     currancy: this.currancy,

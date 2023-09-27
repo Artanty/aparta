@@ -2,7 +2,7 @@ import { ApartamentService } from './../../../shared/services/apartament/apartam
 import { Component, Inject, OnInit } from '@angular/core';
 import { MdbModalRef } from 'mdb-angular-ui-kit/modal';
 import { currancyCodes } from 'src/app/modules/shared/currancyCodes';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common'
 import { MessageService } from '../../../shared/services/message/message.service';
@@ -24,12 +24,12 @@ import { payVariants } from 'src/app/modules/shared/payVariants';
 export class ModalCreateFeeTemplateComponent implements OnInit {
   loading: boolean = false
 
-  formGroup: FormGroup = new FormGroup({
-    name: new FormControl(null, [Validators.required]),
-    description: new FormControl(null),
-    sum: new FormControl(null),
-    currancy: new FormControl(null),
-    apartament_id: new FormControl(null),
+  formGroup: UntypedFormGroup = new UntypedFormGroup({
+    name: new UntypedFormControl(null, [Validators.required]),
+    description: new UntypedFormControl(null),
+    sum: new UntypedFormControl(null),
+    currancy: new UntypedFormControl(null),
+    apartament_id: new UntypedFormControl(null),
   })
 
   currancyOptions: any[] = []
@@ -101,9 +101,9 @@ export class ModalCreateFeeTemplateComponent implements OnInit {
     }
     return []
   }
-  getControl(formGroup: FormGroup, formControlId: string): FormControl {
-    let formControl: FormControl = new FormControl(null)
-    formControl = (formGroup.get(formControlId) as FormControl) || new FormControl(null)
+  getControl(formGroup: UntypedFormGroup, formControlId: string): UntypedFormControl {
+    let formControl: UntypedFormControl = new UntypedFormControl(null)
+    formControl = (formGroup.get(formControlId) as UntypedFormControl) || new UntypedFormControl(null)
     return formControl
   }
 }

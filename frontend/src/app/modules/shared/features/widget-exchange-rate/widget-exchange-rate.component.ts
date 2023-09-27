@@ -3,8 +3,7 @@ import { ExchangeRateService } from '../../../shared/services/exchangeRate/excha
 import { Component, Output, EventEmitter, OnInit, Input, SimpleChanges, OnChanges, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { currancyCodes } from '../../../shared/currancyCodes';
 import { GetExchangeRateApiResponse, CreateExchangeRateApiRequest } from '../../../exchange-rate/types';
-import { Quote } from '@angular/compiler';
-import { FormGroup, FormControl } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 import { ApilayerApiResponse } from 'src/app/modules/exchange-rate/exchange-rate-list/mock';
 import { Observable } from 'rxjs';
 import { getCurrancyOptions } from '@shared/helpers';
@@ -24,7 +23,7 @@ export type Currancy = {
 })
 export class WidgetExchangeRateComponent implements OnInit, OnChanges {
     @Input() sourceCurrancy?: number | null
-    innerSourceCurrancy: FormControl = new FormControl(643)
+    innerSourceCurrancy: UntypedFormControl = new UntypedFormControl(643)
     @Input() destinationCurrancy: number = 643
     @Input() exchangeRateDate?: string
     currancyOptions: any[] = getCurrancyOptions('shortName')
@@ -179,9 +178,9 @@ export class WidgetExchangeRateComponent implements OnInit, OnChanges {
       return this.selectedCurrancyExchangeRates.find((el: any) => el.date === this.isoDateWithoutTimeZone(date).slice(0, 10))
     }
 
-    getControl(formGroup: FormGroup, formControlId: string): FormControl {
-      let formControl: FormControl = new FormControl(null)
-      formControl = (formGroup.get(formControlId) as FormControl) || new FormControl(null)
+    getControl(formGroup: UntypedFormGroup, formControlId: string): UntypedFormControl {
+      let formControl: UntypedFormControl = new UntypedFormControl(null)
+      formControl = (formGroup.get(formControlId) as UntypedFormControl) || new UntypedFormControl(null)
       return formControl
     }
 
