@@ -1,5 +1,5 @@
 {
-  "name": "ng-alibi",
+  "name": "ng-alibi-icons",
   "version": "0.0.1",
   "peerDependencies": {
     "@angular/common": "^16.2.0",
@@ -8,8 +8,5 @@
   "dependencies": {
     "tslib": "^2.3.0"
   },
-  "sideEffects": false,
-  "devDependencies": {
-    "node-sass": "^9.0.0"
-  }
+  "sideEffects": false
 }

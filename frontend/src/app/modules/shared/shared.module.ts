@@ -45,7 +45,7 @@ import { CurrencyOnlyPipe } from './pipes/currency-only.pipe';
 import { SelectComponent } from './components/form/select/select.component';
 import { SwitchComponent } from './components/form/switch/switch.component';
 import { NgAlibiModule } from 'ng-alibi';
-
+import { NgAlibiIconsModule, NgAlibiIconsRegistry, dinosaurIconsArtist, dinosaurIconsBirthday, dinosaurIconsChef, dinosaurIconsSleep, dinosaurIconsSpace, left, right } from 'ng-alibi-icons';
 // const maskConfig: Partial<IConfig> = {
 //   validation: true,
 // };
@@ -86,7 +86,8 @@ export const options: Partial<null|IConfig> | (() => Partial<IConfig>) = null;
     MdbTabsModule,
     MdbTooltipModule,
     MdbValidationModule,
-    NgAlibiModule
+    NgAlibiModule,
+    NgAlibiIconsModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
@@ -123,7 +124,16 @@ export const options: Partial<null|IConfig> | (() => Partial<IConfig>) = null;
     CurrancyTableCellComponent,
     SelectComponent,
     SwitchComponent,
-    NgAlibiModule
+    NgAlibiModule,
+    NgAlibiIconsModule
     ]
 })
-export class SharedModule {}
+export class SharedModule {
+  constructor(private ngAlibiIconsRegistry: NgAlibiIconsRegistry) {
+    this.ngAlibiIconsRegistry.registerIcons([
+        dinosaurIconsArtist,
+        left,
+        right
+    ]);
+}
+}

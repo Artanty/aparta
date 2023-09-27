@@ -110,6 +110,11 @@
     },
     "ng-alibi": {
       "projectType": "library",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
       "root": "projects/ng-alibi",
       "sourceRoot": "projects/ng-alibi/src",
       "prefix": "alibi",
@@ -133,6 +138,39 @@
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "tsConfig": "projects/ng-alibi/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+    "ng-alibi-icons": {
+      "projectType": "library",
+      "root": "projects/ng-alibi-icons",
+      "sourceRoot": "projects/ng-alibi-icons/src",
+      "prefix": "ai",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/ng-alibi-icons/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/ng-alibi-icons/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/ng-alibi-icons/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "tsConfig": "projects/ng-alibi-icons/tsconfig.spec.json",
             "polyfills": [
               "zone.js",
               "zone.js/testing"

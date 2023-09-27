@@ -13,6 +13,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 
 
+
 registerLocaleData(localeRu, 'ru');
 
 @NgModule({
@@ -26,10 +27,14 @@ registerLocaleData(localeRu, 'ru');
     SharedModule,
     BrowserAnimationsModule,
     FontAwesomeModule,
+
   ],
   bootstrap: [AppComponent],
   providers: [
     { provide: LOCALE_ID, useValue: 'ru' }
   ],
 })
-export class AppModule { }
+export class AppModule {
+
+
+}

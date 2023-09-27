@@ -1,1 +1,40 @@
-<p>table works!</p>
+<!-- нейротрансформация -->
+<!-- lighthouse -->
+<!-- кортизол -->
+<div class="table-container">
+  <div class="table" [ngStyle]="tableHeight">
+    <ng-container *ngFor="let tp of templates">
+      <ng-container [ngSwitch]="tp.templateName">
+        <ng-container *ngSwitchCase="TEMPLATE.header">
+          <div class="table-column">
+            <div class="column">No.</div>
+            <ng-container *ngTemplateOutlet="tp.template; context: { $implicit: cols }"></ng-container>
+          </div>
+        </ng-container>
+        <ng-container *ngSwitchCase="TEMPLATE.body">
+          <div class="table-row" *ngFor="let item of items; index as i">
+            <div class="row">{{i + 1 + pageData.start}}</div>
+            <ng-container *ngTemplateOutlet="tp.template; context: { $implicit: { rowData: item, index: i, columns: cols } }"></ng-container>
+          </div>
+        </ng-container>
+        <div *ngSwitchDefault>Please provide correct template name.</div>
+      </ng-container>
+    </ng-container>
+  </div>
+</div>
+<div class="actions">
+  <div class="current">
+    {{ pageData.start + 1}} <span class="separator">-</span
+      >{{ pageData.end }} of {{ size }}
+  </div>
+  <button (click)="prev()">
+    <svg class="icon">
+      <use href="https://cdns.iconmonstr.com/wp-content/releases/preview/2018/240/iconmonstr-arrow-right-thin.png"></use>
+    </svg>
+  </button>
+  <button (click)="next()">
+    <svg class="icon">
+      <use href="https://cdns.iconmonstr.com/wp-content/releases/preview/2018/240/iconmonstr-arrow-left-thin.png"></use>
+    </svg>
+  </button>
+</div>

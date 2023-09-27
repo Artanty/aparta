@@ -1,0 +1,73 @@
+.columnRowBaseStyles {
+  flex: 0 0 80px;
+  display: flex;
+  align-items: center;
+}
+
+:host ::ng-deep .table-container{
+  height: auto;
+  width: inherit;
+  user-select: none;
+
+  .table{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    height: auto;
+    font-family: Arial, Arial, Helvetica, sans-serif;
+
+    .table-row {
+      @extend .columnRowBaseStyles;
+      background-color: #fff;
+      box-shadow: 0 10px 15px rgba(0,0,0,0.02);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: box-shadow 0.6s cubic-beizer(0.25, 1, 0.5, 0.1);
+
+      &:not(:last-child) { margin-bottom: 20px; };
+      .row {
+        &:first-child { margin: 0 0 0 20px; };
+        flex: 1;
+        font-size: 14px;
+      }
+    }
+    .table-column {
+      @extend .columnRowBaseStyles;
+      .column {
+        &:first-child { margin: 0 0 0 20px; };
+        flex: 1;
+        color: #a9a9a9;
+      }
+    }
+  }
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    .current {
+      color: #848484;
+      font-family: Arial, Helvetica, sans-serif;
+      margin-right: 10px;
+
+      .separator {
+        margin: 0 5px;
+      }
+    }
+
+    button {
+      display: flex;
+      align-items: center;
+      outline: none;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+
+      & svg.icon {
+        fill: #b9b9b9;
+        width: 30px;
+        height: 30px;
+      }
+    }
+  }
+}

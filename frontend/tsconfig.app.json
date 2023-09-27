@@ -17,6 +17,9 @@
       "ng-alibi": [
         "dist/ng-alibi"
       ],
+      "ng-alibi-icons": [
+        "dist/ng-alibi-icons"
+      ]
     }
   },
   "files": [
