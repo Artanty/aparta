@@ -1,24 +1,22 @@
-<ai-ng-alibi-icons name="left"></ai-ng-alibi-icons>
-
 <alibi-table
   [cols]="cols"
   [data]="data"
   [pageSize]="5"
-  style="display: inline-block; width: 900px;">
+  style="display: inline-block; width: 100%;">
   <ng-template template="header" let-columns>
     <div class="column" *ngFor="let col of columns">
       {{ col.colName }}
     </div>
   </ng-template>
-  <!-- <ng-template template="body" let-data>
+  <ng-template template="body" let-data>
     <div class="row" *ngFor="let col of data.columns">
       {{ data.rowData[col.fieldName] }}
     </div>
-  </ng-template> -->
+  </ng-template>
+  <ng-template template="pagiPrev" let-data>
+    <!-- <ai-ng-alibi-icons name="left"></ai-ng-alibi-icons>
+    <span>go</span>
+    dff -->
+    <!-- <button (click)="go()">comp button</button> -->
+  </ng-template>
 </alibi-table>
-<div class="column" *ngFor="let col of cols">
-  {{ col.colName }}
-</div>
-<div class="row" *ngFor="let col of data">
-  {{ col | json }}
-</div>

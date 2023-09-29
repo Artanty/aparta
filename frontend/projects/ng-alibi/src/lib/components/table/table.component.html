@@ -1,8 +1,10 @@
 <!-- нейротрансформация -->
 <!-- lighthouse -->
 <!-- кортизол -->
-<div class="table-container">
-  <div class="table" [ngStyle]="tableHeight">
+<!-- [ngStyle]="tableHeight" -->
+<!-- https://angdev.ru/angular/content-projection/#_4 -->
+<div class="table-container" [ngStyle]="tableHeight">
+  <div class="table" >
     <ng-container *ngFor="let tp of templates">
       <ng-container [ngSwitch]="tp.templateName">
         <ng-container *ngSwitchCase="TEMPLATE.header">
@@ -17,24 +19,43 @@
             <ng-container *ngTemplateOutlet="tp.template; context: { $implicit: { rowData: item, index: i, columns: cols } }"></ng-container>
           </div>
         </ng-container>
-        <div *ngSwitchDefault>Please provide correct template name.</div>
+        <!-- <div *ngSwitchDefault>Please provide correct template name.</div> -->
       </ng-container>
     </ng-container>
   </div>
 </div>
 <div class="actions">
-  <div class="current">
-    {{ pageData.start + 1}} <span class="separator">-</span
-      >{{ pageData.end }} of {{ size }}
+  <div class="pagination--wrapper">
+    <div class="current">
+      {{ pageData.start + 1}} <span class="separator">-</span
+        >{{ pageData.end }} <span i18n="@@pagination-count">из</span> {{ size }}
+    </div>
+    <div class="pagination__nav--wrapper">
+      <div class="pagi__prev--wrapper" #paginationPrevWrapper>
+        <ng-container *ngIf="getTemplateByName('pagiPrev') as pagiPrevTemp; else pagiPrevTempDefault">
+          <ng-container *ngTemplateOutlet="pagiPrevTemp.template"></ng-container>
+        </ng-container>
+        <ng-template #pagiPrevTempDefault>
+          <button (click)="prev()">
+            ←
+          </button>
+        </ng-template>
+      </div>
+
+      <div class="pagi__next--wrapper" #paginationNextWrapper>
+        <ng-container *ngIf="getTemplateByName('pagiNext') as pageNextTemp; else pageNextTempDefault">
+          <ng-container *ngTemplateOutlet="pageNextTemp.template"></ng-container>
+        </ng-container>
+
+        <ng-template #pageNextTempDefault>
+          <button (click)="next()">
+            →
+          </button>
+        </ng-template>
+      </div>
+    </div>
   </div>
-  <button (click)="prev()">
-    <svg class="icon">
-      <use href="https://cdns.iconmonstr.com/wp-content/releases/preview/2018/240/iconmonstr-arrow-right-thin.png"></use>
-    </svg>
-  </button>
-  <button (click)="next()">
-    <svg class="icon">
-      <use href="https://cdns.iconmonstr.com/wp-content/releases/preview/2018/240/iconmonstr-arrow-left-thin.png"></use>
-    </svg>
-  </button>
+
+
+
 </div>

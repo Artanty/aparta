@@ -22,6 +22,9 @@
       "es2020",
       "dom"
     ],
+    "types": [
+      "@angular/localize"
+    ],
     "paths": {
       "@components/*": [
         "src/app/modules/shared/components/*"

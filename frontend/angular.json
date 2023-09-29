@@ -4,6 +4,15 @@
   "newProjectRoot": "projects",
   "projects": {
     "frontend": {
+      "i18n": {
+        "sourceLocale": "en-US",
+        "locales": {
+          "ru": {
+            "translation": "src/locale/messages.ru.xlf",
+            "baseHref": ""
+          }
+        }
+      },
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -20,6 +29,8 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "localize": true,
+            "i18nMissingTranslation": "error",
             "outputPath": "dist",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -59,7 +70,13 @@
               ],
               "outputHashing": "all"
             },
+            "ru": {
+              "localize": ["ru"],
+              "outputPath": "dist/under-construction-ru/",
+              "i18nMissingTranslation": "error"
+            },
             "development": {
+              "localize": false,
               "buildOptimizer": false,
               "optimization": false,
               "vendorChunk": true,
@@ -78,6 +95,9 @@
             },
             "development": {
               "browserTarget": "frontend:build:development"
+            },
+            "ru": {
+              "browserTarget": "frontend:build:ru"
             }
           },
           "defaultConfiguration": "development"
@@ -85,7 +105,9 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "frontend:build"
+            "browserTarget": "frontend:build",
+            "format": "xlf",
+            "outputPath": "src/locale"
           }
         },
         "test": {

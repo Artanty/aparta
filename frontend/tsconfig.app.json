@@ -3,7 +3,9 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/app",
-    "types": [],
+    "types": [
+      "@angular/localize"
+    ],
     "paths": {
       "@components/*": ["src/app/modules/shared/components/*"],
       "@features/*": ["src/app/modules/shared/features/*"],
