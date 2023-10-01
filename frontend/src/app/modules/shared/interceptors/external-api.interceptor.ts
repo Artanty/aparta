@@ -25,6 +25,10 @@ export class ExternalApiInterceptor implements HttpInterceptor {
     if (splitCount2) {
       return this.assignApiParams2(request, splitCount2)
     }
+    const splitCount3 = this.searchInUrl(request.url, 'i18n') // use for load local json then
+    if (splitCount3) {
+      return this.assignApiParams3(request)
+    }
     return request
   }
 
@@ -57,6 +61,21 @@ export class ExternalApiInterceptor implements HttpInterceptor {
     urlArr.splice(0, splitCount)
     const clone = request.clone({
       url: 'https://' + urlArr.join('/'),
+      headers: request.headers.delete('Authorization').delete('Access-Control-Allow-Headers'),
+      setHeaders: {
+        'Content-Type': 'application/javascript',
+        'Accept': 'application/javascript',
+        'apikey': 'fXQVlAfPuL3j85v8lEnQ1JsGqgVxR2Wm',
+      },
+    })
+    return clone
+  }
+
+  assignApiParams3(request: HttpRequest<any>): HttpRequest<any>{
+    let urlArr = request.url.split('/')
+    urlArr.splice(0, 4)
+    const clone = request.clone({
+      url: '/' + urlArr.join('/'),
       headers: request.headers.delete('Authorization').delete('Access-Control-Allow-Headers'),
       setHeaders: {
         'Content-Type': 'application/javascript',

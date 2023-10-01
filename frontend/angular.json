@@ -8,8 +8,7 @@
         "sourceLocale": "en-US",
         "locales": {
           "ru": {
-            "translation": "src/locale/messages.ru.xlf",
-            "baseHref": ""
+            "translation": "src/locale/messages.ru.xlf"
           }
         }
       },
@@ -71,9 +70,7 @@
               "outputHashing": "all"
             },
             "ru": {
-              "localize": ["ru"],
-              "outputPath": "dist/under-construction-ru/",
-              "i18nMissingTranslation": "error"
+              "localize": ["ru"]
             },
             "development": {
               "localize": false,

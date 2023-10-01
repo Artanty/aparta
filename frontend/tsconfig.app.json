@@ -16,10 +16,10 @@
       "@shared/*": ["src/app/modules/shared/*"],
       "@services/*": ["src/app/modules/shared/services/*"],
       "@app/*": ["src/app/*"],
-      "ng-alibi": [
+      "@ng-alibi": [
         "dist/ng-alibi"
       ],
-      "ng-alibi-icons": [
+      "@ng-alibi-icons": [
         "dist/ng-alibi-icons"
       ]
     }

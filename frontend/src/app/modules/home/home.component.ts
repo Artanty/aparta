@@ -58,6 +58,10 @@ export type TGroupBy1 = 'organization' | 'template'
 })
 
 export class HomeComponent {
+
+  today: number = Date.now();
+  company = "Lokalise";
+  created_by = $localize`Created by ${this.company}`;
 //   yearsBefore: FormControl = new FormControl(3)
 //   yearsBeforeOptions = [
 //     { id: 0, name: 'Только текущий год' },

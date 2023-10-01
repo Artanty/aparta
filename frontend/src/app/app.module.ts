@@ -11,11 +11,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import localeRu from '@angular/common/locales/ru';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
-
-
-
-registerLocaleData(localeRu, 'ru');
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -30,11 +25,7 @@ registerLocaleData(localeRu, 'ru');
 
   ],
   bootstrap: [AppComponent],
-  providers: [
-    { provide: LOCALE_ID, useValue: 'ru' }
-  ],
+
 })
 export class AppModule {
-
-
 }

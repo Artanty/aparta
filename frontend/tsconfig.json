@@ -53,10 +53,10 @@
       "@app/*": [
         "src/app/*"
       ],
-      "ng-alibi": [
+      "@ng-alibi": [
         "dist/ng-alibi"
       ],
-      "ng-alibi-icons": [
+      "@ng-alibi-icons": [
         "dist/ng-alibi-icons"
       ],
     },

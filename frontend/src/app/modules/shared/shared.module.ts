@@ -1,4 +1,4 @@
-import { ModuleWithProviders, NgModule } from '@angular/core';
+import { APP_INITIALIZER, ModuleWithProviders, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -45,11 +45,18 @@ import { CurrencyOnlyPipe } from './pipes/currency-only.pipe';
 import { SelectComponent } from './components/form/select/select.component';
 import { SwitchComponent } from './components/form/switch/switch.component';
 import { NgAlibiModule } from 'ng-alibi';
-import { NgAlibiIconsModule, NgAlibiIconsRegistry, dinosaurIconsArtist, dinosaurIconsBirthday, dinosaurIconsChef, dinosaurIconsSleep, dinosaurIconsSpace, left, right } from 'ng-alibi-icons';
+import { NgAlibiIconsModule, NgAlibiIconsRegistry, dinosaurIconsArtist, dinosaurIconsBirthday, dinosaurIconsChef, dinosaurIconsSleep, dinosaurIconsSpace, left, right
+} from 'ng-alibi-icons';
+import { LocaleService } from './services/locale/locale.service'
+import { LocaleSwitcherComponent } from './features/locale-switcher/locale-switcher.component';
+import { STORAGE_SERVICE } from './constants';
+import { LocalStorageService } from './services/storage/local-storage.service';
+// import { }
 // const maskConfig: Partial<IConfig> = {
 //   validation: true,
 // };
 export const options: Partial<null|IConfig> | (() => Partial<IConfig>) = null;
+
 
 
 @NgModule({
@@ -66,6 +73,8 @@ export const options: Partial<null|IConfig> | (() => Partial<IConfig>) = null;
     CurrencyOnlyPipe,
     SelectComponent,
     SwitchComponent,
+    LocaleSwitcherComponent,
+
   ],
   imports: [
     CommonModule,
@@ -93,7 +102,14 @@ export const options: Partial<null|IConfig> | (() => Partial<IConfig>) = null;
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: BaseUrlInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ExternalApiInterceptor, multi: true },
-    provideEnvironmentNgxMask()
+    provideEnvironmentNgxMask(),
+    { provide: APP_INITIALIZER,
+      deps: [LocaleService],
+      useFactory: (localeService: LocaleService) => () =>
+        localeService.setCurrentLocale(),
+      multi: true
+    },
+    { provide: STORAGE_SERVICE, useClass: LocalStorageService },
   ],
   exports: [
     CommonModule,
@@ -125,7 +141,8 @@ export const options: Partial<null|IConfig> | (() => Partial<IConfig>) = null;
     SelectComponent,
     SwitchComponent,
     NgAlibiModule,
-    NgAlibiIconsModule
+    NgAlibiIconsModule,
+    LocaleSwitcherComponent
     ]
 })
 export class SharedModule {

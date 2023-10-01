@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, isDevMode, OnDestroy, Renderer2, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Inject, isDevMode, LOCALE_ID, OnDestroy, Renderer2, ViewChild } from '@angular/core';
 import { AuthService } from './modules/shared/services/auth/auth.service';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { filter } from 'rxjs';
@@ -10,9 +10,10 @@ import { isMock, setMock } from '@shared/helpers';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements AfterViewInit, OnDestroy {
+
   @ViewChild('navbarToggler') navbarToggler?: ElementRef<any>
   @ViewChild('fixedNavbar') fixedNavbar?: any
-  title = 'Aparta'
+
   isLoggedIn: boolean = false
   allListeners: (() => void)[] = [];
   isDevMode = isDevMode()
@@ -20,7 +21,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     private AuthServ: AuthService,
     private Router: Router,
     private elementRef: ElementRef,
-    private renderer: Renderer2
+    private renderer: Renderer2,
   ) {
     this.Router.events.pipe(filter((res: any) => res instanceof NavigationEnd)).subscribe((val) => {
       this.isLoggedIn = this.AuthServ.isLoggedIn()
