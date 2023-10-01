@@ -38,10 +38,10 @@ jobs:
           pull: --no-rebase
           push: true
 
-      - name: Use Node.js 14.20
+      - name: Use Node.js 16.14
         uses: actions/setup-node@v1
         with:
-          node-version: 14.20
+          node-version: 16.14
 
       - name: Install dependencies
         run: npm install
