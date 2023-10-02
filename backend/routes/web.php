@@ -17,9 +17,15 @@ $environment = App::environment();
 
 if (App::environment('production')) {
 
-    Route::any('{path?}', function() {
-        return File::get(public_path() . '/index.html');
-    })->where("path", ".+");
+    Route::any('{path?}', function($path = null) {
+        $locale = 'ru'; // Default language
+
+        if (preg_match('/^(ru|en-US)/', $path, $matches)) {
+            $locale = $matches[1]; // Get the matched language code
+        }
+
+        return File::get(public_path() . "/$locale/index.html");
+    })->where('path', '.*');
 
 } else if (App::environment('local')) {
 
