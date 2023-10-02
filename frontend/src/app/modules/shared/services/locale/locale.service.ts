@@ -17,12 +17,15 @@ export class LocaleService {
       console.log(3, 'locale code already set')
     } else {
       this.Storage.setItem('locale', localeCode)
-      const path = window.location.href.replace(
-        `/${this._locale}/`,
-        `/${localeCode}/`
-      );
-      if (this.Storage.getItem('loc')) {
-        window.location.replace(path);
+      const locale = this._getLocaleUrl(localeCode);
+      if (locale) {
+        const path = window.location.href.replace(
+          `/${this._locale}/`,
+          `/${localeCode}/`
+        );
+        if (this.Storage.getItem('loc')) {
+          window.location.replace(path);
+        }
       }
     }
   }
@@ -46,5 +49,12 @@ export class LocaleService {
       return fixRu(navigator.languages[0])
     }
     return fixRu(navigator.language)
+  }
+
+  // если в урле есть текущая локаль, то меняем
+  private _getLocaleUrl(locale: string): string {
+    return window.location.pathname.includes(`/${this._locale}/`)
+      ? `/${locale}`
+      : '';
   }
 }
