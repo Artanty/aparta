@@ -6,16 +6,16 @@ import { StorageInterface } from '@shared/interfaces/Storage';
   providedIn: 'root'
 })
 export class LocaleService {
-
+  appInited: boolean = false
   constructor(
     @Inject(LOCALE_ID) private _locale: string,
     @Inject(STORAGE_SERVICE) private Storage: StorageInterface
   ) { }
 
   switchLocale (localeCode: string) {
-    if (this._locale === localeCode) {
-      console.log(3, 'locale code already set')
-    } else {
+    if (!this.appInited || this._locale !== localeCode) {
+    //   console.log(3, 'locale code already set')
+    // } else {
       this.Storage.setItem('locale', localeCode)
       const locale = this._getLocaleUrl(localeCode);
       if (locale) {
@@ -26,6 +26,7 @@ export class LocaleService {
         if (this.Storage.getItem('loc')) {
           window.location.replace(path);
         }
+        this.appInited = true
       }
     }
   }
