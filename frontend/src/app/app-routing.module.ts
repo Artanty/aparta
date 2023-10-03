@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
-  { path: '', loadChildren: () => import('./modules/home/home.module').then(m => m.HomeModule) },
-  // { path: '', redirectTo: 'apartamentFee', pathMatch: 'full' },
+  { path: 'home', loadChildren: () => import('./modules/home/home.module').then(m => m.HomeModule) },
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: 'auth', loadChildren: () => import('./modules/auth/auth.module').then(m => m.AuthModule) },
   { path: 'apartament', loadChildren: () => import('./modules/apartament/apartament.module').then(m => m.ApartamentModule) },
   { path: 'apartamentFee', loadChildren: () => import('./modules/apartament-fee/apartament-fee.module').then(m => m.ApartamentFeeModule) },
@@ -15,7 +15,7 @@ const routes: Routes = [
   { path: 'exchangeRate', loadChildren: () => import('./modules/exchange-rate/exchange-rate.module').then(m => m.ExchangeRateModule) },
   { path: 'external', loadChildren: () => import('./modules/external/external.module').then(m => m.ExternalModule) },
   // { path: '**', redirectTo: 'apartamentFee' }
-  // { path: '**', redirectTo: '' }
+  { path: '**', redirectTo: '' }
 ]
 
 @NgModule({
