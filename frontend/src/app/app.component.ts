@@ -3,6 +3,7 @@ import { AuthService } from './modules/shared/services/auth/auth.service';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { filter } from 'rxjs';
 import { isMock, setMock } from '@shared/helpers';
+import { LocaleService } from '@shared/services/locale/locale.service';
 
 @Component({
   selector: 'app-root',
@@ -22,10 +23,12 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     private Router: Router,
     private elementRef: ElementRef,
     private renderer: Renderer2,
+    private LocaleServ: LocaleService
   ) {
     this.Router.events.pipe(filter((res: any) => res instanceof NavigationEnd)).subscribe((val) => {
       this.isLoggedIn = this.AuthServ.isLoggedIn()
     });
+    this.LocaleServ.setCurrentLocale()
   }
 
   ngAfterViewInit() {
