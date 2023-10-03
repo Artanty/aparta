@@ -13,12 +13,13 @@ export class LocaleService {
   ) { }
 
   switchLocale (localeCode: string) {
-    if (!this.appInited || this._locale !== localeCode) {
+    if (!this.appInited || (this._locale !== localeCode)) {
     //   console.log(3, 'locale code already set')
     // } else {
       this.Storage.setItem('locale', localeCode)
       const locale = this._getLocaleUrl(localeCode);
       if (locale) {
+        this.appInited = true
         const path = window.location.href.replace(
           `/${this._locale}/`,
           `/${localeCode}/`
@@ -26,7 +27,7 @@ export class LocaleService {
         if (this.Storage.getItem('loc')) {
           window.location.replace(path);
         }
-        this.appInited = true
+
       }
     }
   }
