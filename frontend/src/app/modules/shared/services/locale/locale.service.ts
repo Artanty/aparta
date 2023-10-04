@@ -6,23 +6,32 @@ import { StorageInterface } from '@shared/interfaces/Storage';
   providedIn: 'root'
 })
 export class LocaleService {
-  appInited: boolean = false
+
   constructor(
     @Inject(LOCALE_ID) private _locale: string,
     @Inject(STORAGE_SERVICE) private Storage: StorageInterface
   ) { }
-  initLocale () {
 
+  initLocale () {
+    const currentLocale = this.getCurrentLocale()
+    if (this._locale !== currentLocale) {
+      const path = window.location.href.replace(
+        `/${this._locale}/`,
+        `/${currentLocale}/`
+      );
+      if (this.Storage.getItem('loc')) {
+        window.location.replace(path);
+      }
+    }
   }
 
   switchLocale (localeCode: string) {
-    if (!this.appInited || (this._locale !== localeCode)) {
-    //   console.log(3, 'locale code already set')
-    // } else {
+    if (this._locale === localeCode) {
+      console.log(3, 'locale code already set')
+    } else {
       this.Storage.setItem('locale', localeCode)
       const locale = this._getLocaleUrl(localeCode);
       if (locale) {
-        this.appInited = true
         const path = window.location.href.replace(
           `/${this._locale}/`,
           `/${localeCode}/`
@@ -30,10 +39,10 @@ export class LocaleService {
         if (this.Storage.getItem('loc')) {
           window.location.replace(path);
         }
-
       }
     }
   }
+
   public setCurrentLocale () {
     const currentLocale = this.getCurrentLocale()
     this.switchLocale(currentLocale)
@@ -56,7 +65,7 @@ export class LocaleService {
     return fixRu(navigator.language)
   }
 
-  // если в урле есть локаль, то меняем
+  // если в урле есть текущая локаль, то меняем
   private _getLocaleUrl(locale: string): string {
     return window.location.pathname.includes(`/${this._locale}/`)
       ? `/${locale}`
