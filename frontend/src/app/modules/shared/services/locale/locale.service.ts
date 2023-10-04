@@ -14,7 +14,8 @@ export class LocaleService {
 
   initLocale () {
     const currentLocale = this.getCurrentLocale()
-    if (this._locale !== currentLocale) {
+    const locale = this._getLocaleUrl(currentLocale);
+    if (!locale) {
       const path = window.location.href.replace(
         `/${this._locale}/`,
         `/${currentLocale}/`
