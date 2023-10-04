@@ -28,7 +28,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     this.Router.events.pipe(filter((res: any) => res instanceof NavigationEnd)).subscribe((val) => {
       this.isLoggedIn = this.AuthServ.isLoggedIn()
     });
-    this.LocaleServ.setCurrentLocale()
+    this.LocaleServ.initLocale()
   }
 
   ngAfterViewInit() {

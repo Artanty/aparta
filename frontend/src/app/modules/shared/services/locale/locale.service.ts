@@ -11,6 +11,9 @@ export class LocaleService {
     @Inject(LOCALE_ID) private _locale: string,
     @Inject(STORAGE_SERVICE) private Storage: StorageInterface
   ) { }
+  initLocale () {
+
+  }
 
   switchLocale (localeCode: string) {
     if (!this.appInited || (this._locale !== localeCode)) {
@@ -53,7 +56,7 @@ export class LocaleService {
     return fixRu(navigator.language)
   }
 
-  // если в урле есть текущая локаль, то меняем
+  // если в урле есть локаль, то меняем
   private _getLocaleUrl(locale: string): string {
     return window.location.pathname.includes(`/${this._locale}/`)
       ? `/${locale}`
