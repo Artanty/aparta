@@ -1,6 +1,7 @@
 import { Inject, Injectable, LOCALE_ID } from '@angular/core';
 import { STORAGE_SERVICE } from '@shared/constants';
 import { StorageInterface } from '@shared/interfaces/Storage';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -9,18 +10,21 @@ export class LocaleService {
 
   constructor(
     @Inject(LOCALE_ID) private _locale: string,
-    @Inject(STORAGE_SERVICE) private Storage: StorageInterface
+    @Inject(STORAGE_SERVICE) private Storage: StorageInterface,
+    private router: Router
   ) { }
 
   initLocale () {
-    const currentLocale = this.getCurrentLocale()
-    const locale = this._getLocaleUrl(currentLocale);
-    if (!locale) {
-      const path = window.location.href.replace(
-        `/${this._locale}/`,
-        `/${currentLocale}/`
-      );
-      if (this.Storage.getItem('loc')) {
+    console.log('this.router.url: ' + this.router.url);
+    console.log('window.location.href: ' + window.location.href)
+    const localeId = this.Storage.getItem('locale');
+    if (localeId && localeId !== this._locale) {
+      const locale = this._getLocaleUrl(String(localeId));
+      if (locale) {
+        const path = window.location.href.replace(
+          `/${this._locale}/`,
+          `/${localeId}/`
+        );
         window.location.replace(path);
       }
     }
