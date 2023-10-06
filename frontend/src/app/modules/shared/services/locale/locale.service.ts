@@ -1,7 +1,7 @@
 import { Inject, Injectable, LOCALE_ID } from '@angular/core';
 import { STORAGE_SERVICE } from '@shared/constants';
 import { StorageInterface } from '@shared/interfaces/Storage';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -11,23 +11,31 @@ export class LocaleService {
   constructor(
     @Inject(LOCALE_ID) private _locale: string,
     @Inject(STORAGE_SERVICE) private Storage: StorageInterface,
-    private router: Router
-  ) { }
+    private router: Router,
+    private ActivatedRoute: ActivatedRoute
+  ) {
+    this.ActivatedRoute.params.subscribe((res: any) => {
+      console.log(res)
+    })
+  }
 
   initLocale () {
+    if (this.router.url === '/') {
+      this.setCurrentLocale()
+    }
     console.log('this.router.url: ' + this.router.url);
     console.log('window.location.href: ' + window.location.href)
-    const localeId = this.Storage.getItem('locale');
-    if (localeId && localeId !== this._locale) {
-      const locale = this._getLocaleUrl(String(localeId));
-      if (locale) {
-        const path = window.location.href.replace(
-          `/${this._locale}/`,
-          `/${localeId}/`
-        );
-        window.location.replace(path);
-      }
-    }
+    // const localeId = this.Storage.getItem('locale');
+    // if (localeId && localeId !== this._locale) {
+    //   const locale = this._getLocaleUrl(String(localeId));
+    //   if (locale) {
+    //     const path = window.location.href.replace(
+    //       `/${this._locale}/`,
+    //       `/${localeId}/`
+    //     );
+    //     window.location.replace(path);
+    //   }
+    // }
   }
 
   switchLocale (localeCode: string) {
