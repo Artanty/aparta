@@ -21,18 +21,10 @@ export class LocaleService {
 
   initLocale () {
     if (this.router.url === '/') {
-      if (this.Storage.getItem('loc2')) {
-        this.router.navigate(['home'])
-      } else if (this.Storage.getItem('loc5')){
-        this.router.navigateByUrl(`home`)
-      }
-      if (this.Storage.getItem('loc8')) {
+      this.router.navigate(['home'])
+      setTimeout(() => {
         this.switchLocale(this.getCurrentLocale())
-      } else if (this.Storage.getItem('loc9')){
-        setTimeout(() => {
-          this.switchLocale(this.getCurrentLocale())
-        }, 500)
-      }
+      }, 0)
     }
   }
 

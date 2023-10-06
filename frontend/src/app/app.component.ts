@@ -29,6 +29,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       this.isLoggedIn = this.AuthServ.isLoggedIn()
     });
     // this.LocaleServ.initLocale()
+    console.log(50)
   }
 
   ngAfterViewInit() {
