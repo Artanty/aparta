@@ -23,27 +23,17 @@ export class LocaleService {
     if (this.router.url === '/') {
       if (this.Storage.getItem('loc2')) {
         this.router.navigate(['home'])
-      } else if (this.Storage.getItem('loc3')){
-        this.router.navigateByUrl(`/${this.getCurrentLocale()}/home`)
-      } else if (this.Storage.getItem('loc4')){
-        this.router.navigateByUrl(`${this.getCurrentLocale()}/home`)
       } else if (this.Storage.getItem('loc5')){
         this.router.navigateByUrl(`home`)
       }
+      if (this.Storage.getItem('loc8')) {
+        this.switchLocale(this.getCurrentLocale())
+      } else if (this.Storage.getItem('loc9')){
+        setTimeout(() => {
+          this.switchLocale(this.getCurrentLocale())
+        }, 500)
+      }
     }
-    console.log('this.router.url: ' + this.router.url);
-    console.log('window.location.href: ' + window.location.href)
-    // const localeId = this.Storage.getItem('locale');
-    // if (localeId && localeId !== this._locale) {
-    //   const locale = this._getLocaleUrl(String(localeId));
-    //   if (locale) {
-    //     const path = window.location.href.replace(
-    //       `/${this._locale}/`,
-    //       `/${localeId}/`
-    //     );
-    //     window.location.replace(path);
-    //   }
-    // }
   }
 
   switchLocale (localeCode: string) {
@@ -71,9 +61,11 @@ export class LocaleService {
 
   public getCurrentLocale (): string {
     const selectedLocale = this.Storage.getItem<string>('locale')
+    console.log('loc from stirage: ' + selectedLocale)
     if (selectedLocale) {
       return selectedLocale
     } else {
+      console.log('loc from browser: ' + this.getBrowserLocale())
       return this.getBrowserLocale()
     }
   }
