@@ -103,11 +103,11 @@ export const options: Partial<null|IConfig> | (() => Partial<IConfig>) = null;
     { provide: HTTP_INTERCEPTORS, useClass: BaseUrlInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ExternalApiInterceptor, multi: true },
     provideEnvironmentNgxMask(),
-    // { provide: APP_INITIALIZER,
-    //   deps: [LocaleService],
-    //   useFactory: (localeService: LocaleService) => () => localeService.initLocale(),
-    //   multi: true
-    // },
+    { provide: APP_INITIALIZER,
+      deps: [LocaleService],
+      useFactory: (localeService: LocaleService) => () => localeService.initLocale(),
+      multi: true
+    },
     { provide: STORAGE_SERVICE, useClass: LocalStorageService },
   ],
   exports: [

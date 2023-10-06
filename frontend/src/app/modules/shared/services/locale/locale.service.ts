@@ -21,7 +21,7 @@ export class LocaleService {
 
   initLocale () {
     if (this.router.url === '/') {
-      this.router.navigate(['home'])
+      // this.router.navigate(['home'])
       setTimeout(() => {
         this.switchLocale(this.getCurrentLocale())
       }, 0)
