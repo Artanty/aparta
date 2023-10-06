@@ -15,11 +15,13 @@ export class LocaleService {
     private ActivatedRoute: ActivatedRoute
   ) {
     this.ActivatedRoute.params.subscribe((res: any) => {
-      console.log(res)
+      console.log('res')
+      console.log(this.router.url)
     })
   }
 
   initLocale () {
+    console.log(this.router.url)
     if (this.router.url === '/') {
       // this.router.navigate(['home'])
       setTimeout(() => {
