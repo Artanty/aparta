@@ -26,14 +26,16 @@ export class LocaleService {
       // this.router.navigate(['home'])
       setTimeout(() => {
         this.switchLocale(this.getCurrentLocale())
-      }, 0)
+      }, 10)
     }
   }
 
   switchLocale (localeCode: string) {
+    console.log(this._locale)
     if (this._locale === localeCode) {
       console.log(3, 'locale code already set')
     } else {
+      console.log(3, 'locale code doesnt set')
       this.Storage.setItem('locale', localeCode)
       const locale = this._getLocaleUrl(localeCode);
       if (locale) {
