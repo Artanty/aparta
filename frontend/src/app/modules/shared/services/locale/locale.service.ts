@@ -21,7 +21,15 @@ export class LocaleService {
 
   initLocale () {
     if (this.router.url === '/') {
-      this.setCurrentLocale()
+      if (this.Storage.getItem('loc2')) {
+        this.router.navigate(['home'])
+      } else if (this.Storage.getItem('loc3')){
+        this.router.navigateByUrl(`/${this.getCurrentLocale()}/home`)
+      } else if (this.Storage.getItem('loc4')){
+        this.router.navigateByUrl(`${this.getCurrentLocale()}/home`)
+      } else if (this.Storage.getItem('loc5')){
+        this.router.navigateByUrl(`home`)
+      }
     }
     console.log('this.router.url: ' + this.router.url);
     console.log('window.location.href: ' + window.location.href)
