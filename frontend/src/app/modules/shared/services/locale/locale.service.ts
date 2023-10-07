@@ -9,7 +9,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 export class LocaleService {
 
   constructor(
-    @Inject(LOCALE_ID) private _locale: string,
+    @Inject(LOCALE_ID) private localeToken: string,
     @Inject(STORAGE_SERVICE) private Storage: StorageInterface,
     private router: Router,
     private ActivatedRoute: ActivatedRoute
@@ -22,6 +22,7 @@ export class LocaleService {
 
   initLocale () {
     console.log(this.router.url)
+    this.localeToken = this.getCurrentLocale()
     if (this.router.url === '/') {
       // this.router.navigate(['home'])
       setTimeout(() => {
@@ -31,8 +32,8 @@ export class LocaleService {
   }
 
   switchLocale (localeCode: string) {
-    console.log(this._locale)
-    if (this._locale === localeCode) {
+    console.log(this.localeToken)
+    if (this.localeToken === localeCode) {
       console.log(3, 'locale code already set')
     } else {
       console.log(3, 'locale code doesnt set')
@@ -40,7 +41,7 @@ export class LocaleService {
       const locale = this._getLocaleUrl(localeCode);
       if (locale) {
         const path = window.location.href.replace(
-          `/${this._locale}/`,
+          `/${this.localeToken}/`,
           `/${localeCode}/`
         );
         if (this.Storage.getItem('loc')) {
@@ -76,7 +77,7 @@ export class LocaleService {
 
   // если в урле есть текущая локаль, то меняем
   private _getLocaleUrl(locale: string): string {
-    return window.location.pathname.includes(`/${this._locale}/`)
+    return window.location.pathname.includes(`/${this.localeToken}/`)
       ? `/${locale}`
       : '';
   }
