@@ -44,7 +44,10 @@ export class LocaleService {
         console.log('result locale to apply: ' + newLocale)
         console.log('locale token: ' + this.localeToken)
         if (newLocale !== this.localeToken) {
-          this.changeLocaleInUrlAndRedirect(newLocale)
+          // this.changeLocaleInUrlAndRedirect(newLocale)
+          console.log('CURRENT PATH: ' + window.location.href)
+          console.log('UPDATED PATH: ' + window.location.href + '/' + newLocale)
+          window.location.replace(window.location.href + '/' + newLocale);
         }
       }, 10)
     }
