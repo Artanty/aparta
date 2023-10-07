@@ -41,17 +41,46 @@ export class LocaleService {
             // const browserLocale = this.getBrowserLocale()
           }
         }
-        console.log('result locale to apply: ' + newLocale)
-        console.log('locale token: ' + this.localeToken)
+        console.log('new locale: ' + newLocale)
+        console.log('this.getLocaleFromUrl(): ' + this.getLocaleFromUrl())
         if (newLocale !== this.getLocaleFromUrl()) {
           // this.changeLocaleInUrlAndRedirect(newLocale)
           console.log('CURRENT PATH: ' + window.location.href)
-          this.changeLocaleInUrlAndRedirect(newLocale)
+          if (this.getLocaleFromUrl()) {
+            this.changeLocaleInUrlAndRedirect(newLocale)
+          } else {
+            const newUrl = this.addLocaleInUrl(window.location.href, newLocale)
+            window.location.replace(newUrl);
+          }
 
 
         }
       }, 10)
     }
+  }
+
+  private changeLocaleInUrlAndRedirect (newLocale: string) {
+    const path = window.location.href.replace(
+      `/${this.localeToken}/`,
+      `/${newLocale}/`
+    );
+    if (this.Storage.getItem('loc')) {
+      console.log('UPDATED PATH: ' + path)
+      window.location.replace(path);
+    }
+  }
+
+  addLocaleInUrl (fullUrl: string, newLocale: string) {
+    const [domain, path] = this.getUrlSegments(fullUrl)
+    return [domain, newLocale, path].join('/')
+  }
+
+  private getUrlSegments(fullUrl: string) {
+    const segments = fullUrl.split('/');
+    return [
+      segments.slice(0, 3).join('/'),
+      segments.slice(3).join('/')
+    ]
   }
 
   switchLocale (localeCode: string) {
@@ -68,16 +97,7 @@ export class LocaleService {
     }
   }
 
-  private changeLocaleInUrlAndRedirect (newLocale: string) {
-    const path = window.location.href.replace(
-      `/${this.localeToken}/`,
-      `/${newLocale}/`
-    );
-    if (this.Storage.getItem('loc')) {
-      console.log('UPDATED PATH: ' + path)
-      window.location.replace(path);
-    }
-  }
+
 
   public setCurrentLocale () {
     const currentLocale = this.getCurrentLocale()
