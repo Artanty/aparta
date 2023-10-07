@@ -7,26 +7,42 @@ import { Router, ActivatedRoute } from '@angular/router';
   providedIn: 'root'
 })
 export class LocaleService {
+  /**
+   * ur: www.site.net
+   * saved locale: null
+   * 1. (server redirect to default /ru/) -> www.site.net/ru (this.router.url === "/")
+   * 2. (ng router path: '**', redirectTo: ext)
 
+   */
   constructor(
     @Inject(LOCALE_ID) private localeToken: string,
     @Inject(STORAGE_SERVICE) private Storage: StorageInterface,
     private router: Router,
-    private ActivatedRoute: ActivatedRoute
   ) {
-    this.ActivatedRoute.params.subscribe((res: any) => {
-      console.log('res')
-      console.log(this.router.url)
-    })
   }
 
   initLocale () {
-    console.log(this.router.url)
-    this.localeToken = this.getCurrentLocale()
+    console.log('this.router.url: ' + this.router.url)
+    // this.localeToken = this.getCurrentLocale()
     if (this.router.url === '/') {
       // this.router.navigate(['home'])
       setTimeout(() => {
-        this.switchLocale(this.getCurrentLocale())
+        let newLocale: string = ''
+        // this.switchLocale(this.getCurrentLocale())
+        const savedLocale = this.getSavedLocale()
+        if (savedLocale) {
+          console.log('set from storage: ' + savedLocale)
+          newLocale = savedLocale
+        } else {
+          const localeFromUrl = this.getLocaleFromUrl()
+          if (localeFromUrl) {
+            console.log('set from url: ' + localeFromUrl)
+            newLocale = localeFromUrl
+            // const browserLocale = this.getBrowserLocale()
+          }
+        }
+        console.log('result locale to apply: ' + newLocale)
+        this.changeLocaleInUrlAndRedirect(newLocale)
       }, 10)
     }
   }
@@ -40,14 +56,18 @@ export class LocaleService {
       this.Storage.setItem('locale', localeCode)
       const locale = this._getLocaleUrl(localeCode);
       if (locale) {
-        const path = window.location.href.replace(
-          `/${this.localeToken}/`,
-          `/${localeCode}/`
-        );
-        if (this.Storage.getItem('loc')) {
-          window.location.replace(path);
-        }
+        this.changeLocaleInUrlAndRedirect(localeCode)
       }
+    }
+  }
+
+  private changeLocaleInUrlAndRedirect (newLocale: string) {
+    const path = window.location.href.replace(
+      `/${this.localeToken}/`,
+      `/${newLocale}/`
+    );
+    if (this.Storage.getItem('loc')) {
+      window.location.replace(path);
     }
   }
 
@@ -80,5 +100,19 @@ export class LocaleService {
     return window.location.pathname.includes(`/${this.localeToken}/`)
       ? `/${locale}`
       : '';
+  }
+
+  private getLocaleFromUrl(): string | undefined {
+    const locales: string[] = ['ru', 'en-US']
+    const url = window.location.pathname
+    return this.findIncludedString(locales, url)
+  }
+
+  private findIncludedString(arr: string[], str: string): string | undefined {
+    return arr.find(item => str.includes(`/${item}/`));
+  }
+
+  private getSavedLocale (): string | null {
+    return this.Storage.getItem<string>('locale')
   }
 }
