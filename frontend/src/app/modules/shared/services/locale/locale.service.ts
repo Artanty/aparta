@@ -22,41 +22,34 @@ export class LocaleService {
   }
 
   initLocale () {
-    console.log('this.router.url: ' + this.router.url)
-    // this.localeToken = this.getCurrentLocale()
-    if (this.router.url === '/') {
-      // this.router.navigate(['home'])
-      setTimeout(() => {
-        let newLocale: string = 'ru'
-        // this.switchLocale(this.getCurrentLocale())
-        const savedLocale = this.getSavedLocale()
-        if (savedLocale) {
-          console.log('set from storage: ' + savedLocale)
-          newLocale = savedLocale
+    setTimeout(() => {
+      let newLocale: string = 'ru'
+      // this.switchLocale(this.getCurrentLocale())
+      const savedLocale = this.getSavedLocale()
+      if (savedLocale) {
+        console.log('set from storage: ' + savedLocale)
+        newLocale = savedLocale
+      } else {
+        const localeFromUrl = this.getLocaleFromUrl()
+        if (localeFromUrl) {
+          console.log('set from url: ' + localeFromUrl)
+          newLocale = localeFromUrl
+          // const browserLocale = this.getBrowserLocale()
+        }
+      }
+      console.log('new locale: ' + newLocale)
+      console.log('this.getLocaleFromUrl(): ' + this.getLocaleFromUrl())
+      if (newLocale !== this.getLocaleFromUrl()) {
+        // this.changeLocaleInUrlAndRedirect(newLocale)
+        console.log('CURRENT PATH: ' + window.location.href)
+        if (this.getLocaleFromUrl()) {
+          this.changeLocaleInUrlAndRedirect(newLocale)
         } else {
-          const localeFromUrl = this.getLocaleFromUrl()
-          if (localeFromUrl) {
-            console.log('set from url: ' + localeFromUrl)
-            newLocale = localeFromUrl
-            // const browserLocale = this.getBrowserLocale()
-          }
+          const newUrl = this.addLocaleInUrl(window.location.href, newLocale)
+          window.location.replace(newUrl);
         }
-        console.log('new locale: ' + newLocale)
-        console.log('this.getLocaleFromUrl(): ' + this.getLocaleFromUrl())
-        if (newLocale !== this.getLocaleFromUrl()) {
-          // this.changeLocaleInUrlAndRedirect(newLocale)
-          console.log('CURRENT PATH: ' + window.location.href)
-          if (this.getLocaleFromUrl()) {
-            this.changeLocaleInUrlAndRedirect(newLocale)
-          } else {
-            const newUrl = this.addLocaleInUrl(window.location.href, newLocale)
-            window.location.replace(newUrl);
-          }
-
-
-        }
-      }, 10)
-    }
+      }
+    }, 10)
   }
 
   private changeLocaleInUrlAndRedirect (newLocale: string) {
@@ -123,7 +116,6 @@ export class LocaleService {
     return fixRu(navigator.language)
   }
 
-  // если в урле есть текущая локаль, то меняем
   private _getLocaleUrl(locale: string): string {
     return window.location.pathname.includes(`/${this.localeToken}/`)
       ? `/${locale}`
