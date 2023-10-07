@@ -42,7 +42,10 @@ export class LocaleService {
           }
         }
         console.log('result locale to apply: ' + newLocale)
-        this.changeLocaleInUrlAndRedirect(newLocale)
+        console.log('locale token: ' + this.localeToken)
+        if (newLocale !== this.localeToken) {
+          this.changeLocaleInUrlAndRedirect(newLocale)
+        }
       }, 10)
     }
   }
