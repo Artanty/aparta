@@ -7,13 +7,6 @@ import { Router, ActivatedRoute } from '@angular/router';
   providedIn: 'root'
 })
 export class LocaleService {
-  /**
-   * ur: www.site.net
-   * saved locale: null
-   * 1. (server redirect to default /ru/) -> www.site.net/ru (this.router.url === "/")
-   * 2. (ng router path: '**', redirectTo: ext)
-
-   */
   constructor(
     @Inject(LOCALE_ID) private localeToken: string,
     @Inject(STORAGE_SERVICE) private Storage: StorageInterface,
@@ -22,26 +15,18 @@ export class LocaleService {
   }
 
   initLocale () {
-    setTimeout(() => {
+
       let newLocale: string = 'ru'
-      // this.switchLocale(this.getCurrentLocale())
       const savedLocale = this.getSavedLocale()
       if (savedLocale) {
-        console.log('set from storage: ' + savedLocale)
         newLocale = savedLocale
       } else {
         const localeFromUrl = this.getLocaleFromUrl()
         if (localeFromUrl) {
-          console.log('set from url: ' + localeFromUrl)
           newLocale = localeFromUrl
-          // const browserLocale = this.getBrowserLocale()
         }
       }
-      console.log('new locale: ' + newLocale)
-      console.log('this.getLocaleFromUrl(): ' + this.getLocaleFromUrl())
       if (newLocale !== this.getLocaleFromUrl()) {
-        // this.changeLocaleInUrlAndRedirect(newLocale)
-        console.log('CURRENT PATH: ' + window.location.href)
         if (this.getLocaleFromUrl()) {
           this.changeLocaleInUrlAndRedirect(newLocale)
         } else {
@@ -49,7 +34,7 @@ export class LocaleService {
           window.location.replace(newUrl);
         }
       }
-    }, 10)
+
   }
 
   private changeLocaleInUrlAndRedirect (newLocale: string) {
