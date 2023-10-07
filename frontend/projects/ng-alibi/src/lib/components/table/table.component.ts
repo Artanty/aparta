@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChild, ContentChildren, ElementRef, Input, OnInit, QueryList, Renderer2, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChild, ContentChildren, ElementRef, Inject, Input, LOCALE_ID, OnInit, QueryList, Renderer2, TRANSLATIONS, ViewChild } from '@angular/core';
 import { TemplateHeaderDirective } from './template-header.directive';
 import 'reflect-metadata'
 const constants = {
@@ -18,7 +18,7 @@ const constants = {
 })
 export class TableComponent implements OnInit {
   public TEMPLATE = constants.TEMPLATE
-
+  greeting: string;
   @Input() cols: any[] = []
   @Input() data: any[] = []
   @Input() pageSize = constants.PAGE_SIZE
@@ -36,8 +36,13 @@ export class TableComponent implements OnInit {
   public templates?: QueryList<TemplateHeaderDirective>
   constructor (
     private cd: ChangeDetectorRef,
-    private el: ElementRef, private renderer: Renderer2
-  ) {}
+    private el: ElementRef, private renderer: Renderer2,
+    @Inject(LOCALE_ID) private locale: string,
+    @Inject(TRANSLATIONS) private translations: any
+  ) {
+    this.greeting = this.translations.greeting;
+    console.log(`Current locale is: ${this.locale}`);
+  }
 
   ngOnInit(): void {
     this.initPagination()
