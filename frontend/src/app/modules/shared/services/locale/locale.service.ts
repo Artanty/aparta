@@ -27,7 +27,7 @@ export class LocaleService {
     if (this.router.url === '/') {
       // this.router.navigate(['home'])
       setTimeout(() => {
-        let newLocale: string = ''
+        let newLocale: string = 'ru'
         // this.switchLocale(this.getCurrentLocale())
         const savedLocale = this.getSavedLocale()
         if (savedLocale) {
