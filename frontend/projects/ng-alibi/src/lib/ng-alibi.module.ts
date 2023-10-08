@@ -35,7 +35,7 @@ export class NgAlibiModule {
     return {
       ngModule: NgAlibiModule,
       providers: [
-        { provide: LOCALE_ID, useValue: config.locale },
+        // { provide: LOCALE_ID, useValue: config.locale },
         { provide: TRANSLATIONS, useValue: config.translations }
       ],
     };

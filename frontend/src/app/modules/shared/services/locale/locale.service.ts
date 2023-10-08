@@ -14,24 +14,26 @@ export class LocaleService {
   }
 
   initLocale () {
-    let newLocale: string = 'ru'
-    const savedLocale = this.getSavedLocale()
-    if (savedLocale) {
-      newLocale = savedLocale
-    } else {
-      const localeFromUrl = this.getLocaleFromUrl()
-      if (localeFromUrl) {
-        newLocale = localeFromUrl
-      }
-    }
-    if (newLocale !== this.getLocaleFromUrl()) {
-      if (this.getLocaleFromUrl()) {
-        this.changeLocaleInUrlAndRedirect(newLocale)
+    setTimeout(() => {
+      let newLocale: string = 'ru'
+      const savedLocale = this.getSavedLocale()
+      if (savedLocale) {
+        newLocale = savedLocale
       } else {
-        const newUrl = this.addLocaleInUrl(window.location.href, newLocale)
-        window.location.replace(newUrl);
+        const localeFromUrl = this.getLocaleFromUrl()
+        if (localeFromUrl) {
+          newLocale = localeFromUrl
+        }
       }
-    }
+      if (newLocale !== this.getLocaleFromUrl()) {
+        if (this.getLocaleFromUrl()) {
+          this.changeLocaleInUrlAndRedirect(newLocale)
+        } else {
+          const newUrl = this.addLocaleInUrl(window.location.href, newLocale)
+          window.location.replace(newUrl);
+        }
+      }
+    }, 0)
   }
 
   private changeLocaleInUrlAndRedirect (newLocale: string) {
