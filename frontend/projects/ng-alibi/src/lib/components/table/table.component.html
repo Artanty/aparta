@@ -3,7 +3,7 @@
 <!-- кортизол -->
 <!-- [ngStyle]="tableHeight" -->
 <!-- https://angdev.ru/angular/content-projection/#_4 -->
-<h1 i18n>{{ greeting }}</h1>
+<h1 i18n="@@greeting">{{ greeting }}</h1>
 <div class="table-container" [ngStyle]="tableHeight">
   <div class="table" >
     <ng-container *ngFor="let tp of templates">
