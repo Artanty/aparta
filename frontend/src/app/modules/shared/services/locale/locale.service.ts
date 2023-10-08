@@ -9,32 +9,29 @@ import { Router, ActivatedRoute } from '@angular/router';
 export class LocaleService {
   constructor(
     @Inject(LOCALE_ID) private localeToken: string,
-    @Inject(STORAGE_SERVICE) private Storage: StorageInterface,
-    private router: Router,
+    @Inject(STORAGE_SERVICE) private Storage: StorageInterface
   ) {
   }
 
   initLocale () {
-
-      let newLocale: string = 'ru'
-      const savedLocale = this.getSavedLocale()
-      if (savedLocale) {
-        newLocale = savedLocale
+    let newLocale: string = 'ru'
+    const savedLocale = this.getSavedLocale()
+    if (savedLocale) {
+      newLocale = savedLocale
+    } else {
+      const localeFromUrl = this.getLocaleFromUrl()
+      if (localeFromUrl) {
+        newLocale = localeFromUrl
+      }
+    }
+    if (newLocale !== this.getLocaleFromUrl()) {
+      if (this.getLocaleFromUrl()) {
+        this.changeLocaleInUrlAndRedirect(newLocale)
       } else {
-        const localeFromUrl = this.getLocaleFromUrl()
-        if (localeFromUrl) {
-          newLocale = localeFromUrl
-        }
+        const newUrl = this.addLocaleInUrl(window.location.href, newLocale)
+        window.location.replace(newUrl);
       }
-      if (newLocale !== this.getLocaleFromUrl()) {
-        if (this.getLocaleFromUrl()) {
-          this.changeLocaleInUrlAndRedirect(newLocale)
-        } else {
-          const newUrl = this.addLocaleInUrl(window.location.href, newLocale)
-          window.location.replace(newUrl);
-        }
-      }
-
+    }
   }
 
   private changeLocaleInUrlAndRedirect (newLocale: string) {
@@ -42,10 +39,7 @@ export class LocaleService {
       `/${this.localeToken}/`,
       `/${newLocale}/`
     );
-    if (this.Storage.getItem('loc')) {
-      console.log('UPDATED PATH: ' + path)
-      window.location.replace(path);
-    }
+    window.location.replace(path);
   }
 
   addLocaleInUrl (fullUrl: string, newLocale: string) {
@@ -62,11 +56,7 @@ export class LocaleService {
   }
 
   switchLocale (localeCode: string) {
-    console.log(this.localeToken)
-    if (this.localeToken === localeCode) {
-      console.log(3, 'locale code already set')
-    } else {
-      console.log(3, 'locale code doesnt set')
+    if (this.localeToken !== localeCode) {
       this.Storage.setItem('locale', localeCode)
       const locale = this._getLocaleUrl(localeCode);
       if (locale) {
@@ -75,8 +65,6 @@ export class LocaleService {
     }
   }
 
-
-
   public setCurrentLocale () {
     const currentLocale = this.getCurrentLocale()
     this.switchLocale(currentLocale)
@@ -84,11 +72,9 @@ export class LocaleService {
 
   public getCurrentLocale (): string {
     const selectedLocale = this.Storage.getItem<string>('locale')
-    console.log('loc from stirage: ' + selectedLocale)
     if (selectedLocale) {
       return selectedLocale
     } else {
-      console.log('loc from browser: ' + this.getBrowserLocale())
       return this.getBrowserLocale()
     }
   }

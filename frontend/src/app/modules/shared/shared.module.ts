@@ -58,8 +58,8 @@ import { LocalStorageService } from './services/storage/local-storage.service';
 // };
 export const options: Partial<null|IConfig> | (() => Partial<IConfig>) = null;
 
-const libraryConfig: LibraryConfig = {
-  locale: 'en-US',
+const libraryConfig: any = {
+  // locale: 'en-US',
   translations: {
     greeting: 'Bonjour le monde!',
     // Add more translations as needed
