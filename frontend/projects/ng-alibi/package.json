@@ -1,13 +1,11 @@
 {
   "name": "ng-alibi",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "peerDependencies": {
     "@angular/common": "^16.2.0",
     "@angular/core": "^16.2.0"
   },
-  "dependencies": {
-
-  },
+  "dependencies": {},
   "sideEffects": false,
   "devDependencies": {
     "node-sass": "^9.0.0",

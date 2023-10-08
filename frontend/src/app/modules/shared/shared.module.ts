@@ -51,13 +51,20 @@ import { LocaleService } from './services/locale/locale.service'
 import { LocaleSwitcherComponent } from './features/locale-switcher/locale-switcher.component';
 import { STORAGE_SERVICE } from './constants';
 import { LocalStorageService } from './services/storage/local-storage.service';
+import { LibraryConfig } from '@ng-alibi';
 // import { }
 // const maskConfig: Partial<IConfig> = {
 //   validation: true,
 // };
 export const options: Partial<null|IConfig> | (() => Partial<IConfig>) = null;
 
-
+const libraryConfig: LibraryConfig = {
+  locale: 'en-US',
+  translations: {
+    greeting: 'Bonjour le monde!',
+    // Add more translations as needed
+  },
+};
 
 @NgModule({
   declarations: [
@@ -95,7 +102,7 @@ export const options: Partial<null|IConfig> | (() => Partial<IConfig>) = null;
     MdbTabsModule,
     MdbTooltipModule,
     MdbValidationModule,
-    NgAlibiModule,
+    NgAlibiModule.forRoot(libraryConfig),
     NgAlibiIconsModule
   ],
   providers: [
