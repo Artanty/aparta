@@ -2,6 +2,15 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-US" datatype="plaintext" original="ng2.template">
     <body>
+      <trans-unit id="greeting" datatype="html">
+        <source><x id="INTERPOLATION" equiv-text="формация --&gt;
+&lt;!"/></source>
+        <target>Вэлком</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">projects/ng-alibi/src/lib/components/table/table.component.html</context>
+          <context context-type="linenumber">1,2</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="pagination-count" datatype="html">
         <source>of</source>
         <target>из</target>
