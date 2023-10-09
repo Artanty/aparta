@@ -1,6 +1,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
@@ -23,7 +24,8 @@
       "dom"
     ],
     "types": [
-      "@angular/localize"
+      "@angular/localize",
+      "node"
     ],
     "paths": {
       "@components/*": [

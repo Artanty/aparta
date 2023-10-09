@@ -9,6 +9,17 @@ export interface LibraryConfig {
   translations: { [key: string]: string };
 }
 
+function translationsFactory(config: LibraryConfig): Record<string, string> {
+  if (config.translations) {
+    return config.translations;
+  } else {
+    return {
+      greeting: 'Hello, World!',
+      'pagination-count': 'from23'
+    };
+  }
+}
+
 const components = [
   NgAlibiComponent,
   TableComponent
@@ -35,8 +46,19 @@ export class NgAlibiModule {
     return {
       ngModule: NgAlibiModule,
       providers: [
-        // { provide: LOCALE_ID, useValue: config.locale },
-        { provide: TRANSLATIONS, useValue: config.translations }
+        { provide: LOCALE_ID, useValue: config.locale },
+        // {
+        //   provide: TRANSLATIONS,
+        //   useFactory: translationsFactory,
+        //   deps: [config]
+        // }
+        {
+          provide: TRANSLATIONS,
+          useValue: config.locale || {
+            greeting: 'Hello, World!',
+            'pagination-count': 'from'
+          }
+        },
       ],
     };
   }

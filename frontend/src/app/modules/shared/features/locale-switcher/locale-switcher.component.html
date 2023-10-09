@@ -1,5 +1,4 @@
 <ul>
-  <li *ngFor="let locale of localesList" (click)="switchLocale(locale.code)">
-    {{ locale.label }}
-  </li>
+  <li *ngFor="let locale of localesList" [attr.i18n]="locale"
+  (click)="switchLocale(locale)">{{ locale | translate | async }}</li>
 </ul>

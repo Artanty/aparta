@@ -1,0 +1,15 @@
+{
+  "locale": "ru-RU",
+  "translations": {
+    "greeting": "{$INTERPOLATION}2",
+    "pagination-count": "из2",
+    "apartaments": "Квартиры2",
+    "welcome": "Hello everyone!2",
+    "8336405567663867706": "/en-US/portfolio2",
+    "6709320430327029754": "My Portfolio2",
+    "9201103587777813545": "Portfolio2",
+    "7830261646811052149": "Copyright 20232",
+    "3990133897753911565": "Created by {$PH}2",
+    "organizations": "Organizations2"
+  }
+}

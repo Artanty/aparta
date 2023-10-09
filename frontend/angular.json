@@ -4,14 +4,6 @@
   "newProjectRoot": "projects",
   "projects": {
     "frontend": {
-      "i18n": {
-        "sourceLocale": "en-US",
-        "locales": {
-          "ru": {
-            "translation": "src/locale/messages.ru.xlf"
-          }
-        }
-      },
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -69,9 +61,6 @@
               ],
               "outputHashing": "all"
             },
-            "ru": {
-              "localize": ["ru"]
-            },
             "development": {
               "localize": false,
               "buildOptimizer": false,
@@ -92,9 +81,6 @@
             },
             "development": {
               "browserTarget": "frontend:build:development"
-            },
-            "ru": {
-              "browserTarget": "frontend:build:ru"
             }
           },
           "defaultConfiguration": "development"
@@ -103,8 +89,8 @@
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
             "browserTarget": "frontend:build",
-            "format": "xlf",
-            "outputPath": "src/locale"
+            "format": "json",
+            "outputPath": "src/assets/i18n"
           }
         },
         "test": {

@@ -1,4 +1,4 @@
-import { APP_INITIALIZER, ModuleWithProviders, NgModule } from '@angular/core';
+import { APP_INITIALIZER, LOCALE_ID, ModuleWithProviders, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -44,13 +44,14 @@ import { CurrancyTableCellComponent } from './features/currancy-table-cell/curra
 import { CurrencyOnlyPipe } from './pipes/currency-only.pipe';
 import { SelectComponent } from './components/form/select/select.component';
 import { SwitchComponent } from './components/form/switch/switch.component';
-import { NgAlibiModule, LibraryConfig } from 'ng-alibi';
+import { NgAlibiModule, LibraryConfig } from '@ng-alibi';
 import { NgAlibiIconsModule, NgAlibiIconsRegistry, dinosaurIconsArtist, dinosaurIconsBirthday, dinosaurIconsChef, dinosaurIconsSleep, dinosaurIconsSpace, left, right
 } from 'ng-alibi-icons';
 import { LocaleService } from './services/locale/locale.service'
 import { LocaleSwitcherComponent } from './features/locale-switcher/locale-switcher.component';
 import { STORAGE_SERVICE } from './constants';
 import { LocalStorageService } from './services/storage/local-storage.service';
+import { TranslatePipe } from './pipes/translate.pipe';
 
 // import { }
 // const maskConfig: Partial<IConfig> = {
@@ -59,7 +60,7 @@ import { LocalStorageService } from './services/storage/local-storage.service';
 export const options: Partial<null|IConfig> | (() => Partial<IConfig>) = null;
 
 const libraryConfig: any = {
-  // locale: 'en-US',
+  locale: 'en-US',
   translations: {
     greeting: 'Bonjour le monde!',
     // Add more translations as needed
@@ -81,6 +82,7 @@ const libraryConfig: any = {
     SelectComponent,
     SwitchComponent,
     LocaleSwitcherComponent,
+    TranslatePipe,
 
   ],
   imports: [
@@ -114,6 +116,12 @@ const libraryConfig: any = {
       deps: [LocaleService],
       useFactory: (localeService: LocaleService) => () => localeService.initLocale(),
       multi: true
+    },
+    { provide: LOCALE_ID,
+      deps: [LocaleService],
+      useFactory: (LocaleServ: LocaleService) => {
+        return LocaleServ.getCurrentLocale().slice(0,2)
+      }
     },
     { provide: STORAGE_SERVICE, useClass: LocalStorageService },
   ],

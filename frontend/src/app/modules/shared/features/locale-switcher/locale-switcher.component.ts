@@ -8,16 +8,16 @@ import { LocaleService } from '@shared/services/locale/locale.service';
   styleUrls: ['./locale-switcher.component.scss']
 })
 export class LocaleSwitcherComponent {
-  localesList = [
-    { code: 'en-US', label: 'English' },
-    { code: 'ru', label: 'Русский' }
-  ];
+
+  public localesList = this.LocaleServ.allowedLocales
+
   constructor(
     @Inject(LOCALE_ID) private _locale: string,
-    private LocaleServ: LocaleService
+    @Inject(LocaleService) private LocaleServ: LocaleService,
   ) {}
 
   switchLocale (localeCode: string) {
     this.LocaleServ.switchLocale(localeCode)
   }
 }
+

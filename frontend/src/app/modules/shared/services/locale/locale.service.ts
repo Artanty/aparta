@@ -1,75 +1,63 @@
-import { Inject, Injectable, LOCALE_ID } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { Inject, Injectable, LOCALE_ID, Renderer2 } from '@angular/core';
 import { STORAGE_SERVICE } from '@shared/constants';
 import { StorageInterface } from '@shared/interfaces/Storage';
 import { Router, ActivatedRoute } from '@angular/router';
+import { loadTranslations } from '@angular/localize';
+import { HttpClient } from '@angular/common/http';
+import { registerLocaleData } from '@angular/common';
 
+export type LocaleSettings = {
+  "locale": string,
+  "translations": Record<string, string>
+}
 @Injectable({
   providedIn: 'root'
 })
 export class LocaleService {
+
+  public allowedLocales = ['en-US', 'ru-RU']
+  /**
+   * ng extract-i18n dynamic ids generation temp solution
+   */
+  protected localizedLocales = [
+    $localize`:@@en-US:English`,
+    $localize`:@@ru-RU:Russian`
+  ]
+  private translations$: BehaviorSubject<any> = new BehaviorSubject(null)
+  public translationsObs$: Observable<LocaleSettings['translations'] | null> = this.translations$.asObservable()
+
   constructor(
-    @Inject(LOCALE_ID) private localeToken: string,
-    @Inject(STORAGE_SERVICE) private Storage: StorageInterface
+    @Inject(STORAGE_SERVICE) private Storage: StorageInterface,
+    private http: HttpClient
   ) {
   }
 
   initLocale () {
-    setTimeout(() => {
-      let newLocale: string = 'ru'
-      const savedLocale = this.getSavedLocale()
-      if (savedLocale) {
-        newLocale = savedLocale
-      } else {
-        const localeFromUrl = this.getLocaleFromUrl()
-        if (localeFromUrl) {
-          newLocale = localeFromUrl
-        }
+    const locale = this.getCurrentLocale()
+    import(
+      /* webpackInclude: /(en|ru)\.mjs$/ */
+      `/node_modules/@angular/common/locales/${locale.slice(0,2)}`
+      ).then(module => {
+      registerLocaleData(module.default);
+    });
+    this.http.get<LocaleSettings>(`assets/i18n/messages.${locale}.json`).subscribe({
+      next: (localSettings) => {
+        this.translations$.next(localSettings.translations)
+        loadTranslations(localSettings.translations)
+      },
+      error: (err) => {
+        console.error(`Failed to load translations for ${locale}.`, err);
       }
-      if (newLocale !== this.getLocaleFromUrl()) {
-        if (this.getLocaleFromUrl()) {
-          this.changeLocaleInUrlAndRedirect(newLocale)
-        } else {
-          const newUrl = this.addLocaleInUrl(window.location.href, newLocale)
-          window.location.replace(newUrl);
-        }
-      }
-    }, 0)
+    });
+
   }
 
-  private changeLocaleInUrlAndRedirect (newLocale: string) {
-    const path = window.location.href.replace(
-      `/${this.localeToken}/`,
-      `/${newLocale}/`
-    );
-    window.location.replace(path);
-  }
-
-  addLocaleInUrl (fullUrl: string, newLocale: string) {
-    const [domain, path] = this.getUrlSegments(fullUrl)
-    return [domain, newLocale, path].join('/')
-  }
-
-  private getUrlSegments(fullUrl: string) {
-    const segments = fullUrl.split('/');
-    return [
-      segments.slice(0, 3).join('/'),
-      segments.slice(3).join('/')
-    ]
-  }
-
-  switchLocale (localeCode: string) {
-    if (this.localeToken !== localeCode) {
-      this.Storage.setItem('locale', localeCode)
-      const locale = this._getLocaleUrl(localeCode);
-      if (locale) {
-        this.changeLocaleInUrlAndRedirect(localeCode)
-      }
+  switchLocale (newLocale: string) {
+    if (newLocale !== this.getCurrentLocale()) {
+      this.Storage.setItem('locale', newLocale)
+      location.reload()
     }
-  }
-
-  public setCurrentLocale () {
-    const currentLocale = this.getCurrentLocale()
-    this.switchLocale(currentLocale)
   }
 
   public getCurrentLocale (): string {
@@ -82,30 +70,10 @@ export class LocaleService {
   }
 
   private getBrowserLocale (): string {
-    const fixRu = (result: string) => result === 'ru-RU' ? 'ru' : result
     if (navigator.languages !== undefined) {
-      return fixRu(navigator.languages[0])
+      return navigator.languages[0]
     }
-    return fixRu(navigator.language)
+    return navigator.language
   }
 
-  private _getLocaleUrl(locale: string): string {
-    return window.location.pathname.includes(`/${this.localeToken}/`)
-      ? `/${locale}`
-      : '';
-  }
-
-  private getLocaleFromUrl(): string | undefined {
-    const locales: string[] = ['ru', 'en-US']
-    const url = window.location.pathname
-    return this.findIncludedString(locales, url)
-  }
-
-  private findIncludedString(arr: string[], str: string): string | undefined {
-    return arr.find(item => str.includes(`/${item}/`));
-  }
-
-  private getSavedLocale (): string | null {
-    return this.Storage.getItem<string>('locale')
-  }
 }

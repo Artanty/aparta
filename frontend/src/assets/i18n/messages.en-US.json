@@ -1,0 +1,17 @@
+{
+  "locale": "en-US",
+  "translations": {
+    "greeting": "{$INTERPOLATION}",
+    "pagination-count": "из",
+    "apartaments": "Квартиры",
+    "welcome": "Hello everyone!",
+    "8336405567663867706": "/en-US/portfolio",
+    "6709320430327029754": "My Portfolio",
+    "9201103587777813545": "Portfolio",
+    "7830261646811052149": "Copyright 2023",
+    "3990133897753911565": "Created by {$PH}",
+    "organizations": "Organizations",
+    "en-US": "English",
+    "ru-RU": "Russian"
+  }
+}
