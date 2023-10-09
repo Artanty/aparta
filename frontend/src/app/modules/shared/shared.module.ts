@@ -44,7 +44,7 @@ import { CurrancyTableCellComponent } from './features/currancy-table-cell/curra
 import { CurrencyOnlyPipe } from './pipes/currency-only.pipe';
 import { SelectComponent } from './components/form/select/select.component';
 import { SwitchComponent } from './components/form/switch/switch.component';
-import { NgAlibiModule, LibraryConfig } from '@ng-alibi';
+import { NgAlibiModule, LibraryConfig } from 'ng-alibi';
 import { NgAlibiIconsModule, NgAlibiIconsRegistry, dinosaurIconsArtist, dinosaurIconsBirthday, dinosaurIconsChef, dinosaurIconsSleep, dinosaurIconsSpace, left, right
 } from 'ng-alibi-icons';
 import { LocaleService } from './services/locale/locale.service'
