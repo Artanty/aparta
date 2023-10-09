@@ -7,9 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "i18n": "ng extract-i18n --output-path src/assets/i18n --format=json --out-file messages.en-US.json frontend",
-    "start:ru": "ng serve --configuration=ru",
-    "build:ru": "ng build --configuration=ru"
+    "i18n": "ng extract-i18n --output-path src/assets/i18n --format=json --out-file messages.en-US.json frontend"
   },
   "private": true,
   "dependencies": {
